@@ -17,11 +17,11 @@ load_dotenv(find_dotenv())
 HOST = os.getenv('HOST')
 PORT = os.getenv('PORT')
 DB_NAME = os.getenv('DB_NAME')
-USERNAME = os.getenv('USERNAME')
+USR = os.getenv('USR')
 PASSWORD = os.getenv('PASSWORD')
 
 #connect to user DB
-conn = psycopg2.connect(dbname=DB_NAME,user=USERNAME,password=PASSWORD,host=HOST,port=PORT)    
+conn = psycopg2.connect(dbname=DB_NAME,user=USR,password=PASSWORD,host=HOST,port=PORT)    
 cur = conn.cursor()
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
