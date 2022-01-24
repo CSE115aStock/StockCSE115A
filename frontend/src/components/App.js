@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 
 /**
@@ -7,11 +7,28 @@ import React from 'react';
  * @return {object} JSX
  */
 function App() {
+
+  //fetch sample user from backend.
+  const [data,setData] = useState([])
+  
+  useEffect(() => {
+    fetch('auth/user').then(
+      res => res.json()
+      ).then(
+        data => {
+          setData(data);
+          console.log(data)
+        }
+      )
+
+  }, [])
+
   return (
     <div>
-        Social Stock
+      <p>Social Stock</p>
     </div>
   );
+
 }
 
 export default App;
