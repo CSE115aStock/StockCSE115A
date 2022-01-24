@@ -1,0 +1,17 @@
+{
+    "name": "Social Stock",
+    "version": "2.0.0",
+    "description": "CSE115 Project",
+    "license": "UNLICENSED",
+    "repository": "none",
+    "devDependencies": {
+      "bestzip": "*"
+    },
+    "scripts": {
+      "install-frontend": "cd frontend && npm install",
+      "start-frontend": "cd frontend && npm start",
+      "start": "(npm run start-frontend)",
+      "postinstall": "(npm run install-frontend)"
+    }
+  }
+  
