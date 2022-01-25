@@ -2,6 +2,7 @@ import * as React from 'react';
 import {styled, alpha} from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
+import CssBaseline from '@mui/material/CssBaseline';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import Drawer from '@mui/material/Drawer';
 import Toolbar from '@mui/material/Toolbar';
@@ -21,9 +22,29 @@ import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
+import Dashboard from './Dashboard';
+import MarketTrends from './MarketTrends';
+import Settings from './Settings';
+import Profile from './Profile';
+import {ThemeProvider, createTheme} from '@mui/material/styles';
 
 
 const drawerWidth = 240;
+
+const darkTheme = createTheme({
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#3f51b5',
+    },
+    secondary: {
+      main: '#f50057',
+    },
+  },
+  typography: {
+    fontFamily: 'Montserrat',
+  },
+});
 
 // style for search
 const SearchStyle = styled('div')(({theme}) => ({
@@ -79,6 +100,11 @@ export default function HomePage() {
 
   // hook for dashboard and market trends
   const [dash, setDash] = React.useState(true);
+  const [market, setMarket] = React.useState(false);
+
+  // hook for profile menu options
+  const [profile, setProfile] = React.useState(false);
+  const [settings, setSettings] = React.useState(false);
 
   // function for opening/closing drawer
   const handleDrawerToggle = () => {
@@ -91,8 +117,31 @@ export default function HomePage() {
   };
 
   // function to change dash/market trend
-  const handleDashtoMarket = () => {
-    setDash(!dash);
+  const handleDash = () => {
+    setDash(true);
+    setMarket(false);
+    setProfile(false);
+    setSettings(false);
+  };
+  const handleMarket = () => {
+    setDash(false);
+    setMarket(true);
+    setProfile(false);
+    setSettings(false);
+  };
+
+  // function to change profile/settings
+  const handleProfile = () => {
+    setDash(false);
+    setMarket(false);
+    setProfile(true);
+    setSettings(false);
+  };
+  const handleSettings = () => {
+    setDash(false);
+    setMarket(false);
+    setProfile(false);
+    setSettings(true);
   };
 
 
@@ -101,13 +150,13 @@ export default function HomePage() {
       <Toolbar />
       <Divider />
       <List>
-        <ListItem button key='Dashboard'>
+        <ListItem button key='Dashboard' onClick={handleDash}>
           <ListItemIcon>
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary='Dashboard' />
         </ListItem>
-        <ListItem button key='Market Trends' onClick={handleDashtoMarket} >
+        <ListItem button key='Market Trends' onClick={handleMarket} >
           <ListItemIcon>
             <ShowChartIcon/>
           </ListItemIcon>
@@ -121,119 +170,136 @@ export default function HomePage() {
     <Menu
       anchorEl={pfOpen}
       anchorOrigin={{
-        vertical: 'top',
+        vertical: 'bottom',
         horizontal: 'right',
       }}
       id='profileMenu'
       keepMounted
       transformOrigin={{
-        vertical: 'top',
+        vertical: 'bottom',
         horizontal: 'right',
       }}
       open={pfOpen}
       onClose={handleProfileMenuToggle}
     >
-      <MenuItem onClick={handleProfileMenuToggle}>Profile</MenuItem>
-      <MenuItem onClick={handleProfileMenuToggle}>My account</MenuItem>
+      <MenuItem onClick={handleProfile}>Profile</MenuItem>
+      <MenuItem onClick={handleSettings}>Settings</MenuItem>
     </Menu>
   );
 
 
   return (
-    <Box sx={{display: 'flex'}}>
-      <AppBar position='fixed'
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-        }}>
-        <Toolbar>
-          <IconButton
-            size='large'
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
-            onClick={handleDrawerToggle}
-            sx={{mr: 2, display: {xs: 'block', sm: 'none'}}}>
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant='h6'
-            noWrap
-            component='div'
-            sx={{'display': {xs: 'none', sm: 'block'},
-              'font-size': 30, 'width': drawerWidth}}
+    <ThemeProvider theme={darkTheme}>
+      <Box sx={{display: 'flex'}}>
+        <CssBaseline />
+        <Box>
+          <AppBar position='fixed'
+            sx={{
+              zIndex: (theme) => theme.zIndex.drawer + 1,
+            }}>
+            <Toolbar>
+              <IconButton
+                size='large'
+                edge='start'
+                color='inherit'
+                aria-label='open drawer'
+                onClick={handleDrawerToggle}
+                sx={{mr: 2, display: {xs: 'block', sm: 'none'}}}>
+                <MenuIcon />
+              </IconButton>
+              <Typography
+                variant='h6'
+                noWrap
+                component='div'
+                sx={{'display': {xs: 'none', sm: 'block'},
+                  'font-size': 30, 'width': drawerWidth}}
+              >
+                Social Stock
+              </Typography>
+              <SearchStyle>
+                <SearchIconStyle>
+                  <SearchIcon />
+                </SearchIconStyle>
+                <StyledInputBase
+                  placeholder='Search…'
+                  inputProps={{'aria-label': 'search'}}
+                />
+              </SearchStyle>
+              <Box sx={{flexGrow: 1}} />
+              <Box sx={{display: {md: 'flex'}}}>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='notifications'
+                  color='inherit'
+                >
+                  <Badge badgeContent={4} color='error'>
+                    <NotificationsIcon />
+                  </Badge>
+                </IconButton>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='account of current user'
+                  onClick={handleProfileMenuToggle}
+                  color='inherit'
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+            </Toolbar>
+          </AppBar>
+          <Box
+            component='nav'
+            sx={{width: {sm: drawerWidth},
+              flexShrink: {sm: 0}, display: 'flex'}}
+            aria-label='features'
           >
-            Social Stock
-          </Typography>
-          <SearchStyle>
-            <SearchIconStyle>
-              <SearchIcon />
-            </SearchIconStyle>
-            <StyledInputBase
-              placeholder='Search…'
-              inputProps={{'aria-label': 'search'}}
-            />
-          </SearchStyle>
-          <Box sx={{flexGrow: 1}} />
-          <Box sx={{display: {md: 'flex'}}}>
-            <IconButton
-              size='large'
-              edge='end'
-              aria-label='notifications'
-              color='inherit'
+            <Drawer
+              variant='temporary'
+              open={mobileOpen}
+              onClose={handleDrawerToggle}
+              ModalProps={{
+                keepMounted: true,
+              }}
+              sx={{
+                'display': {xs: 'block', sm: 'none'},
+                '& .MuiDrawer-paper': {
+                  boxSizing: 'border-box',
+                  width: drawerWidth,
+                },
+              }}
             >
-              <Badge badgeContent={4} color='error'>
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
-            <IconButton
-              size='large'
-              edge='end'
-              aria-label='account of current user'
-              onClick={handleProfileMenuToggle}
-              color='inherit'
+              {sideDrawer}
+            </Drawer>
+            <Drawer
+              variant='permanent'
+              sx={{
+                'display': {xs: 'none', sm: 'block'},
+                '& .MuiDrawer-paper': {
+                  boxSizing: 'border-box',
+                  width: drawerWidth,
+                },
+              }}
+              open
             >
-              <AccountCircle />
-            </IconButton>
+              {sideDrawer}
+            </Drawer>
           </Box>
-        </Toolbar>
-      </AppBar>
-      <Box
-        component='nav'
-        sx={{width: {sm: drawerWidth}, flexShrink: {sm: 0}, display: 'flex'}}
-        aria-label='features'
-      >
-        <Drawer
-          variant='temporary'
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            'display': {xs: 'block', sm: 'none'},
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
+          {profileMenu}
+        </Box>
+        <Box
+          component="main"
+          sx={{flexGrow: 1, p: 3,
+            width: {sm: `calc(100% - ${drawerWidth}px)`}}}
         >
-          {sideDrawer}
-        </Drawer>
-        <Drawer
-          variant='permanent'
-          sx={{
-            'display': {xs: 'none', sm: 'block'},
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-            },
-          }}
-          open
-        >
-          {sideDrawer}
-        </Drawer>
+          <Toolbar />
+          {dash? <Dashboard /> : null}
+          {market? <MarketTrends /> : null}
+          {profile? <Profile /> : null}
+          {settings? <Settings /> : null}
+        </Box>
       </Box>
-      {profileMenu}
-    </Box>
+    </ThemeProvider>
   );
 }
