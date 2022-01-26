@@ -26,6 +26,7 @@ import Dashboard from './Dashboard';
 import MarketTrends from './MarketTrends';
 import Settings from './Settings';
 import Profile from './Profile';
+import SearchPage from './Search';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 
 
@@ -63,16 +64,6 @@ const SearchStyle = styled('div')(({theme}) => ({
   },
 }));
 
-// style for search icon
-const SearchIconStyle = styled('div')(({theme}) => ({
-  padding: theme.spacing(0, 2),
-  height: '100%',
-  position: 'absolute',
-  pointerEvents: 'none',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-}));
 
 // style input text
 const StyledInputBase = styled(InputBase)(({theme}) => ({
@@ -106,6 +97,8 @@ export default function HomePage() {
   const [profile, setProfile] = React.useState(false);
   const [settings, setSettings] = React.useState(false);
 
+  const [search, setSearch] = React.useState(false);
+
   // function for opening/closing drawer
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -122,12 +115,14 @@ export default function HomePage() {
     setMarket(false);
     setProfile(false);
     setSettings(false);
+    setSearch(false);
   };
   const handleMarket = () => {
     setDash(false);
     setMarket(true);
     setProfile(false);
     setSettings(false);
+    setSearch(false);
   };
 
   // function to change profile/settings
@@ -136,12 +131,22 @@ export default function HomePage() {
     setMarket(false);
     setProfile(true);
     setSettings(false);
+    setSearch(false);
   };
   const handleSettings = () => {
     setDash(false);
     setMarket(false);
     setProfile(false);
     setSettings(true);
+    setSearch(false);
+  };
+
+  const handleSearch = () => {
+    setDash(false);
+    setMarket(false);
+    setProfile(false);
+    setSettings(false);
+    setSearch(true);
   };
 
 
@@ -217,9 +222,15 @@ export default function HomePage() {
                 Social Stock
               </Typography>
               <SearchStyle>
-                <SearchIconStyle>
+                <IconButton
+                  size='large'
+                  edge='end'
+                  aria-label='notifications'
+                  color='inherit'
+                  onClick={handleSearch}
+                >
                   <SearchIcon />
-                </SearchIconStyle>
+                </IconButton>
                 <StyledInputBase
                   placeholder='Search…'
                   inputProps={{'aria-label': 'search'}}
@@ -298,6 +309,7 @@ export default function HomePage() {
           {market? <MarketTrends /> : null}
           {profile? <Profile /> : null}
           {settings? <Settings /> : null}
+          {search? <SearchPage /> : null}
         </Box>
       </Box>
     </ThemeProvider>
