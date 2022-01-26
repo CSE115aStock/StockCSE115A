@@ -1,5 +1,5 @@
 import React from 'react';
-
+import {Register, Login} from "./login/index";
 
 /**
  * Simple component with no state.
@@ -8,8 +8,8 @@ import React from 'react';
  */
 function App() {
   return (
-    <div>
-        Social Stock
+    <div className="App">
+        <Register />
     </div>
   );
 }
