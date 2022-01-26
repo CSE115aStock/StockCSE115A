@@ -4,6 +4,7 @@ import os
 import sys
 import re
 
+from datetime import  timedelta, datetime,timezone
 from dotenv import load_dotenv, find_dotenv
 from pathlib import Path
 from psycopg2.extras import RealDictCursor
@@ -87,6 +88,23 @@ def AddUser():
     #set template
 
 
+#method for refreshing tokens reaching expiration
+#Taken from flask-jwt documentation example at
+#https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/
+@auth_bp.after_request
+def refresh_expiring_jwts(response):
+    try:
+        exp_timestamp = get_jwt()["exp"]
+        now = datetime.now(timezone.utc)
+        target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
+        if target_timestamp > exp_timestamp:
+            access_token = create_access_token(identity=get_jwt_identity())
+        return response
+    except (RuntimeError, KeyError):
+        return response
+
+
+
 #Checks if user credentials match a user entry in the DB.
 #Returns user if correct username and password combination are passed
 #Returns false otherwise.
@@ -117,11 +135,19 @@ def AuthenticateUser():
         return jsonify(access_token=access_token)
 
         
-    
     current_app.logger.error(error)
     return jsonify({"err_msg":error}), 401
     #set template
 
+
+#endpoint for logging out. 
+#Taken from flask-jwt documentation example at
+#https://flask-jwt-extended.readthedocs.io/en/stable/refreshing_tokens/
+@auth_bp.route("/logout", methods=["POST"])
+def logout():
+    response = jsonify({"msg": "logout successful"})
+    unset_jwt_cookies(response)
+    return response
 
 #Checks if entered password matches hashed password in the db. 
 def check_password(plain_password, hashed_password):
