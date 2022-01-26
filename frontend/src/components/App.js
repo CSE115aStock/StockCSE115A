@@ -25,7 +25,7 @@ function App() {
 
   return (
     <div>
-      <p>Social Stock</p>
+      Social Stock
     </div>
   );
 
