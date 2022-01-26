@@ -2,14 +2,15 @@ import psycopg2
 import argparse
 import os
 import sys
-import json
 import re
 
 from dotenv import load_dotenv, find_dotenv
 from pathlib import Path
 from psycopg2.extras import RealDictCursor
 from passlib.hash import bcrypt
-from flask import Flask, Blueprint, flash, redirect, url_for, render_template, current_app, request, session
+from flask import Flask, Blueprint, flash, redirect, url_for, render_template, current_app, request, jsonify
+from flask_jwt_extended import create_access_token,get_jwt,get_jwt_identity, \
+                               unset_jwt_cookies, jwt_required, JWTManager
 
 #load db connection config
 load_dotenv(find_dotenv())   
@@ -21,8 +22,7 @@ USR = os.getenv('USR')
 PASSWORD = os.getenv('PASSWORD')
 
 #connect to user DB
-conn = psycopg2.connect(dbname=DB_NAME,user=USR,password=PASSWORD,host=HOST,port=PORT)    
-cur = conn.cursor()
+conn = psycopg2.connect(dbname=DB_NAME,user=USR,password=PASSWORD,host=HOST,port=PORT)
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -46,15 +46,15 @@ def IsValidPassword(str):
 
 #Adds user to DB
 @auth_bp.route('/signup',methods=['GET','POST'])
-def AddUser(cur, f_name,l_name,email,username,p_word):
+def AddUser():
     cur = conn.cursor()
 
     if request.method == 'POST':
-        f_name = str(request.form['first_name'])
-        l_name = str(request.form['last_name'])
-        email = str(request.form['email'])
-        username = str(request.form['username'])
-        p_word = str(request.form['password'])
+        f_name = request.json.get("first_name", None)
+        l_name = request.json.get("last_name", None)
+        email = request.json.get("email", None)
+        username = request.json.get("username",None)
+        p_word = request.json.get("password", None)
         
         error = None
 
@@ -83,7 +83,7 @@ def AddUser(cur, f_name,l_name,email,username,p_word):
             return redirect(url_for('auth.login'))
 
         current_app.logger.error(error)
-        flash(error)
+        return jsonify({"err_msg":error})
     #set template
 
 
@@ -91,7 +91,11 @@ def AddUser(cur, f_name,l_name,email,username,p_word):
 #Returns user if correct username and password combination are passed
 #Returns false otherwise.
 @auth_bp.route("/login", methods=['GET','POST'])
-def AuthenticateUser(cur,username,p_word):
+def AuthenticateUser():
+    cur = conn.cursor()
+
+    username = request.json.get("username", None)
+    p_word = request.json.get("password", None)
     cur.execute('SELECT * from users where username = %(usr)s', {'usr': username})
     user = cur.fetchone()
     error = None
@@ -103,14 +107,19 @@ def AuthenticateUser(cur,username,p_word):
         if not check_password(p_word,hashed_pword):
             error = 'Invalid password'
         
-    if error != None:
-        session['USERNAME'] = user[3]
+    if error != None:       
         current_app.logger.info("Succesful login by user: %s", user[3])
-        return json.dumps(user)
+
         #set redirect url to home page
+
+        #set identity based on user email
+        access_token = create_access_token(identity=user[2])
+        return jsonify(access_token=access_token)
+
+        
     
     current_app.logger.error(error)
-    flash(error)
+    return jsonify({"err_msg":error}), 401
     #set template
 
 
@@ -126,5 +135,5 @@ def fetch_user():
     cur = conn.cursor(cursor_factory=RealDictCursor)
     cur.execute("SELECT * FROM users where first_name='john'")
     usr = cur.fetchone()
-    return json.dumps(usr)
+    return jsonify(usr)
 
