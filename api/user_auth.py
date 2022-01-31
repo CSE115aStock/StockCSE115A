@@ -78,7 +78,7 @@ def AddUser():
             error = 'Password not strong enough.'
         
         if error == None:
-            cur.execute("INSERT INTO users VALUES (%s, %s, %s, %s, %s)", (f_name, l_name,email,username,bcrypt.hash(p_word)))
+            cur.execute("INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s)", (f_name, l_name,email,username,bcrypt.hash(p_word),'{}'))
             conn.commit()
             current_app.logger.info("User %s has been created succesfully.", username)
             return redirect(url_for('auth.login'))
