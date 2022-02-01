@@ -10,7 +10,7 @@
     "scripts": {
       "install-frontend": "cd frontend && npm install",
       "start-frontend": "cd frontend && npm start",
-      "user-api": "cd api && black *.py && pytest -v && ~/opt/anaconda3/envs/backend/bin/flask run --no-debugger",
+      "user-api": "cd api && black *.py && pytest -v && flask run --no-debugger",
       "start": "(npm run start-frontend)",
       "postinstall": "(npm run install-frontend)"
     },
