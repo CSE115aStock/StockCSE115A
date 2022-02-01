@@ -47,7 +47,7 @@ const darkTheme = createTheme({
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.white,
-      color: "primary",
+      color: darkTheme.palette.primary.main,
     },
     [`&.${tableCellClasses.body}`]: {
       fontSize: 12,
@@ -100,7 +100,7 @@ export default function Dashboard() {
             <Card sx={{ maxWidth: 345 }} >
                     <CardContent>
                     <Typography gutterBottom variant="h6" component="div" color="primary">
-                        Portofolio Performance
+                        Portoflio Performance
                     </Typography>
                     <Typography variant="h5" color="textPrimary" display="inline">
                         {performance}%
@@ -128,7 +128,7 @@ export default function Dashboard() {
                 <Table  aria-label="customized table">
                     <TableHead>
                     <Typography variant="h5" color="textPrimary" margin="10px">
-                        Portofolio
+                        Portfolio
                     </Typography>
                     <TableRow>
                         <StyledTableCell>Stock</StyledTableCell>
