@@ -16,6 +16,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { createTheme } from '@mui/material';
 
+
 const worth = 5000;
 const astock = "AAPL";
 const capitalInvested = 4000;
@@ -80,8 +81,8 @@ export default function Dashboard() {
             <Card >
                 <CardContent>
                 <Typography gutterBottom variant="h6" component="div" color="primary">
-                        Today
-                    </Typography>
+                    Today
+                </Typography>
                 </CardContent>
             </Card>
         </Grid>

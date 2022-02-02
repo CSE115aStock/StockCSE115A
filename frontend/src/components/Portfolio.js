@@ -15,7 +15,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { createTheme } from '@mui/material';
-import { create } from '@mui/material/styles/createTransitions';
+import IconButton from '@mui/material/IconButton';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import Tooltip from '@mui/material/Tooltip';
+import Toolbar from '@mui/material/Toolbar';
+
 
 const worth = 5000;
 const stocks = ["AAPL", "GOOGL"];
@@ -71,7 +75,7 @@ function createData(amount, stock, profit) {
 const rows = [];
 
 for(let i = 0; i < stocks.length;  i++){
-  rows.push(createData(2, stocks[i], 5));
+  rows.push(createData(100*(i+1), stocks[i], 5-i));
 }
 
 
@@ -83,8 +87,14 @@ export default function Dashboard() {
             <Card >
                 <CardContent>
                 <Typography gutterBottom variant="h6" component="div" color="primary">
-                        Your Portfolio
-                    </Typography>
+                  Your Portfolio
+                </Typography>
+                <CardMedia
+                  component="img"
+                  height="376"
+                  src="https://datavizcatalogue.com/methods/images/top_images/SVG/candlestick_chart.svg"
+                  alt="green iguana"
+                />
                 </CardContent>
             </Card>
         </Grid>
@@ -106,7 +116,7 @@ export default function Dashboard() {
                         Portofolio Performance
                     </Typography>
                     <Typography variant="h5" color="textPrimary" display="inline">
-                        {performance}%
+                        +{performance}%
                     </Typography>
                     </CardContent>
             </Card>
@@ -126,13 +136,20 @@ export default function Dashboard() {
             </Card>
         </Grid>
         <Grid item xs={6}>
-        
             <TableContainer component={Paper}>
                 <Table  aria-label="customized table">
                     <TableHead>
-                    <Typography variant="h5" color="textPrimary" margin="10px">
+                    <Toolbar>
+                      <Typography variant="h5" color="textPrimary" margin="10px">
                         Stocks
                     </Typography>
+                    <Tooltip title="Add stock">
+                      <IconButton color="primary">
+                        <AddRoundedIcon />
+                      </IconButton>
+                    </Tooltip>
+                    </Toolbar>
+                    
                     <TableRow>
                         <StyledTableCell>Name</StyledTableCell>
                         <StyledTableCell align="center">Amount</StyledTableCell>
@@ -157,9 +174,11 @@ export default function Dashboard() {
         <TableContainer component={Paper}>
                 <Table  aria-label="customized table">
                     <TableHead>
-                    <Typography variant="h5" color="textPrimary" margin="10px">
-                        Top 5 Movers
+                    <Toolbar>
+                      <Typography variant="h5" color="textPrimary" margin="10px">
+                        Top Movers
                     </Typography>
+                    </Toolbar>
                     <TableRow>
                         <StyledTableCell>Name</StyledTableCell>
                         <StyledTableCell align="center">Amount</StyledTableCell>
