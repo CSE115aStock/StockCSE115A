@@ -88,9 +88,9 @@ def removeStock():
     cur = conn.cursor()
 
     if request.method == "POST":
-        # expect stock tickr only
         data = json.loads(request.data)
         stock_tickr = data["tickr"]
+
         usr_email = get_jwt_identity()
         if not usr_email:
             return jsonify({"err_msg": "Couldn't verify user."}), 403
@@ -143,6 +143,7 @@ def buyStock():
 
     if request.method == "POST":
         # fetch the stock to change, the new shares, and amount
+
         data = json.loads(request.data)
         tickr = data["tickr"]
         add_amount = data["amount"]

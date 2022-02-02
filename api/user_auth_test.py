@@ -43,7 +43,7 @@ def test_AddUser():
             json={
                 "first_name": "test_first",
                 "last_name": "test_last",
-                "email": "test.user@example.com",
+                "email": "t_user@example.com",
                 "username": "test.user2",
                 "password": "Test@1234",
             },
