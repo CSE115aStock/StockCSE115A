@@ -1,5 +1,5 @@
 import React from "react";
-import alpacaApi from '../services/alpaca'
+import alpacaApi from '../services/polygon'
 
 export class alpacasSearch extends React.Component {
     constructor(props) {
