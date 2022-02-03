@@ -21,6 +21,8 @@ import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
 import Chart from './Charts/AreaChart';
 import { getData } from "./Charts/utils";
+import { useState, useEffect } from 'react';
+
 
 
 class ChartComponent extends React.Component {
@@ -42,9 +44,40 @@ class ChartComponent extends React.Component {
 
 
 export default function Dashboard() {
+  const [token,setToken] = useState([])
+
+  //To log in as test user
+  useEffect(() => {
+    fetch('/portfolio/my_portfolio', {
+      method: 'POST',
+      headers: new Headers({
+        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0Mzg3MDExOCwianRpIjoiOWQ2NDlhNDAtMzlhNi00NjU4LTliNmQtODdjYjgzNzI2MjAyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDM4NzAxMTgsImV4cCI6MTY0Mzg3MzcxOH0.ugi-qGJugz8es8h13ycwnhEu4oNjXRl2RHCTGB2ipvg'
+      }),
+      body: JSON.stringify({
+        
+      })
+    } ).then(
+      res => res.json()
+      ).then(
+        token => {
+          setToken(token)
+        }
+      )
+    }, [])
+    
+  const portfolioDict = token[0];
   
+  function createData(stock, amount, shares) {
+    return {stock, amount, shares};
+  }
+  const portfolio = [];
+
+  for (var key in portfolioDict){
+    portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares']));
+  }
+  
+
   const worth = 5000;
-  const stocks = ["AAPL", "GOOGL"];
   const capitalInvested = 4000;
   var performance = (worth - capitalInvested) /100;
   const percentage = 2.5;
@@ -91,14 +124,6 @@ export default function Dashboard() {
       },
   }));
 
-  function createData(amount, stock, profit) {
-      return { amount, stock, profit};
-    }
-  const rows = [];
-
-  for(let i = 0; i < stocks.length;  i++){
-    rows.push(createData(100*(i+1), stocks[i], 5-i));
-  }
   
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -142,7 +167,7 @@ export default function Dashboard() {
                         Highest Performing stock
                     </Typography>
                     <Typography variant="h5" color="textPrimary" display="inline">
-                        {stocks[0]}
+                        lol
                     </Typography>
                     <Typography color="textSecondary" display="inline">
                         &ensp;+{percentage}%
@@ -176,18 +201,18 @@ export default function Dashboard() {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows.map((row) => (
+                      {portfolio.map((portfolio) => (
                           <StyledTableRow>
                           <StyledTableCell>
-                              {row.stock}
+                              {portfolio.stock}
                           </StyledTableCell>
-                          <StyledTableCell>{row.amount}</StyledTableCell>
-                          <StyledTableCell>${row.amount}</StyledTableCell>
-                          <StyledTableCell>${row.amount}</StyledTableCell>
-                          <StyledTableCell>${row.profit}</StyledTableCell>
-                          <StyledTableCell>${row.profit}</StyledTableCell>
-                          <StyledTableCell>{row.profit}%</StyledTableCell>
-                          <StyledTableCell>{row.profit}%</StyledTableCell>
+                          <StyledTableCell>{portfolio.shares}</StyledTableCell>
+                          <StyledTableCell>${portfolio.amount}</StyledTableCell>
+                          <StyledTableCell>${portfolio.amount}</StyledTableCell>
+                          <StyledTableCell>${portfolio.amount}</StyledTableCell>
+                          <StyledTableCell>${portfolio.amount}</StyledTableCell>
+                          <StyledTableCell>{portfolio.shares}%</StyledTableCell>
+                          <StyledTableCell>{portfolio.shares}%</StyledTableCell>
                           </StyledTableRow>
                       ))}
                     </TableBody>
