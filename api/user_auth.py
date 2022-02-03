@@ -77,6 +77,7 @@ def AddUser():
         email = data["email"]
         username = data["username"]
         p_word = data["password"]
+        verify_p_word = data["verify_password"]
 
         error = None
 
@@ -90,6 +91,8 @@ def AddUser():
             error = "Username is required."
         elif not p_word or len(p_word) == 0:
             error = "Password is required."
+        elif not verify_p_word or len(verify_p_word) == 0:
+            error = "Re-Entered password is required."
 
         cur.execute("SELECT * from users where email = %(email)s", {"email": email})
         if cur.fetchone() != None:
@@ -97,6 +100,8 @@ def AddUser():
 
         if IsValidPassword(p_word) == False:
             error = "Password not strong enough."
+        elif p_word != verify_p_word:
+            error = "Passwords do not match"
 
         if error == None:
             cur.execute(
