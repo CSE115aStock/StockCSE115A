@@ -197,13 +197,13 @@ export default function HomePage() {
     <Menu
       anchorEl={pfOpen}
       anchorOrigin={{
-        vertical: 'bottom',
+        vertical: 'top',
         horizontal: 'right',
       }}
       id='profileMenu'
       keepMounted
       transformOrigin={{
-        vertical: 'bottom',
+        vertical: 'botom',
         horizontal: 'right',
       }}
       open={pfOpen}

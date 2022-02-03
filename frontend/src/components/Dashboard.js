@@ -15,9 +15,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { createTheme } from '@mui/material';
+import Chart from './Charts/MACDchart';
+import { getData } from "./Charts/utils";
+import { TypeChooser } from "react-stockcharts/lib/helper";
 
 
-const worth = 5000;
+const worth = 2.5;
 const astock = "AAPL";
 const capitalInvested = 4000;
 var performance = (worth - capitalInvested) /100;
@@ -73,6 +76,24 @@ const rows = [
     createData(100, "AAPL", 2.0),
 ];
 
+class ChartComponent extends React.Component {
+	componentDidMount() {
+		getData().then(data => {
+			this.setState({ data })
+		})
+	}
+	render() {
+		if (this.state == null) {
+			return <div>Loading...</div>
+		}
+		return (
+			
+		    <Chart type="hybrid" data={this.state.data} />
+	
+		)
+	}
+}
+
 export default function Dashboard() {
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -83,6 +104,7 @@ export default function Dashboard() {
                 <Typography gutterBottom variant="h6" component="div" color="primary">
                     Today
                 </Typography>
+                <ChartComponent />
                 </CardContent>
             </Card>
         </Grid>
@@ -90,10 +112,10 @@ export default function Dashboard() {
             <Card sx={{ maxWidth: 345 }} >
                     <CardContent>
                     <Typography gutterBottom variant="h6" component="div" color="primary">
-                        Current Value
+                        S&P 500
                     </Typography>
-                    <Typography variant="h4" color="txtPrimary">
-                        ${worth}
+                    <Typography variant="h5" color="txtPrimary">
+                        +{worth}
                     </Typography>
                     </CardContent>
             </Card>
@@ -123,7 +145,7 @@ export default function Dashboard() {
                     </CardContent>
             </Card>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={9}>
         
             <TableContainer component={Paper}>
                 <Table  aria-label="customized table">
@@ -151,7 +173,7 @@ export default function Dashboard() {
                 </Table>
             </TableContainer>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={3}>
         <TableContainer component={Paper}>
                 <Table  aria-label="customized table">
                     <TableHead>
