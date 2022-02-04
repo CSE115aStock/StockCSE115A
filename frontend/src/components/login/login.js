@@ -35,14 +35,7 @@ export class Login extends React.Component {
                     body: JSON.stringify({
                       "username":username,"password":pass
                     })
-                  } ).then(
-                    res => res.json()
-                    ).then(
-                      token => {
-                        setToken(token);
-                        console.log(token)
-                      }
-                    )
+                  } )
                 }}>
                     Login
                 </button>

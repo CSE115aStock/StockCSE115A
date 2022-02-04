@@ -46,7 +46,24 @@ export class Register extends React.Component {
                 <button type="button" className="btn"
                 onClick={async () => {
                   if (verify_password == pass) {
-                     console.log("response worked!");
+                    fetch('/auth/signup', {
+                      method: 'POST',
+                      body: JSON.stringify({
+                        f_name = fName,
+                        l_name =lName,
+                        email = email,
+                        username = username,
+                        p_word = pass,
+                        verify_p_word = verify_password,
+                      })
+                    } ).then(
+                      res => res.json()
+                      ).then(
+                        token => {
+                          setToken(token);
+                          console.log(token)
+                        }
+                      )
                    }}>
                     Register
                 </button>
