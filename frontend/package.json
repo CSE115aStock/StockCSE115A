@@ -1,60 +1,59 @@
 {
-    "name": "Social Stock",
-    "version": "1.0.0",
-    "description": "Social Stock",
-    "author": "David Harrison <dcharris@ucsc.edu>",
-    "license": "UNLICENSED",
-    "repository": "none",
-    "dependencies": {
-      "@emotion/react": "^11.7.1",
-      "@emotion/styled": "^11.6.0",
-      "@material-ui/icons": "^4.11.2",
-      "@mui/icons-material": "^5.3.0",
-      "@mui/material": "^5.2.1",
-      "prop-types": "*",
-      "react": "*",
-      "react-dom": "*"
-    },
-    "devDependencies": {
-      "@testing-library/jest-dom": "*",
-      "@testing-library/react": "*",
-      "@testing-library/user-event": "*",
-      "bestzip": "*",
-      "eslint-config-google": "*",
-      "eslint-plugin-jest-dom": "*",
-      "eslint-plugin-react": "*",
-      "eslint-plugin-react-hooks": "*",
-      "eslint-plugin-testing-library": "*",
-      "react-scripts": "*"
-    },
-    "scripts": {
-      "start": "react-scripts start",
-      "test": "react-scripts test --coverage",
-      "lint": "eslint src/**/*.js",
-      "zip": "bestzip CSE183-Assignment5-Submission.zip src/*"
-    },
-    "jest": {
-      "collectCoverageFrom": [
-        "src/**/*.{js,jsx}",
-        "!src/index.js",
-        "!src/__tests__/common.js"
-      ],
-      "testMatch": [
-        "**/?(*.)+(spec|test).[jt]s?(x)"
-      ]
-    },
-    "browserslist": {
-      "production": [
-        ">0.2%",
-        "not dead",
-        "not op_mini all"
-      ],
-      "development": [
-        "last 1 chrome version",
-        "last 1 firefox version",
-        "last 1 safari version"
-      ]
-    },
-    "proxy": "http://localhost:5000"
-  }
-  
+  "name": "socialstock",
+  "version": "1.0.0",
+  "description": "Social Stock",
+  "author": "David Harrison <dcharris@ucsc.edu>",
+  "license": "UNLICENSED",
+  "repository": "none",
+  "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@material-ui/icons": "^4.11.2",
+    "@mui/icons-material": "^5.3.0",
+    "@mui/material": "^5.2.1",
+    "prop-types": "*",
+    "react": "*",
+    "react-dom": "*"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "*",
+    "@testing-library/react": "*",
+    "@testing-library/user-event": "*",
+    "bestzip": "*",
+    "eslint-config-google": "*",
+    "eslint-plugin-jest-dom": "*",
+    "eslint-plugin-react": "*",
+    "eslint-plugin-react-hooks": "*",
+    "eslint-plugin-testing-library": "*",
+    "react-scripts": "*"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "test": "react-scripts test --coverage",
+    "lint": "eslint src/**/*.js",
+    "zip": "bestzip CSE183-Assignment5-Submission.zip src/*"
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!src/index.js",
+      "!src/__tests__/common.js"
+    ],
+    "testMatch": [
+      "**/?(*.)+(spec|test).[jt]s?(x)"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "proxy": "http://localhost:5000"
+}

@@ -2,15 +2,15 @@ import React from "react";
 
 export class Register extends React.Component {
     constructor(props) {
-        super(props)
+        super(props);
     }
-    const [username,setUsername] = useState([])
-    const [pass,setPassword] = useState([])
-    const [fName,setFName] = useState([])
-    const [lName,setlName] = useState([])
-    const [email,setemail] = useState([])
-    const [verify_password,setVerify_password] = useState([])
     render() {
+        const [username,setUsername] = useState([]);
+        const [pass,setPassword] = useState([]);
+        const [fName,setFName] = useState([]);
+        const [lName,setlName] = useState([]);
+        const [email,setemail] = useState([]);
+        const [verify_password,setVerify_password] = useState([]);
         return (
         <div className="base-container">
             <div className="header">Social Stock Analyzer</div>
@@ -64,7 +64,7 @@ export class Register extends React.Component {
                           console.log(token)
                         }
                       )
-                   }}>
+                   }}}>
                     Register
                 </button>
             </div>

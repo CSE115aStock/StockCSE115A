@@ -3,15 +3,12 @@ import { useState } from "react";
 
 export class Login extends React.Component {
     constructor(props) {
-        super(props)
-    }
-    const [username,setUsername] = useState([])
-    const [pass,setPassword] = useState([])
-    const [token,setToken] = useState([])
-    const click(){
-
+        super(props);
     }
     render() {
+        const [username,setUsername] = useState([]);
+        const [pass,setPassword] = useState([]);
+        const [token,setToken] = useState([]);
         return (
         <div className="base-container">
             <div className="header">Social Stock Analyzer</div>
