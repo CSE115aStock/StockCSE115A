@@ -54,28 +54,12 @@ const SearchStyle = styled('div')(({theme}) => ({
   '&:hover': {
     'backgroundColor': alpha(theme.palette.common.white, 0.25),
   },
-  'marginRight': theme.spacing(2),
-  'marginLeft': 0,
-  'width': '70%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
 }));
 
 
 // style input text
 const StyledInputBase = styled(InputBase)(({theme}) => ({
   'color': 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
 }));
 
 /**
@@ -233,6 +217,7 @@ export default function HomePage() {
                 <StyledInputBase
                   placeholder='Search…'
                   inputProps={{'aria-label': 'search'}}
+                  sx={{'width': '25%', m: 1}}
                 />
               </SearchStyle>
               <Box sx={{flexGrow: 1}} />
