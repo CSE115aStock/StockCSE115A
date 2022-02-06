@@ -27,6 +27,7 @@ from flask_jwt_extended import (
     get_jwt_identity,
     unset_jwt_cookies,
     jwt_required,
+    verify_jwt_in_request,
     JWTManager,
 )
 
@@ -110,7 +111,7 @@ def AddUser():
             )
             conn.commit()
             current_app.logger.info("User %s has been created succesfully.", username)
-            return jsonify({"err_msg": "Account creation successful"})
+            return jsonify({"err_msg": "Account creation successful"}), 201
 
         current_app.logger.error(error)
         return jsonify({"err_msg": error})
@@ -191,3 +192,73 @@ def fetch_user():
     cur.execute("SELECT * FROM users where email=%s", (get_jwt_identity(),))
     usr = cur.fetchone()
     return jsonify(usr)
+
+
+# Endpoint for changing password.
+# This function requires the jwt.
+# It then checks:
+# 1. that the current password provided matches the one stored
+# 2. that the new password matches the requirements
+# 3. that the new password and repeated password match
+# If no error is encountered, the new password is hashed and updated in the database.
+@auth_bp.route("/profile/password", methods=["PUT"])
+@jwt_required()
+def change_password():
+    data = json.loads(request.data)
+    response_code = 200
+    error = None
+    current_pwd = data["Current Password"]
+    entered_pwd = data["New Password"]
+    repeat_pwd = data["Repeat"]
+    verify_jwt_in_request(optional=False)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute("SELECT pass FROM users where email=%s", (get_jwt_identity(),))
+    stored_pwd = (cur.fetchone())["pass"]
+    if not check_password(current_pwd, stored_pwd):  # compare current with db password
+        error = "Invalid password."
+        response_code = 401
+    if not IsValidPassword(entered_pwd):
+        error = "Password too weak"
+        response_code = 400
+    if not entered_pwd == repeat_pwd:  # compare new and repeat password
+        error = "Passwords do not match."
+        response_code = 400
+    if error == None:
+        hashed_new_pwd = bcrypt.hash(entered_pwd)  # hashes password to add to db
+        cur.execute(
+            "UPDATE users SET pass=%s where email=%s",
+            (
+                hashed_new_pwd,
+                get_jwt_identity(),
+            ),
+        )
+        conn.commit()
+        return (
+            jsonify({"message": "Password changed successfully"}),
+            response_code,
+        )  # success
+    else:
+        return jsonify({"err_msg": error}), response_code  # error
+
+
+@auth_bp.route("/profile/account", methods=["PUT"])
+@jwt_required()
+def change_account_details():
+    data = json.loads(request.data)
+    new_f_name = data["First Name"]
+    new_l_name = data["Last Name"]
+    new_username = data["Username"]
+    verify_jwt_in_request(optional=False)
+    cur = conn.cursor(cursor_factory=RealDictCursor)
+    cur.execute(
+        "UPDATE users SET first_name=%s, last_name=%s, username=%s where email=%s RETURNING *",
+        (
+            new_f_name,
+            new_l_name,
+            new_username,
+            get_jwt_identity(),
+        ),
+    )
+    conn.commit()
+    updated_row = cur.fetchone()
+    return jsonify(updated_row), 200

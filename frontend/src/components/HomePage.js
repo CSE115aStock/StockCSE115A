@@ -14,7 +14,6 @@ import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
@@ -175,13 +174,13 @@ export default function HomePage() {
     <Menu
       anchorEl={pfOpen}
       anchorOrigin={{
-        vertical: 'bottom',
+        vertical: 'top',
         horizontal: 'right',
       }}
       id='profileMenu'
       keepMounted
       transformOrigin={{
-        vertical: 'bottom',
+        vertical: 'top',
         horizontal: 'right',
       }}
       open={pfOpen}
@@ -217,7 +216,7 @@ export default function HomePage() {
                 noWrap
                 component='div'
                 sx={{'display': {xs: 'none', sm: 'block'},
-                  'font-size': 30, 'width': drawerWidth}}
+                  'fontSize': 30, 'width': drawerWidth}}
               >
                 Social Stock
               </Typography>
@@ -238,16 +237,6 @@ export default function HomePage() {
               </SearchStyle>
               <Box sx={{flexGrow: 1}} />
               <Box sx={{display: {md: 'flex'}}}>
-                <IconButton
-                  size='large'
-                  edge='end'
-                  aria-label='notifications'
-                  color='inherit'
-                >
-                  <Badge badgeContent={4} color='error'>
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
                 <IconButton
                   size='large'
                   edge='end'
@@ -301,8 +290,8 @@ export default function HomePage() {
         </Box>
         <Box
           component="main"
-          sx={{flexGrow: 1, p: 3,
-            width: {sm: `calc(100% - ${drawerWidth}px)`}}}
+          sx={{flexGrow: 1, p: 3, bgcolor: '#fafafa',
+            width: {sm: `calc(100% - ${drawerWidth}px)`}, height: '100vh'}}
         >
           <Toolbar />
           {dash? <Dashboard /> : null}
