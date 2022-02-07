@@ -1,10 +1,17 @@
 import React from 'react';
+import SearchContext from './SearchContext';
 
-export default function Profile() {
+function Search() {
     return (
-        <div>
-            Search
-        </div>
+        <SearchContext.Consumer>
+          {({finalSearch}) => (
+            <div>
+                You searched: {finalSearch}
+            </div>
+          )}
+        </SearchContext.Consumer>
     )
 
 }
+
+export default Search;
