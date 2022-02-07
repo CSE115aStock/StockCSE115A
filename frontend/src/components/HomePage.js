@@ -9,7 +9,6 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
@@ -25,8 +24,9 @@ import Dashboard from './Dashboard';
 import MarketTrends from './MarketTrends';
 import Settings from './Settings';
 import Profile from './Profile';
-import SearchPage from './Search';
+import Search from './Search';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
+import SearchContext from './SearchContext';
 
 
 const drawerWidth = 240;
@@ -81,6 +81,7 @@ export default function HomePage() {
   const [settings, setSettings] = React.useState(false);
 
   const [search, setSearch] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState('search')
 
   // function for opening/closing drawer
   const handleDrawerToggle = () => {
@@ -218,6 +219,7 @@ export default function HomePage() {
                   placeholder='Search…'
                   inputProps={{'aria-label': 'search'}}
                   sx={{'width': '25%', m: 1}}
+                  onChange={(event) => setSearchValue(event.target.value)}
                 />
               </SearchStyle>
               <Box sx={{flexGrow: 1}} />
@@ -283,7 +285,7 @@ export default function HomePage() {
           {market? <MarketTrends /> : null}
           {profile? <Profile /> : null}
           {settings? <Settings /> : null}
-          {search? <SearchPage /> : null}
+          {search? <SearchContext.Provider value={{searchValue}}> <Search /> </SearchContext.Provider> : null}
         </Box>
       </Box>
     </ThemeProvider>
