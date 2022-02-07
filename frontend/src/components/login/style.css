@@ -57,6 +57,7 @@
      border-radius: 3px;
      transition: all 250ms ease-in-out;
      cursor: pointer;
+     margin: 10px;
 }
  .base-container .footer .btn:hover {
      background-color: #2386c8;

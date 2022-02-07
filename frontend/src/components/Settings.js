@@ -21,20 +21,41 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
 
-
-
 export default function Settings() {
-    const [firstName, setFirstName] = React.useState("John");
-    const [lastName, setLastName] = React.useState("Doe");
-    const [username, setUsername] = React.useState("john.doe");
-    const [email, setEmail] = React.useState("john@mail.com");
+    const [firstName, setFirstName] = React.useState("");
+    const [lastName, setLastName] = React.useState("");
+    const [username, setUsername] = React.useState("");
+    const [email, setEmail] = React.useState("");
     const [edit, setEdit] = React.useState(false);
     const [changingButton, setChangingButton] = React.useState("Edit");
     const [changePass, setChangePass] = React.useState(false);
     const [passwordVisible, setPassVisible] = React.useState(false);
-    const [currentPass, setCurrentPass] = React.useState("Current Password")
-    const [newPass, setNewPass] = React.useState("New Password")
-    const [repeatPass, setRepeatPass] = React.useState("Repeat Password")
+    const [currentPass, setCurrentPass] = React.useState("Current Password");
+    const [newPass, setNewPass] = React.useState("New Password");
+    const [repeatPass, setRepeatPass] = React.useState("Repeat Password");
+
+    React.useEffect(() => {
+      getUserInfo();
+    }, []);
+
+    const getUserInfo = () => {
+      fetch('auth/user', {
+        method: 'GET',
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+      })
+      .then(
+        res => res.json()
+        ).then(
+          data => {
+            console.log(data)
+            setFirstName(data.first_name);
+            console.log(firstName);
+            setLastName(data.last_name);
+            setUsername(data.username);
+            setEmail(data.email);
+          }
+      )
+    }
 
     const changeButton = () => {
       // submit button pressed
@@ -42,6 +63,32 @@ export default function Settings() {
           setEdit(false);
           setChangingButton("Edit");
           // make backend call to change values
+          // fields cannot be empty
+          if(firstName.length > 0 && lastName.length > 0 && username.length > 0) {
+            fetch('/auth/settings/account', {
+              method: 'PUT',
+              headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+              body: JSON.stringify({
+                "First Name":firstName,"Last Name":lastName,"Username":username
+              })
+            }).then(
+              res => {
+                console.log(res);
+                if(res.status != 200) {
+                  alert('Error changing user information, please try again');
+                }
+                getUserInfo();
+              }
+              )
+              .catch(err => {
+                  console.log(err);
+                  alert('Error changing user information, please try again');
+              })
+          }
+          else {
+            alert('All fields must have length of 1 or more.')
+            getUserInfo();
+          }
       }
       // edit button pressed
       else {
@@ -53,9 +100,36 @@ export default function Settings() {
     // handles opening of password dialog
     const passwordChange = () => {
         if(changePass) { // dialog closed
-            setChangePass(false);
-            // back end call to change password
-            setPassVisible(false);
+          if(newPass === repeatPass) {
+            fetch('/auth/settings/password', {
+              method: 'PUT',
+              headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+              body: JSON.stringify({
+                "Current Password":currentPass,"New Password":newPass,"Repeat":repeatPass
+              })
+            } ).then(
+              res => {
+                  console.log(res);
+                  if(res.status == 200) {
+                    setChangePass(false);
+                    setPassVisible(false);
+                  }
+                  else if(res.status == 401) {
+                    alert('Incorrect current password.');
+                  }
+                  else if(res.status == 400) {
+                    alert('New password too weak.');
+                  }
+                }
+              )
+              .catch(err => {
+                  console.log(err);
+                  alert('Error changing password, please try again');
+              });
+          }
+          else {
+            alert('New passwords do not match.')
+          }
         }
         else { // dialog opened
             setChangePass(true);
@@ -101,28 +175,28 @@ export default function Settings() {
                 disabled={!edit}
                 id="standard-disabled"
                 label="First Name"
-                defaultValue={firstName}
+                value={firstName}
                 variant="filled"
                 onChange={(event) => setFirstName(event.target.value)}/>
               <TextField
                 disabled={!edit}
                 id="standard-disabled"
                 label="Last Name"
-                defaultValue={lastName}
+                value={lastName}
                 variant="filled"
                 onChange={(event) => setLastName(event.target.value)}/>
               <TextField
-                disabled={!edit}
+                disabled
                 id="standard-disabled"
                 label="Email"
-                defaultValue={email}
+                value={email}
                 variant="filled"
                 onChange={(event) => setEmail(event.target.value)}/>
               <TextField
                 disabled={!edit}
                 id="standard-disabled"
                 label="Username"
-                defaultValue={username}
+                value={username}
                 variant="filled"
                 onChange={(event) => setUsername(event.target.value)}/>
             </div>
