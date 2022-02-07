@@ -4,9 +4,9 @@ import SearchContext from './SearchContext';
 function Search() {
     return (
         <SearchContext.Consumer>
-          {({searchValue}) => (
+          {({finalSearch}) => (
             <div>
-                You searched: {searchValue}
+                You searched: {finalSearch}
             </div>
           )}
         </SearchContext.Consumer>

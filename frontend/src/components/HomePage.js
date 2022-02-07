@@ -81,7 +81,8 @@ export default function HomePage() {
   const [settings, setSettings] = React.useState(false);
 
   const [search, setSearch] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState('search')
+  const [searchValue, setSearchValue] = React.useState('')
+  const [finalSearch, setFinalSearch] = React.useState('')
 
   // function for opening/closing drawer
   const handleDrawerToggle = () => {
@@ -100,6 +101,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setSearchValue('');
   };
   const handleMarket = () => {
     setDash(false);
@@ -107,6 +109,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setSearchValue('');
   };
 
   // function to change profile/settings
@@ -116,6 +119,7 @@ export default function HomePage() {
     setProfile(true);
     setSettings(false);
     setSearch(false);
+    setSearchValue('');
   };
   const handleSettings = () => {
     setDash(false);
@@ -123,14 +127,18 @@ export default function HomePage() {
     setProfile(false);
     setSettings(true);
     setSearch(false);
+    setSearchValue('');
   };
 
   const handleSearch = () => {
-    setDash(false);
-    setMarket(false);
-    setProfile(false);
-    setSettings(false);
-    setSearch(true);
+    if(searchValue.length > 0) {
+      setDash(false);
+      setMarket(false);
+      setProfile(false);
+      setSettings(false);
+      setSearch(true);
+      setFinalSearch(searchValue);
+    }
   };
 
 
@@ -285,7 +293,7 @@ export default function HomePage() {
           {market? <MarketTrends /> : null}
           {profile? <Profile /> : null}
           {settings? <Settings /> : null}
-          {search? <SearchContext.Provider value={{searchValue}}> <Search /> </SearchContext.Provider> : null}
+          {search? <SearchContext.Provider value={{finalSearch}}> <Search /> </SearchContext.Provider> : null}
         </Box>
       </Box>
     </ThemeProvider>
