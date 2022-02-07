@@ -46,7 +46,7 @@ def test_AddUser():
                 "email": "t_user@example.com",
                 "username": "test.user2",
                 "password": "Test@1234",
-                "verify_password": "Test@1234"
+                "verify_password": "Test@1234",
             },
         )
         json_response = rv.get_json()
@@ -67,7 +67,7 @@ def test_AddUser_weak_password():
                 "email": "t1@example.com",
                 "username": "test.user2",
                 "password": "Test1234",
-                "verify_password": "Test1234"
+                "verify_password": "Test1234",
             },
         )
         json_response = rv.get_json()
@@ -88,7 +88,7 @@ def test_AddUser_password_mismatch():
                 "email": "t1@example.com",
                 "username": "test.user2",
                 "password": "Test@1234",
-                "verify_password": "Test@123"             
+                "verify_password": "Test@123",
             },
         )
         json_response = rv.get_json()
@@ -109,7 +109,7 @@ def test_AddUser_missing_field():
                 "email": "",
                 "username": "test.user2",
                 "password": "Test@1234",
-                "verify_password":"Test@1234"
+                "verify_password": "Test@1234",
             },
         )
         json_response = rv.get_json()
