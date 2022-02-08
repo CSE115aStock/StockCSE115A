@@ -100,43 +100,33 @@ class ChartComponent extends React.Component {
 
 export default function Dashboard() {
 
-    function getStockData(tickr){
-        const [data, setData] = useState([]);
-        const a = alpacaApi();
-        useEffect(() =>{
-            a.quote(tickr).then(data => {
-                setData(data);
-            }
-            );
-        }, []);
-        return data;
-    }
+  
 
-    const [token,setToken] = useState([])
+    // const [token,setToken] = useState([])
 
-    //To log in as test user
-    useEffect(() => {
-        fetch('/auth/login', {
-        method: 'POST',
-        body: JSON.stringify({
-            "username":"john.doe","password":"John@12345"
-        })
-        } ).then(
-        res => res.json()
-        ).then(
-            token => {
-            setToken(token);
-            console.log(token)
-            }
-        )
+    // //To log in as test user
+    // useEffect(() => {
+    //     fetch('/auth/login', {
+    //     method: 'POST',
+    //     body: JSON.stringify({
+    //         "username":"john.doe","password":"John@12345"
+    //     })
+    //     } ).then(
+    //     res => res.json()
+    //     ).then(
+    //         token => {
+    //         setToken(token);
+    //         console.log(token)
+    //         }
+    //     )
+    // }, [])
 
-    }, [])
-    const [data,setData] = useState([])
+    const [port,setPort] = useState([])
     useEffect(() => {
         fetch('/portfolio/my_portfolio', {
         method: 'POST',
         headers: new Headers({
-            'Authorization': 'Bearer ' + String(token)
+            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDI4NDc4MiwianRpIjoiYjc0ZDRmMzEtYzdiYi00ZTM1LWI2Y2QtODg2NTM4NjZjMWM1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQyODQ3ODIsImV4cCI6MTY0NDI4ODM4Mn0.hqNqVo1H78qBxkEgxRtM1oZWbxpFmKr-SQe_ojkWVJg'
         }),
         body: JSON.stringify({
             
@@ -144,14 +134,13 @@ export default function Dashboard() {
         } ).then(
         res => res.json()
         ).then(
-            data => {
-                setData(data)
-                console.log(data);
+            port => {
+                setPort(port)
             }
         )
         }, [])
         
-    const portfolioDict = data[0];
+    const portfolioDict = port[0];
 
     function createData(stock, amount, shares) {
         return {stock, amount, shares};
