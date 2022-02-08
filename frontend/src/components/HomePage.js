@@ -161,7 +161,6 @@ export default function HomePage() {
         }
     )
     .catch(err => {
-      console.log(err);
       alert('Error logging out, please try again');
   })
   }

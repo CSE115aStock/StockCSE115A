@@ -47,9 +47,7 @@ export default function Settings() {
         res => res.json()
         ).then(
           data => {
-            console.log(data)
             setFirstName(data.first_name);
-            console.log(firstName);
             setLastName(data.last_name);
             setUsername(data.username);
             setEmail(data.email);
@@ -73,7 +71,6 @@ export default function Settings() {
               })
             }).then(
               res => {
-                console.log(res);
                 if(res.status != 200) {
                   alert('Error changing user information, please try again');
                 }
@@ -81,7 +78,6 @@ export default function Settings() {
               }
               )
               .catch(err => {
-                  console.log(err);
                   alert('Error changing user information, please try again');
               })
           }
@@ -109,7 +105,6 @@ export default function Settings() {
               })
             } ).then(
               res => {
-                  console.log(res);
                   if(res.status == 200) {
                     setChangePass(false);
                     setPassVisible(false);
@@ -123,7 +118,6 @@ export default function Settings() {
                 }
               )
               .catch(err => {
-                  console.log(err);
                   alert('Error changing password, please try again');
               });
           }
