@@ -1,16 +1,38 @@
 import React from "react";
 import { useState } from "react";
+import {Link} from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 
-export class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            username: "",
-            pass:"",
-            token:"",
-        };
+export function Login() {
+    const [username, setUsername] = React.useState('');
+    const [password, setPassword] = React.useState('');
+    const navigate = useNavigate();
+
+    const loginBackend = () => {
+        fetch('/auth/login', {
+            method: 'POST',
+            body: JSON.stringify({
+              "username":username,"password":password
+            })
+          } ).then(
+            res => res.json()
+            ).then(
+              tk => {
+                if(typeof tk.err_msg == 'undefined') {
+                  localStorage.setItem('JWT', tk);
+                  navigate('/homepage');
+                }
+                else {
+                    alert(tk.err_msg);
+                }
+              }
+            )
+            .catch(err => {
+                console.log(err);
+                alert('Error logging in, please try again');
+            });
     }
-    render() {
+    
         return (
         <div className="base-container">
             <div className="header">Social Stock Analyzer</div>
@@ -18,36 +40,23 @@ export class Login extends React.Component {
                 <div className="form">
                     <div className="form-group">
                         <label htmlFor="username">Username</label>
-                        <input type="text" name="username" placeholder="username" onChange = {e => this.setState({username: e.target.value})}/>
+                        <input type="text" name="username" placeholder="username" onChange={(event) => setUsername(event.target.value)}/>
                     </div>
                     <div className="form-group">
                         <label htmlFor="password">Password</label>
-                        <input type="password" name="password" placeholder="password" onChange = {e => this.setState({pass: e.target.value})}/>
+                        <input type="password" name="password" placeholder="password" onChange={(event) => setPassword(event.target.value)}/>
                     </div>
                 </div>
             </div>
             <div className="footer">
                 <button type="button" className="btn"
-                onClick={async () => {
-                    fetch('/auth/login', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                          "username":this.state.username,"password":this.state.pass
-                        })
-                      } ).then(
-                        res => res.json()
-                        ).then(
-                          token => {
-                            console.log(this.state)
-                            this.setState({token: token});
-                            console.log(token)
-                          }
-                        )
-                }}>
+                onClick={loginBackend}>
                     Login
                 </button>
+                <Link to='/register'>
+                  <button className='btn'>Create new account</button>
+                </Link>
             </div>
         </div>
         );
-    }
 }
