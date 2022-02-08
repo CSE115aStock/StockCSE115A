@@ -18,8 +18,13 @@ export function Login() {
             res => res.json()
             ).then(
               tk => {
-                localStorage.setItem('JWT', tk);
-                navigate('/homepage');
+                if(typeof tk.err_msg == 'undefined') {
+                  localStorage.setItem('JWT', tk);
+                  navigate('/homepage');
+                }
+                else {
+                    alert(tk.err_msg);
+                }
               }
             )
             .catch(err => {
