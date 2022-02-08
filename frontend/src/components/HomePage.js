@@ -103,11 +103,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
-<<<<<<< HEAD
-    setPortfolio(false);
-=======
     setSearchValue('');
->>>>>>> main
   };
   const handleMarket = () => {
     setDash(false);
@@ -115,19 +111,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
-<<<<<<< HEAD
-    setPortfolio(false);
-  };
-  const handlePortfolio = () => {
-    setDash(false);
-    setMarket(false);
-    setProfile(false);
-    setSettings(false);
-    setSearch(false);
-    setPortfolio(true);
-=======
     setSearchValue('');
->>>>>>> main
   };
 
   // function to change profile/settings
@@ -137,11 +121,7 @@ export default function HomePage() {
     setProfile(true);
     setSettings(false);
     setSearch(false);
-<<<<<<< HEAD
-    setPortfolio(false);
-=======
     setSearchValue('');
->>>>>>> main
   };
   const handleSettings = () => {
     setDash(false);
@@ -149,18 +129,6 @@ export default function HomePage() {
     setProfile(false);
     setSettings(true);
     setSearch(false);
-<<<<<<< HEAD
-    setPortfolio(false);
-  };
-
-  const handleSearch = () => {
-    setDash(false);
-    setMarket(false);
-    setProfile(false);
-    setSettings(false);
-    setSearch(true);
-    setPortfolio(false);
-=======
     setSearchValue('');
   };
 
@@ -173,7 +141,6 @@ export default function HomePage() {
       setSearch(true);
       setFinalSearch(searchValue);
     }
->>>>>>> main
   };
 
 
@@ -214,11 +181,7 @@ export default function HomePage() {
       id='profileMenu'
       keepMounted
       transformOrigin={{
-<<<<<<< HEAD
-        vertical: 'botom',
-=======
         vertical: 'top',
->>>>>>> main
         horizontal: 'right',
       }}
       open={pfOpen}
