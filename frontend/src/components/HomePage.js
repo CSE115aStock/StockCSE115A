@@ -9,12 +9,10 @@ import Toolbar from '@mui/material/Toolbar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import Badge from '@mui/material/Badge';
 import Divider from '@mui/material/Divider';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
-import NotificationsIcon from '@mui/icons-material/Notifications';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
@@ -27,9 +25,9 @@ import Dashboard from './Dashboard';
 import MarketTrends from './MarketTrends';
 import Settings from './Settings';
 import Profile from './Profile';
-import SearchPage from './Search';
-import Portfolio from './Portfolio';
+import Search from './Search';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
+import SearchContext from './SearchContext';
 
 
 const drawerWidth = 240;
@@ -57,28 +55,12 @@ const SearchStyle = styled('div')(({theme}) => ({
   '&:hover': {
     'backgroundColor': alpha(theme.palette.common.white, 0.25),
   },
-  'marginRight': theme.spacing(2),
-  'marginLeft': 0,
-  'width': '70%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
 }));
 
 
 // style input text
 const StyledInputBase = styled(InputBase)(({theme}) => ({
   'color': 'inherit',
-  '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
-    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: '20ch',
-    },
-  },
 }));
 
 /**
@@ -101,6 +83,8 @@ export default function HomePage() {
   const [settings, setSettings] = React.useState(false);
 
   const [search, setSearch] = React.useState(false);
+  const [searchValue, setSearchValue] = React.useState('')
+  const [finalSearch, setFinalSearch] = React.useState('')
 
   // function for opening/closing drawer
   const handleDrawerToggle = () => {
@@ -119,7 +103,11 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+<<<<<<< HEAD
     setPortfolio(false);
+=======
+    setSearchValue('');
+>>>>>>> main
   };
   const handleMarket = () => {
     setDash(false);
@@ -127,6 +115,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+<<<<<<< HEAD
     setPortfolio(false);
   };
   const handlePortfolio = () => {
@@ -136,6 +125,9 @@ export default function HomePage() {
     setSettings(false);
     setSearch(false);
     setPortfolio(true);
+=======
+    setSearchValue('');
+>>>>>>> main
   };
 
   // function to change profile/settings
@@ -145,7 +137,11 @@ export default function HomePage() {
     setProfile(true);
     setSettings(false);
     setSearch(false);
+<<<<<<< HEAD
     setPortfolio(false);
+=======
+    setSearchValue('');
+>>>>>>> main
   };
   const handleSettings = () => {
     setDash(false);
@@ -153,6 +149,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(true);
     setSearch(false);
+<<<<<<< HEAD
     setPortfolio(false);
   };
 
@@ -163,6 +160,20 @@ export default function HomePage() {
     setSettings(false);
     setSearch(true);
     setPortfolio(false);
+=======
+    setSearchValue('');
+  };
+
+  const handleSearch = () => {
+    if(searchValue.length > 0) {
+      setDash(false);
+      setMarket(false);
+      setProfile(false);
+      setSettings(false);
+      setSearch(true);
+      setFinalSearch(searchValue);
+    }
+>>>>>>> main
   };
 
 
@@ -203,7 +214,11 @@ export default function HomePage() {
       id='profileMenu'
       keepMounted
       transformOrigin={{
+<<<<<<< HEAD
         vertical: 'botom',
+=======
+        vertical: 'top',
+>>>>>>> main
         horizontal: 'right',
       }}
       open={pfOpen}
@@ -239,7 +254,7 @@ export default function HomePage() {
                 noWrap
                 component='div'
                 sx={{'display': {xs: 'none', sm: 'block'},
-                  'font-size': 30, 'width': drawerWidth}}
+                  'fontSize': 30, 'width': drawerWidth}}
               >
                 Social Stock
               </Typography>
@@ -256,20 +271,12 @@ export default function HomePage() {
                 <StyledInputBase
                   placeholder='Search…'
                   inputProps={{'aria-label': 'search'}}
+                  sx={{'width': '25%', m: 1}}
+                  onChange={(event) => setSearchValue(event.target.value)}
                 />
               </SearchStyle>
               <Box sx={{flexGrow: 1}} />
               <Box sx={{display: {md: 'flex'}}}>
-                <IconButton
-                  size='large'
-                  edge='end'
-                  aria-label='notifications'
-                  color='inherit'
-                >
-                  <Badge badgeContent={4} color='error'>
-                    <NotificationsIcon />
-                  </Badge>
-                </IconButton>
                 <IconButton
                   size='large'
                   edge='end'
@@ -323,8 +330,8 @@ export default function HomePage() {
         </Box>
         <Box
           component="main"
-          sx={{flexGrow: 1, p: 3,
-            width: {sm: `calc(100% - ${drawerWidth}px)`}}}
+          sx={{flexGrow: 1, p: 3, bgcolor: '#fafafa',
+            width: {sm: `calc(100% - ${drawerWidth}px)`}, height: '100vh'}}
         >
           <Toolbar />
           {dash? <Dashboard /> : null}
@@ -332,7 +339,7 @@ export default function HomePage() {
           {portfolio? <Portfolio />: null}
           {profile? <Profile /> : null}
           {settings? <Settings /> : null}
-          {search? <SearchPage /> : null}
+          {search? <SearchContext.Provider value={{finalSearch}}> <Search /> </SearchContext.Provider> : null}
         </Box>
       </Box>
     </ThemeProvider>

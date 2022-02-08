@@ -1,19 +1,18 @@
 {
-    "name": "Social Stock",
-    "version": "2.0.0",
-    "description": "CSE115 Project",
-    "license": "UNLICENSED",
-    "repository": "none",
-    "devDependencies": {
-      "bestzip": "*"
-    },
-    "scripts": {
-      "install-frontend": "cd frontend && npm install",
-      "start-frontend": "cd frontend && npm start",
-      "user-api": "cd api && black *.py && pytest -v && flask run --no-debugger",
-      "start": "(npm run start-frontend)",
-      "postinstall": "(npm run install-frontend)"
-    },
-    "proxy": "http://localhost:5000"
-  }
-  
+  "name": "socialstock",
+  "version": "2.0.0",
+  "description": "CSE115 Project",
+  "license": "UNLICENSED",
+  "repository": "none",
+  "devDependencies": {
+    "bestzip": "*"
+  },
+  "scripts": {
+    "install-frontend": "cd frontend && npm install",
+    "start-frontend": "cd frontend && npm start",
+    "user-api": "cd api && black *.py && pytest -v && flask run --no-debugger",
+    "start": "(npm run start-frontend)",
+    "postinstall": "(npm run install-frontend)"
+  },
+  "proxy": "http://localhost:5000"
+}

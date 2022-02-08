@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 import alpacaApi from '../services/polygon'
 
 export class alpacasSearch extends React.Component {
@@ -7,16 +7,13 @@ export class alpacasSearch extends React.Component {
     }
     consoleDidMount(){
       const alpacaApi = alpacaApi()
-      alpacaApi.quote("apple").then((response()=> {
+      alpacaApi.quote("apple").then((response)=> {
         console.log("apple stock is worth")
         console.log(response)
 
-      }
-
+      })
     }
     render() {
-        retrun <View>
-          <Text> search </Text>
-        </View>
+      return <h1>alpacasTest</h1>;
     }
 }
