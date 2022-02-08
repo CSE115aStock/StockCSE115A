@@ -150,8 +150,20 @@ export default function HomePage() {
     setSettings(false);
     setSearch(false);
     setSearchValue('');
-    localStorage.clear();
-    navigate('/');
+    fetch('auth/logout', {
+      method: 'GET',
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+    })
+    .then(
+        res => {
+          localStorage.clear();
+          navigate('/');
+        }
+    )
+    .catch(err => {
+      console.log(err);
+      alert('Error logging out, please try again');
+  })
   }
 
 
