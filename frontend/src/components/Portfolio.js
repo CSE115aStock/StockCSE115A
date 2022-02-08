@@ -44,14 +44,14 @@ class ChartComponent extends React.Component {
 
 
 export default function Dashboard() {
-  const [token,setToken] = useState([])
+  const [data,setData] = useState([])
 
   //To log in as test user
   useEffect(() => {
     fetch('/portfolio/my_portfolio', {
       method: 'POST',
       headers: new Headers({
-        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0Mzg3MDExOCwianRpIjoiOWQ2NDlhNDAtMzlhNi00NjU4LTliNmQtODdjYjgzNzI2MjAyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDM4NzAxMTgsImV4cCI6MTY0Mzg3MzcxOH0.ugi-qGJugz8es8h13ycwnhEu4oNjXRl2RHCTGB2ipvg'
+        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDAyMDMyNCwianRpIjoiZjQyMjFiOGYtNTVmNC00NzAxLWFkNGYtMTk3NjE0ODJhMjdhIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQwMjAzMjQsImV4cCI6MTY0NDAyMzkyNH0.wFcIX3J-o6dw8WKwF6qsN6tZXMjTEhS85i1coc6SmhY'
       }),
       body: JSON.stringify({
         
@@ -59,13 +59,13 @@ export default function Dashboard() {
     } ).then(
       res => res.json()
       ).then(
-        token => {
-          setToken(token)
+        data => {
+          setData(data)
         }
       )
     }, [])
     
-  const portfolioDict = token[0];
+  const portfolioDict = data[0];
   
   function createData(stock, amount, shares) {
     return {stock, amount, shares};

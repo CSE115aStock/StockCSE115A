@@ -18,6 +18,9 @@ import { createTheme } from '@mui/material';
 import Chart from './Charts/MACDchart';
 import { getData } from "./Charts/utils";
 import { useState, useEffect } from 'react';
+import alpacaApi from './StockPage/services/polygon';
+import { func } from 'prop-types';
+
 
 
 
@@ -96,14 +99,44 @@ class ChartComponent extends React.Component {
 }
 
 export default function Dashboard() {
-   
-    const [data,setData] = useState([])
+
+    function getStockData(tickr){
+        const [data, setData] = useState([]);
+        const a = alpacaApi();
+        useEffect(() =>{
+            a.quote(tickr).then(data => {
+                setData(data);
+            }
+            );
+        }, []);
+        return data;
+    }
+
+    const [token,setToken] = useState([])
+
     //To log in as test user
+    useEffect(() => {
+        fetch('/auth/login', {
+        method: 'POST',
+        body: JSON.stringify({
+            "username":"john.doe","password":"John@12345"
+        })
+        } ).then(
+        res => res.json()
+        ).then(
+            token => {
+            setToken(token);
+            console.log(token)
+            }
+        )
+
+    }, [])
+    const [data,setData] = useState([])
     useEffect(() => {
         fetch('/portfolio/my_portfolio', {
         method: 'POST',
         headers: new Headers({
-            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0Mzg3MDExOCwianRpIjoiOWQ2NDlhNDAtMzlhNi00NjU4LTliNmQtODdjYjgzNzI2MjAyIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDM4NzAxMTgsImV4cCI6MTY0Mzg3MzcxOH0.ugi-qGJugz8es8h13ycwnhEu4oNjXRl2RHCTGB2ipvg'
+            'Authorization': 'Bearer ' + String(token)
         }),
         body: JSON.stringify({
             
@@ -113,6 +146,7 @@ export default function Dashboard() {
         ).then(
             data => {
                 setData(data)
+                console.log(data);
             }
         )
         }, [])
@@ -138,7 +172,7 @@ export default function Dashboard() {
                     <Typography gutterBottom variant="h6" component="div" color="primary">
                         Today
                     </Typography>
-                    <ChartComponent />
+                    <ChartComponent/>
                     </CardContent>
                 </Card>
             </Grid>
