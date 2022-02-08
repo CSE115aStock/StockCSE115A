@@ -22,6 +22,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Dashboard from './Dashboard';
+import Portfolio from './Portfolio';
 import MarketTrends from './MarketTrends';
 import Settings from './Settings';
 import Profile from './Profile';
@@ -103,6 +104,16 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
+    setSearchValue('');
+  };
+  const handlePortfolio = () => {
+    setDash(false);
+    setMarket(false);
+    setProfile(false);
+    setSettings(false);
+    setSearch(false);
+    setPortfolio(true);
     setSearchValue('');
   };
   const handleMarket = () => {
@@ -188,6 +199,7 @@ export default function HomePage() {
       onClose={handleProfileMenuToggle}
     >
       <MenuItem onClick={handleProfile}>Profile</MenuItem>
+      <MenuItem onClick={handlePortfolio}>Portfolio</MenuItem>
       <MenuItem onClick={handleSettings}>Settings</MenuItem>
     </Menu>
   );
