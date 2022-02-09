@@ -14,5 +14,9 @@
     "start": "(npm run start-frontend)",
     "postinstall": "(npm run install-frontend)"
   },
-  "proxy": "http://localhost:5000"
+  "proxy": "http://localhost:5000",
+  "dependencies": {
+    "d3-dsv": "^3.0.1",
+    "react-stockcharts": "^0.7.8"
+  }
 }
