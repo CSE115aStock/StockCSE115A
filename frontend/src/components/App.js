@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route
+} from "react-router-dom";
+
 import {Register} from "./login/index";
 import {Login} from "./login/index";
+import HomePage from './HomePage';
 
-/**
- * Simple component with no state.
- *
- * @return {object} JSX
- */
-function App() {
 
-  //fetch sample user from backend.
-
+export default function App() {
   return (
-    <div className="App">
-        <Login/>
-    </div>
+    <Router>
+      <div>
+        <Routes>
+          <Route exact path="/homepage" element={<HomePage/>} />
+          <Route path="/" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
+        </Routes>
+      </div>
+    </Router>
   );
-
 }
-
-export default App;

@@ -181,7 +181,7 @@ def test_change_password(mock_jwt):
             access_token = create_access_token("john@mail.com")
             headers = {"Authorization": "Bearer {}".format(access_token)}
             json_response = c.put(
-                "/auth/profile/password",
+                "/auth/settings/password",
                 headers=headers,
                 json={
                     "Current Password": "John@12345",
@@ -205,7 +205,7 @@ def test_change_password_incorrect_password(mock_jwt):
             access_token = create_access_token("john@mail.com")
             headers = {"Authorization": "Bearer {}".format(access_token)}
             json_response = c.put(
-                "/auth/profile/password",
+                "/auth/settings/password",
                 headers=headers,
                 json={
                     "Current Password": "John12345",
@@ -223,7 +223,7 @@ def test_change_password_mismatched(mock_jwt):
             access_token = create_access_token("john@mail.com")
             headers = {"Authorization": "Bearer {}".format(access_token)}
             json_response = c.put(
-                "/auth/profile/password",
+                "/auth/settings/password",
                 headers=headers,
                 json={
                     "Current Password": "John@12345",
@@ -241,7 +241,7 @@ def test_change_password_weak(mock_jwt):
             access_token = create_access_token("john@mail.com")
             headers = {"Authorization": "Bearer {}".format(access_token)}
             json_response = c.put(
-                "/auth/profile/password",
+                "/auth/settings/password",
                 headers=headers,
                 json={
                     "Current Password": "John@12345",
@@ -260,7 +260,7 @@ def test_change_account_detais(mock_jwt):
             access_token = create_access_token("john@mail.com")
             headers = {"Authorization": "Bearer {}".format(access_token)}
             json_response = c.put(
-                "/auth/profile/account",
+                "/auth/settings/account",
                 headers=headers,
                 json={
                     "First Name": "Jane",

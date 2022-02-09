@@ -29,6 +29,7 @@ import Profile from './Profile';
 import Search from './Search';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
 import SearchContext from './SearchContext';
+import {useNavigate} from 'react-router-dom';
 
 
 const drawerWidth = 240;
@@ -86,6 +87,7 @@ export default function HomePage() {
   const [search, setSearch] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('')
   const [finalSearch, setFinalSearch] = React.useState('')
+  const navigate = useNavigate();
 
   // function for opening/closing drawer
   const handleDrawerToggle = () => {
@@ -154,6 +156,28 @@ export default function HomePage() {
     }
   };
 
+  const handleLogOut = () => {
+    setDash(false);
+    setMarket(false);
+    setProfile(false);
+    setSettings(false);
+    setSearch(false);
+    setSearchValue('');
+    fetch('auth/logout', {
+      method: 'GET',
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+    })
+    .then(
+        res => {
+          localStorage.clear();
+          navigate('/');
+        }
+    )
+    .catch(err => {
+      alert('Error logging out, please try again');
+  })
+  }
+
 
   const sideDrawer = (
     <div>
@@ -201,6 +225,7 @@ export default function HomePage() {
       <MenuItem onClick={handleProfile}>Profile</MenuItem>
       <MenuItem onClick={handlePortfolio}>Portfolio</MenuItem>
       <MenuItem onClick={handleSettings}>Settings</MenuItem>
+      <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
   );
 

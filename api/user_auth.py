@@ -201,7 +201,7 @@ def fetch_user():
 # 2. that the new password matches the requirements
 # 3. that the new password and repeated password match
 # If no error is encountered, the new password is hashed and updated in the database.
-@auth_bp.route("/profile/password", methods=["PUT"])
+@auth_bp.route("/settings/password", methods=["PUT"])
 @jwt_required()
 def change_password():
     data = json.loads(request.data)
@@ -241,7 +241,7 @@ def change_password():
         return jsonify({"err_msg": error}), response_code  # error
 
 
-@auth_bp.route("/profile/account", methods=["PUT"])
+@auth_bp.route("/settings/account", methods=["PUT"])
 @jwt_required()
 def change_account_details():
     data = json.loads(request.data)
