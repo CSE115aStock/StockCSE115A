@@ -42,10 +42,8 @@ class ChartComponent extends React.Component {
 	}
 }
 
-
-
 export default function Dashboard() {
-  const [token,setToken] = useState([])
+  // const [token,setToken] = useState([])
 
   // //To log in as test user
   // useEffect(() => {
@@ -66,85 +64,84 @@ export default function Dashboard() {
   //   }, [])
   const [port,setPort] = useState([])
   useEffect(() => {
-  fetch('/portfolio/my_portfolio', {
-  method: 'POST',
-  headers: new Headers({
-      'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDM2MjQwNSwianRpIjoiZGJkZDg4OTEtMjU3ZC00NWI1LWJlODYtMWZjN2U5NzYzOTE4IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQzNjI0MDUsImV4cCI6MTY0NDM2NjAwNX0.oABMGjNFKTyx7QfS1NHCgHL9RVxVIgItwrpNn45QYmE'
-  }),
-  body: JSON.stringify({
-      
-  })
-  } ).then(
-  res => res.json()
-  ).then(
-      port => {
-          setPort(port)
-          console.log(port);
-      }
-  )
+    fetch('/portfolio/my_portfolio', {
+    method: 'POST',
+    headers: new Headers({
+        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDM2NTE5MywianRpIjoiN2YzMjhjNDItNDU1ZC00ZDZiLTg4NzgtNTdkNDc1OWQwYzY2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQzNjUxOTMsImV4cCI6MTY0NDM2ODc5M30.ZwCI8gROyaB6Yk5h4Za_54vl8kAJSJk73ljxsMy8xk4'
+    }),
+    body: JSON.stringify({
+        
+    })
+    } ).then(
+    res => res.json()
+    ).then(
+        port => {
+            setPort(port)
+            console.log(port);
+        }
+    )
   }, [])
   
   const [data,setData] = useState([])
-  const a = alpacaApi();
-  useEffect(() =>{
-    a.mutiquotes('AMZN,GOOGL').then(data => {
-        setData(data['data']);
-        console.log(data);
-    }
-    );
-  }, []);
+  useEffect(() => {
+    fetch('/portfolio/my_portfolio', {
+    method: 'POST',
+    headers: new Headers({
+        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDM2NTE5MywianRpIjoiN2YzMjhjNDItNDU1ZC00ZDZiLTg4NzgtNTdkNDc1OWQwYzY2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQzNjUxOTMsImV4cCI6MTY0NDM2ODc5M30.ZwCI8gROyaB6Yk5h4Za_54vl8kAJSJk73ljxsMy8xk4'
+    }),
+    body: JSON.stringify({
+        
+    })
+    } ).then(
+    res => res.json()
+    ).then(
+        port => {
+          var stocks = '';
+          for(var stock in port[0]){
+            if(stocks == ''){
+              stocks = stocks + stock;
+            }
+            else{
+              stocks = stocks + ',' + stock;
+            }
+          }
+          const api = alpacaApi();
+          api.mutiquotes(stocks).then(data => {
+            setData(data['data']);
+            console.log(data);
+          }); 
+        }
+    )
+  }, [])
 
-  function createData(stock, amount, shares, price, high, low) {
 
-    return {stock, amount, shares, price, high, low};
+  function createData(stock, amount, shares, price, high, low, closing) {
+    var change = (((price - closing) / closing) * 100);
+    var profit = ((price - (amount / shares)) / (amount / shares)*100).toFixed(2);
+    return {stock, amount, shares, price, high, low, change, profit};
   }
 
+  var performance = 0.0;
+  var worth = 0.0;
+  var capitalInvested = 0;
+  var highestPerforming = [0,0];
   const portfolioDict = port[0];
   const portfolio = [];
   for(var key in portfolioDict, data){
-    portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], data[key]['dailyBar']['l']));
+    portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']));
+    capitalInvested += parseInt(portfolioDict[key]['amount']);
+    worth += data[key]['latestTrade']['p'] * portfolioDict[key]['shares'];
+    if(highestPerforming[0]==0){
+      highestPerforming = [key, portfolio[portfolio.length-1].change] 
+    }
+    else{
+      if(highestPerforming[1] < portfolio[portfolio.length-1].change){
+        highestPerforming = [key, portfolio[portfolio.length-1].change];
+      }
+    }
   }
-  // // const clone = port[0];
-  // // var stocks = '';
-  // // for(var stock in clone){
-  // //   if(stocks == ''){
-  // //     stocks = stocks + stock;
-  // //   }
-  // //   else{
-  // //     stocks = stocks + ',' + stock;
-  // //   }
-  // // }
-  
-  // // capitalInvested += portfolioDict[key]['amount'] * portfolioDict[key]['shares'];
-
-  
-
-  var worth = 0.0;
-  var capitalInvested = 0.0;
-  var performance = 0.0;
-
-  
-  
-  
-  // // for(var key in data){
-  // //   for(var i in portfolio){
-  // //     if(portfolio[i] == key);  
-  // //       var price = data[key]['latestTrade']['p'];
-  // //       var prevDayClosing = data[key]['prevDailyBar']['c'];
-  // //       worth += price * key['amount'];
-  // //       portfolio[i]['price'] = price;
-  // //       portfolio[i]['high'] = data[key]['dailyBar']['h'];
-  // //       portfolio[i]['low'] = data[key]['dailyBar']['l'];
-  // //       portfolio[i]['change'] = ((price - prevDayClosing) / prevDayClosing) * 100;
-  // //       portfolio[i]['profit'] = ((price - prevDayClosing) / prevDayClosing) * 100;
-  // //     }
-  // // }  
-    
-  // // , stockData[key]['latestTrade']['p'], stockData[key]['dailyBar']['h'], stockData[key]['dailyBar']['l'], stockData[key]['prevDailyBar']['c'])
-  // worth = worth.toFixed(2);
-  // performance = (worth - capitalInvested) / capitalInvested;
-  // performance = performance.toFixed(2);
-  const percentage = 2.5;
+  worth = worth.toFixed(2);
+  performance = (((worth - capitalInvested)/capitalInvested) * 100).toFixed(2);
 
   const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -195,7 +192,7 @@ export default function Dashboard() {
         <Grid item xs={8}>
             <Card >
                 <CardContent>
-                <Typography gutterBottom variant="h6" component="div" color="primary">
+                <Typography gutterBottom variant="h6" color="primary">
                   Your Portfolio
                 </Typography>
                 <ChartComponent />
@@ -205,7 +202,7 @@ export default function Dashboard() {
         <Grid item xs={4}>
             <Card>
                     <CardContent>
-                    <Typography gutterBottom variant="h6" component="div" color="primary">
+                    <Typography gutterBottom variant="h6" color="primary">
                         Portfolio Value
                     </Typography>
                     <Typography variant="h4" color="txtPrimary">
@@ -216,7 +213,7 @@ export default function Dashboard() {
             <br></br>
             <Card>
                     <CardContent>
-                    <Typography gutterBottom variant="h6" component="div" color="primary">
+                    <Typography gutterBottom variant="h6" color="primary">
                         Portfolio Performance
                     </Typography>
                     <Typography variant="h5" color="textPrimary" display="inline">
@@ -227,14 +224,14 @@ export default function Dashboard() {
             <br></br>
             <Card>
                     <CardContent>
-                    <Typography gutterBottom variant="h6" component="div" color="primary">
+                    <Typography gutterBottom variant="h6" color="primary">
                         Highest Performing stock
                     </Typography>
                     <Typography variant="h5" color="textPrimary" display="inline">
-                        APPL
+                        {highestPerforming[0]}
                     </Typography>
                     <Typography color="textSecondary" display="inline">
-                        &ensp;+{percentage}%
+                        &ensp;+{highestPerforming[1].toFixed(2)}%
                     </Typography>
                     </CardContent>
             </Card>
@@ -275,8 +272,8 @@ export default function Dashboard() {
                           <StyledTableCell>${portfolio.price}</StyledTableCell>
                           <StyledTableCell>${portfolio.high}</StyledTableCell>
                           <StyledTableCell>${portfolio.low}</StyledTableCell>
-                          {/* <StyledTableCell>{(portfolio.change).toFixed(2)}%</StyledTableCell>
-                          <StyledTableCell>{portfolio.profit}%</StyledTableCell> */}
+                          <StyledTableCell>{(portfolio.change).toFixed(2)}%</StyledTableCell>
+                          <StyledTableCell>{portfolio.profit}%</StyledTableCell>
                           </StyledTableRow>
                       ))}
                     </TableBody>

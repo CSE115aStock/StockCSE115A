@@ -12,10 +12,12 @@ const alpacaApi = (baseURL = config.BASE_URL) => {
     })
     const getBars = (symbol,start,end,limit,timeframe,adjustment,feed) => api.get('/v2/symbol/'+symbol+'/bars/?start='+start+'&end='+end+'&limit='+limit+'&timeframe='+timeframe+'&adjustment='+adjustment+'&feed='+feed)
     const quote = (symbol) => api.get('/v2/stocks/'+symbol+'/quotes/latest')
+    const trades = (symbol) => api.get('/v2/stocks/'+symbol+'/trades/latest')
     const mutiquotes = (symbols) => api.get('/v2/stocks/snapshots?symbols='+symbols)
     return {
         getBars,
         quote,
+        trades,
         mutiquotes
     }
 }

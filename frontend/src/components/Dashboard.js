@@ -19,16 +19,11 @@ import Chart from './Charts/MACDchart';
 import { getData } from "./Charts/utils";
 import { useState, useEffect } from 'react';
 import alpacaApi from './StockPage/services/polygon';
-import { func } from 'prop-types';
 
 
 
 
-const worth = 2.5;
-const astock = "AAPL";
-const capitalInvested = 4000;
-var performance = (worth - capitalInvested) /100;
-const percentage = 2.5;
+
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -126,7 +121,7 @@ export default function Dashboard() {
         fetch('/portfolio/my_portfolio', {
         method: 'POST',
         headers: new Headers({
-            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDI4NDc4MiwianRpIjoiYjc0ZDRmMzEtYzdiYi00ZTM1LWI2Y2QtODg2NTM4NjZjMWM1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQyODQ3ODIsImV4cCI6MTY0NDI4ODM4Mn0.hqNqVo1H78qBxkEgxRtM1oZWbxpFmKr-SQe_ojkWVJg'
+            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDM2NTE5MywianRpIjoiN2YzMjhjNDItNDU1ZC00ZDZiLTg4NzgtNTdkNDc1OWQwYzY2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQzNjUxOTMsImV4cCI6MTY0NDM2ODc5M30.ZwCI8gROyaB6Yk5h4Za_54vl8kAJSJk73ljxsMy8xk4'
         }),
         body: JSON.stringify({
             
@@ -151,6 +146,20 @@ export default function Dashboard() {
         portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares']));
     } 
 
+    const worth = 0.0;
+    const astock = "AAPL";
+    const capitalInvested = 4000;
+    var performance = (worth - capitalInvested) /100;
+    const percentage = 2.5;
+    const api = alpacaApi();
+    const [data,setData] = useState([])
+    useEffect(() => {
+    
+        api.trades('^GSPC').then(data => {
+            setData(data['data']);
+            console.log(data);
+        })
+    }, [])
 
     return (
         <Box sx={{ flexGrow: 1 }}>

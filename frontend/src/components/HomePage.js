@@ -75,9 +75,9 @@ export default function HomePage() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   // hook for dashboard and market trends
-  const [dash, setDash] = React.useState(true);
+  const [dash, setDash] = React.useState(false);
   const [market, setMarket] = React.useState(false);
-  const [portfolio, setPortfolio] = React.useState(false);
+  const [portfolio, setPortfolio] = React.useState(true);
 
   // hook for profile menu options
   const [profile, setProfile] = React.useState(false);
