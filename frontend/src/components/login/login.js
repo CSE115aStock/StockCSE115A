@@ -2,11 +2,17 @@ import React from "react";
 import { useState } from "react";
 import {Link} from 'react-router-dom';
 import {useNavigate} from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 
 export function Login() {
     const [username, setUsername] = React.useState('');
     const [password, setPassword] = React.useState('');
     const navigate = useNavigate();
+    const [alert, setAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState('');
 
     const loginBackend = () => {
         fetch('/auth/login', {
@@ -23,19 +29,44 @@ export function Login() {
                   navigate('/homepage');
                 }
                 else {
-                    alert(tk.err_msg);
+                    setAlertMessage(tk.err_msg);
+                    setAlert(true);
                 }
               }
             )
             .catch(err => {
-                console.log(err);
-                alert('Error logging in, please try again');
+              setAlertMessage('Error logging in, please try again');
+              setAlert(true);
             });
+    }
+
+    const closeError = () => {
+      setAlert(false);
+      setAlertMessage('');
     }
     
         return (
         <div className="base-container">
             <div className="header">Social Stock Analyzer</div>
+            <Collapse in={alert}>
+              <Alert severity='error' sx={{margin: 5}}
+                action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                  setAlert(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 0, mt: 3 }}
+        >
+          {alertMessage}
+        </Alert>
+      </Collapse>
             <div className="content">
                 <div className="form">
                     <div className="form-group">
