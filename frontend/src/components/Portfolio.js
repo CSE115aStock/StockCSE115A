@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
-import Chart from './Charts/AreaChart';
+import Chart from './Charts/MACDchart';
 import { getData } from "./Charts/utils";
 import { useState, useEffect } from 'react';
 import alpacaApi from './StockPage/services/polygon';
@@ -43,31 +43,12 @@ class ChartComponent extends React.Component {
 }
 
 export default function Dashboard() {
-  // const [token,setToken] = useState([])
-
-  // //To log in as test user
-  // useEffect(() => {
-  //     fetch('/auth/login', {
-  //       method: 'POST',
-  //       body: JSON.stringify({
-  //         "username":"john.doe","password":"John@12345"
-  //       })
-  //     } ).then(
-  //       res => res.json()
-  //       ).then(
-  //         token => {
-  //           setToken(token);
-  //           console.log(token)
-  //         }
-  //       )
-  
-  //   }, [])
   const [port,setPort] = useState([])
   useEffect(() => {
     fetch('/portfolio/my_portfolio', {
     method: 'POST',
     headers: new Headers({
-        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDM2NTE5MywianRpIjoiN2YzMjhjNDItNDU1ZC00ZDZiLTg4NzgtNTdkNDc1OWQwYzY2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQzNjUxOTMsImV4cCI6MTY0NDM2ODc5M30.ZwCI8gROyaB6Yk5h4Za_54vl8kAJSJk73ljxsMy8xk4'
+        'Authorization': 'Bearer ' + localStorage.getItem('JWT')
     }),
     body: JSON.stringify({
         
@@ -77,7 +58,6 @@ export default function Dashboard() {
     ).then(
         port => {
             setPort(port)
-            console.log(port);
         }
     )
   }, [])
@@ -87,7 +67,7 @@ export default function Dashboard() {
     fetch('/portfolio/my_portfolio', {
     method: 'POST',
     headers: new Headers({
-        'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDM2NTE5MywianRpIjoiN2YzMjhjNDItNDU1ZC00ZDZiLTg4NzgtNTdkNDc1OWQwYzY2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQzNjUxOTMsImV4cCI6MTY0NDM2ODc5M30.ZwCI8gROyaB6Yk5h4Za_54vl8kAJSJk73ljxsMy8xk4'
+        'Authorization': 'Bearer ' + localStorage.getItem('JWT')
     }),
     body: JSON.stringify({
         
@@ -108,7 +88,6 @@ export default function Dashboard() {
           const api = alpacaApi();
           api.mutiquotes(stocks).then(data => {
             setData(data['data']);
-            console.log(data);
           }); 
         }
     )

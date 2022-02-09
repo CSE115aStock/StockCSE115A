@@ -5,9 +5,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -19,9 +17,6 @@ import Chart from './Charts/MACDchart';
 import { getData } from "./Charts/utils";
 import { useState, useEffect } from 'react';
 import alpacaApi from './StockPage/services/polygon';
-
-
-
 
 
 
@@ -67,13 +62,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-function createData(amount, stock, profit) {
-    return { amount, stock, profit};
-  }
-const rows = [
-    createData(100, "AMC", -6.0),
-    createData(100, "AAPL", 2.0),
-];
+
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
@@ -94,34 +83,12 @@ class ChartComponent extends React.Component {
 }
 
 export default function Dashboard() {
-
-  
-
-    // const [token,setToken] = useState([])
-
-    // //To log in as test user
-    // useEffect(() => {
-    //     fetch('/auth/login', {
-    //     method: 'POST',
-    //     body: JSON.stringify({
-    //         "username":"john.doe","password":"John@12345"
-    //     })
-    //     } ).then(
-    //     res => res.json()
-    //     ).then(
-    //         token => {
-    //         setToken(token);
-    //         console.log(token)
-    //         }
-    //     )
-    // }, [])
-
     const [port,setPort] = useState([])
     useEffect(() => {
         fetch('/portfolio/my_portfolio', {
         method: 'POST',
         headers: new Headers({
-            'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTY0NDM2NTE5MywianRpIjoiN2YzMjhjNDItNDU1ZC00ZDZiLTg4NzgtNTdkNDc1OWQwYzY2IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImpvaG5AbWFpbC5jb20iLCJuYmYiOjE2NDQzNjUxOTMsImV4cCI6MTY0NDM2ODc5M30.ZwCI8gROyaB6Yk5h4Za_54vl8kAJSJk73ljxsMy8xk4'
+            'Authorization': 'Bearer ' + localStorage.getItem('JWT')
         }),
         body: JSON.stringify({
             
@@ -131,61 +98,86 @@ export default function Dashboard() {
         ).then(
             port => {
                 setPort(port)
+                console.log(port);
             }
         )
-        }, [])
-        
-    const portfolioDict = port[0];
-
-    function createData(stock, amount, shares) {
-        return {stock, amount, shares};
-    }
-    const portfolio = [];
-
-    for (var key in portfolioDict){
-        portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares']));
-    } 
-
-    const worth = 0.0;
-    const astock = "AAPL";
-    const capitalInvested = 4000;
-    var performance = (worth - capitalInvested) /100;
-    const percentage = 2.5;
-    const api = alpacaApi();
+    }, [])
+    
     const [data,setData] = useState([])
     useEffect(() => {
-    
-        api.trades('^GSPC').then(data => {
-            setData(data['data']);
-            console.log(data);
+        fetch('/portfolio/my_portfolio', {
+        method: 'POST',
+        headers: new Headers({
+            'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+        }),
+        body: JSON.stringify({
+            
         })
+        } ).then(
+        res => res.json()
+        ).then(
+            port => {
+            var stocks = '';
+            for(var stock in port[0]){
+                if(stocks == ''){
+                stocks = stocks + stock;
+                }
+                else{
+                stocks = stocks + ',' + stock;
+                }
+            }
+            const api = alpacaApi();
+            api.mutiquotes(stocks).then(data => {
+                setData(data['data']);
+                console.log(data);
+            }); 
+            }
+        )
     }, [])
+
+
+    function createData(stock, amount, shares, price, high, low, closing) {
+        var change = (((price - closing) / closing) * 100);
+        var profit = ((price - (amount / shares)) / (amount / shares)*100).toFixed(2);
+        return {stock, amount, shares, price, high, low, change, profit};
+    }
+
+    var performance = 0.0;
+    var worth = 0.0;
+    var capitalInvested = 0;
+    var highestPerforming = [0,0];
+    const portfolioDict = port[0];
+    const portfolio = [];
+    for(var key in portfolioDict, data){
+        portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']));
+        capitalInvested += parseInt(portfolioDict[key]['amount']);
+        worth += data[key]['latestTrade']['p'] * portfolioDict[key]['shares'];
+        if(highestPerforming[0]==0){
+        highestPerforming = [key, portfolio[portfolio.length-1].change] 
+        }
+        else{
+        if(highestPerforming[1] < portfolio[portfolio.length-1].change){
+            highestPerforming = [key, portfolio[portfolio.length-1].change];
+        }
+        }
+    }
+    worth = worth.toFixed(2);
+    performance = (((worth - capitalInvested)/capitalInvested) * 100).toFixed(2);
 
     return (
         <Box sx={{ flexGrow: 1 }}>
         <Grid container spacing={2} >
             <Grid item xs={8}>
-                <Card >
+                <Card sx={{minHeight: 382.5}}>
                     <CardContent>
                     <Typography gutterBottom variant="h6" component="div" color="primary">
-                        Today
+                        Today's News
                     </Typography>
-                    <ChartComponent/>
+                    
                     </CardContent>
                 </Card>
             </Grid>
             <Grid item xs={4}>
-                <Card sx={{ maxWidth: 345 }} >
-                        <CardContent>
-                        <Typography gutterBottom variant="h6" component="div" color="primary">
-                            S&P 500
-                        </Typography>
-                        <Typography variant="h5" color="txtPrimary">
-                            +{worth}
-                        </Typography>
-                        </CardContent>
-                </Card>
-                <br></br>
                 <Card sx={{ maxWidth: 345 }} >
                         <CardContent>
                         <Typography gutterBottom variant="h6" component="div" color="primary">
@@ -203,15 +195,15 @@ export default function Dashboard() {
                             Highest Performing stock
                         </Typography>
                         <Typography variant="h5" color="textPrimary" display="inline">
-                            {astock}
+                            {highestPerforming[0]}
                         </Typography>
                         <Typography color="textSecondary" display="inline">
-                            &ensp;+{percentage}%
+                            &ensp;+{highestPerforming[0]}%
                         </Typography>
                         </CardContent>
                 </Card>
             </Grid>
-            <Grid item xs={9}>
+            <Grid item xs={8}>
             
                 <TableContainer component={Paper}>
                     <Table  aria-label="customized table">
@@ -226,20 +218,20 @@ export default function Dashboard() {
                         </TableRow>
                         </TableHead>
                         <TableBody>
-                        {rows.map((row) => (
+                        {portfolio.map((portfolio) => (
                             <StyledTableRow>
                             <StyledTableCell>
-                                {row.stock}
+                                {portfolio.stock}
                             </StyledTableCell>
-                            <StyledTableCell align="center">{row.amount}</StyledTableCell>
-                            <StyledTableCell align="right">{row.profit}%</StyledTableCell>
+                            <StyledTableCell align="center">{portfolio.amount}</StyledTableCell>
+                            <StyledTableCell align="right">{portfolio.profit}%</StyledTableCell>
                             </StyledTableRow>
                         ))}
                         </TableBody>
                     </Table>
                 </TableContainer>
             </Grid>
-            <Grid item xs={3}>
+            <Grid item xs={4} >
             <TableContainer component={Paper}>
                     <Table  aria-label="customized table">
                         <TableHead>
@@ -259,7 +251,7 @@ export default function Dashboard() {
                                 {portfolio.stock}
                             </StyledTableCell>
                             <StyledTableCell align="center">{portfolio.amount}</StyledTableCell>
-                            <StyledTableCell align="right">{portfolio.shares}%</StyledTableCell>
+                            <StyledTableCell align="right">{(portfolio.profit)}%</StyledTableCell>
                             </StyledTableRow>
                         ))}
                         </TableBody>

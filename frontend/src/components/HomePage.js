@@ -76,9 +76,9 @@ export default function HomePage() {
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   // hook for dashboard and market trends
-  const [dash, setDash] = React.useState(false);
+  const [dash, setDash] = React.useState(true);
   const [market, setMarket] = React.useState(false);
-  const [portfolio, setPortfolio] = React.useState(true);
+  const [portfolio, setPortfolio] = React.useState(false);
 
   // hook for profile menu options
   const [profile, setProfile] = React.useState(false);
@@ -124,6 +124,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
   };
 
@@ -134,6 +135,7 @@ export default function HomePage() {
     setProfile(true);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
   };
   const handleSettings = () => {
@@ -142,6 +144,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(true);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
   };
 
@@ -152,6 +155,7 @@ export default function HomePage() {
       setProfile(false);
       setSettings(false);
       setSearch(true);
+      setPortfolio(false);
       setFinalSearch(searchValue);
     }
   };
@@ -162,6 +166,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
     fetch('auth/logout', {
       method: 'GET',
