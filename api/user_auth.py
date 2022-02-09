@@ -1,7 +1,5 @@
 import psycopg2
-import argparse
 import os
-import sys
 import re
 import json
 
@@ -11,12 +9,7 @@ from pathlib import Path
 from psycopg2.extras import RealDictCursor
 from passlib.hash import bcrypt
 from flask import (
-    Flask,
     Blueprint,
-    flash,
-    redirect,
-    url_for,
-    render_template,
     current_app,
     request,
     jsonify,
@@ -28,7 +21,6 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
     jwt_required,
     verify_jwt_in_request,
-    JWTManager,
 )
 
 # load db connection config
@@ -114,7 +106,7 @@ def AddUser():
             return jsonify({"err_msg": "Account creation successful"}), 201
 
         current_app.logger.error(error)
-        return jsonify({"err_msg": error})
+        return jsonify({"err_msg": error}), 400
 
 
 # method for refreshing tokens reaching expiration

@@ -1,7 +1,5 @@
 import psycopg2
 import os
-import json
-import pytest
 from pathlib import Path
 
 from dotenv import load_dotenv, find_dotenv
@@ -10,14 +8,8 @@ from passlib.hash import bcrypt
 
 from api import app
 
-from flask_jwt_extended import (
-    create_access_token,
-    get_jwt,
-    get_jwt_identity,
-    unset_jwt_cookies,
-    jwt_required,
-    JWTManager,
-)
+from flask_jwt_extended import create_access_token
+
 
 # load db connection config
 load_dotenv(find_dotenv())
