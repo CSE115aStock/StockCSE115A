@@ -1,5 +1,6 @@
 import React from "react";
 import {useNavigate} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 
 
 export function Register () {
@@ -24,13 +25,11 @@ export function Register () {
                 "verify_password":verify
               })
             } ).then( res => {
-                console.log(res);
                 if(res.status == 201) {
                     navigate('/');
                 };
               }
             ).catch(err => {
-                console.log(err);
                 alert(err);
             });
         } else {
@@ -70,6 +69,9 @@ export function Register () {
                 </div>
             </div>
             <div className="footer">
+                <Link to='/'>
+                  <button className='btn'>Log In</button>
+                </Link>
                 <button type="button" className="btn"
                 onClick={registerBackend}>
                     Register
