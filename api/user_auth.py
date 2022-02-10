@@ -95,11 +95,14 @@ def AddUser():
         elif not verify_p_word or len(verify_p_word) == 0:
             error = "Re-Entered password is required."
 
+        if error != None:
+            return jsonify({"err_msg": error})
+
         cur.execute("SELECT * from users where email = %(email)s", {"email": email})
         if cur.fetchone() != None:
             error = "User is already registered."
 
-        if IsValidPassword(p_word) == False:
+        elif IsValidPassword(p_word) == False:
             error = "Password not strong enough."
         elif p_word != verify_p_word:
             error = "Passwords do not match"
@@ -217,10 +220,10 @@ def change_password():
     if not check_password(current_pwd, stored_pwd):  # compare current with db password
         error = "Invalid password."
         response_code = 401
-    if not IsValidPassword(entered_pwd):
+    elif not IsValidPassword(entered_pwd):
         error = "Password too weak"
         response_code = 400
-    if not entered_pwd == repeat_pwd:  # compare new and repeat password
+    elif not entered_pwd == repeat_pwd:  # compare new and repeat password
         error = "Passwords do not match."
         response_code = 400
     if error == None:
