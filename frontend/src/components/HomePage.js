@@ -228,7 +228,6 @@ export default function HomePage() {
       onClose={handleProfileMenuToggle}
     >
       <MenuItem onClick={handleProfile}>Profile</MenuItem>
-      <MenuItem onClick={handlePortfolio}>Portfolio</MenuItem>
       <MenuItem onClick={handleSettings}>Settings</MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>

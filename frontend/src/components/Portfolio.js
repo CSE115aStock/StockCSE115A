@@ -107,7 +107,10 @@ export default function Dashboard() {
   const portfolioDict = port[0];
   const portfolio = [];
   for(var key in portfolioDict, data){
-    portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']));
+    portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], 
+                                    data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], 
+                                    data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']
+                                    ));
     capitalInvested += parseInt(portfolioDict[key]['amount']);
     worth += data[key]['latestTrade']['p'] * portfolioDict[key]['shares'];
     if(highestPerforming[0]==0){

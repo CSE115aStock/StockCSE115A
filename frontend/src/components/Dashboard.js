@@ -20,13 +20,6 @@ import alpacaApi from './StockPage/services/polygon';
 
 
 
-const Item = styled(Paper)(({ theme }) => ({
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: 'center',
-  color: theme.palette.text.secondary,
-}));
-
 const darkTheme = createTheme({
     palette: {
       type: 'light',
@@ -98,7 +91,6 @@ export default function Dashboard() {
         ).then(
             port => {
                 setPort(port)
-                console.log(port);
             }
         )
     }, [])
@@ -129,7 +121,6 @@ export default function Dashboard() {
             const api = alpacaApi();
             api.mutiquotes(stocks).then(data => {
                 setData(data['data']);
-                console.log(data);
             }); 
             }
         )
@@ -149,7 +140,10 @@ export default function Dashboard() {
     const portfolioDict = port[0];
     const portfolio = [];
     for(var key in portfolioDict, data){
-        portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']));
+        portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], 
+                                    data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], 
+                                    data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']
+                                    ));
         capitalInvested += parseInt(portfolioDict[key]['amount']);
         worth += data[key]['latestTrade']['p'] * portfolioDict[key]['shares'];
         if(highestPerforming[0]==0){
@@ -198,7 +192,7 @@ export default function Dashboard() {
                             {highestPerforming[0]}
                         </Typography>
                         <Typography color="textSecondary" display="inline">
-                            &ensp;+{highestPerforming[0]}%
+                            &ensp;+{highestPerforming[1].toFixed(2)}%
                         </Typography>
                         </CardContent>
                 </Card>
