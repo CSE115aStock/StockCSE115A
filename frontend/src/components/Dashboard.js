@@ -13,8 +13,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { createTheme } from '@mui/material';
-import Chart from './Charts/MACDchart';
-import { getData } from "./Charts/utils";
 import { useState, useEffect } from 'react';
 import alpacaApi from './StockPage/services/polygon';
 
@@ -22,26 +20,26 @@ import alpacaApi from './StockPage/services/polygon';
 
 const darkTheme = createTheme({
     palette: {
-      type: 'light',
-      primary: {
-        main: '#3f51b5',
-      },
-      secondary: {
-        main: '#f50057',
-      },
+        type: 'light',
+        primary: {
+            main: '#3f51b5',
+        },
+        secondary: {
+            main: '#f50057',
+        },
     },
     typography: {
-      fontFamily: 'Montserrat',
+        fontFamily: 'Montserrat',
     },
-  });
+});
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.white,
-      color: darkTheme.palette.primary.main,
+        backgroundColor: theme.palette.common.white,
+        color: darkTheme.palette.primary.main,
     },
     [`&.${tableCellClasses.body}`]: {
-      fontSize: 12,
+        fontSize: 12,
     },
   }));
 
@@ -55,25 +53,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
     },
 }));
 
-
-
-class ChartComponent extends React.Component {
-	componentDidMount() {
-		getData().then(data => {
-			this.setState({ data })
-		})
-	}
-	render() {
-		if (this.state == null) {
-			return <div>Loading...</div>
-		}
-		return (
-			
-		    <Chart type="hybrid" data={this.state.data} />
-	
-		)
-	}
-}
 
 export default function Dashboard() {
     const [port,setPort] = useState([])
@@ -150,9 +129,9 @@ export default function Dashboard() {
         highestPerforming = [key, portfolio[portfolio.length-1].change] 
         }
         else{
-        if(highestPerforming[1] < portfolio[portfolio.length-1].change){
-            highestPerforming = [key, portfolio[portfolio.length-1].change];
-        }
+            if(highestPerforming[1] < portfolio[portfolio.length-1].change){
+                highestPerforming = [key, portfolio[portfolio.length-1].change];
+            }
         }
     }
     worth = worth.toFixed(2);
@@ -198,7 +177,6 @@ export default function Dashboard() {
                 </Card>
             </Grid>
             <Grid item xs={8}>
-            
                 <TableContainer component={Paper}>
                     <Table  aria-label="customized table">
                         <TableHead>
