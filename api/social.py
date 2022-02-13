@@ -291,7 +291,7 @@ def totalComments():
 
 # gives all comments for a particular stock made by user
 # INPUT: valid tickr
-# RETURN: list of stocks the user has liked on success
+# RETURN: list of comments on success
 @social_bp.route("/user_comments", methods=["PUT"])
 @jwt_required()
 def userComments():
@@ -318,7 +318,7 @@ def userComments():
 
 # gives the 5 most recent comments
 # INPUT: valid tickr
-# RETURN: list of stocks the user has liked on success
+# RETURN: list of comments on success
 @social_bp.route("/fetch_latest_comments", methods=["PUT"])
 @jwt_required()
 def fetchLatestComments():
@@ -343,7 +343,7 @@ def fetchLatestComments():
 
 # gives all comments for a particular stock
 # INPUT: valid tickr
-# RETURN: list of comments for the stock
+# RETURN: list of all comments for the stock
 @social_bp.route("/all_comments", methods=["PUT"])
 @jwt_required()
 def allComments():
