@@ -5,7 +5,6 @@ import json
 
 from datetime import timedelta, datetime, timezone
 from dotenv import load_dotenv, find_dotenv
-from pathlib import Path
 from psycopg2.extras import RealDictCursor
 from passlib.hash import bcrypt
 from flask import (

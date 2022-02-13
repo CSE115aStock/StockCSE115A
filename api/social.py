@@ -1,10 +1,8 @@
-import time
 import psycopg2
 import os
 import json
 
 from dotenv import load_dotenv, find_dotenv
-from pathlib import Path
 from datetime import datetime, timezone
 
 from flask import Blueprint, jsonify, request
@@ -63,7 +61,7 @@ def addLike():
 # Remove like for particular stock for the user
 # INPUT: valid tickr
 # RETURN: returns success message if like removed without issues
-@social_bp.route("/remove_like", methods=["POST"])
+@social_bp.route("/remove_like", methods=["DELETE"])
 @jwt_required()
 def removeLike():
     cur = conn.cursor()
@@ -79,7 +77,7 @@ def removeLike():
     cur.execute("SELECT username from users WHERE email=%s", (usr_email,))
     usrname = cur.fetchone()
 
-    cur.execute("DELETE FROM likes where username=%s and tickr=%s", (tickr, usrname))
+    cur.execute("DELETE FROM likes WHERE username=%s AND tickr=%s", (usrname, tickr))
 
     conn.commit()
 
@@ -129,7 +127,7 @@ def totalLikes():
     return jsonify(total_likes[0])
 
 
-# gives all likes for a particular stock
+# gives all the people who like a particular stock
 # INPUT: valid tickr
 # RETURN: list of users who have liked the stock
 @social_bp.route("/all_likes", methods=["PUT"])
@@ -174,8 +172,9 @@ def addComment():
     cur.execute("SELECT username from users WHERE email=%s", (usr_email,))
     usrname = cur.fetchone()
 
-    curr_time = datetime.now(timezone.utc)
-    time_stmp = curr_time.strftime("%d-%m-%Y %H:%M:%S")
+    curr_time = str(datetime.now(timezone.utc))
+    time_stmp = curr_time[0:18]
+    # time_stmp = datetime.datetime.now(timezone.utc).strftime("%Y-%m-%d %H:%M:%S")
 
     try:
         cur.execute(
@@ -201,7 +200,7 @@ def editComment():
     cur = conn.cursor()
 
     data = json.loads(request.data)
-    time_stmp = str(datetime.strptime(data["time_stmp"], "%a, %d %b %Y %H:%M:%S %Z")) + "+00"
+    time_stmp = data["time_stmp"]
     comment = data["comment"]
     verify_jwt_in_request(optional=False)
 
@@ -215,22 +214,22 @@ def editComment():
     cur.execute("SELECT username from users WHERE email=%s", (usr_email,))
     usrname = cur.fetchone()
 
-    curr_time = datetime.now(timezone.utc)
-    new_time_stmp = curr_time.strftime("%d-%m-%Y %H:%M:%S")
+    curr_time = str(datetime.now(timezone.utc))
+    new_time_stmp = curr_time[0:18]
 
     try:
         cur.execute(
-            "UPDATE comments SET comment_body=%s, created_on=%s WHERE created_on=%s and username=%s",
-            (comment, time_stmp, new_time_stmp, usrname),
+            "UPDATE comments SET comment_body=%s, created_on=%s WHERE created_on=%s AND username=%s",
+            (comment, new_time_stmp, time_stmp, usrname),
         )
     except Exception as err:
         cur.execute("ROLLBACK")
         conn.commit()
-        return jsonify({"err_msg": "Bad request"}), 400
+        return jsonify({"err_msg": err}), 400
 
     conn.commit()
 
-    return jsonify({"msg": "comment added"}), 200
+    return jsonify({"msg": "comment edited"}), 200
 
 
 # Removes a comment on a particular stock
@@ -264,7 +263,7 @@ def removeComment():
 
     conn.commit()
 
-    return jsonify({"msg": "comment added"}), 200
+    return jsonify({"msg": "comment removed"}), 200
 
 
 # gives total comments for a particular stock

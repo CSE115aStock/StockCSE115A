@@ -1,6 +1,5 @@
 import psycopg2
 import os
-from pathlib import Path
 
 from dotenv import load_dotenv, find_dotenv
 from unittest.mock import patch
