@@ -1,30 +1,12 @@
-from curses import use_default_colors
-from xxlimited import new
 import psycopg2
-import argparse
 import os
-import sys
-import re
 import json
 
 from dotenv import load_dotenv, find_dotenv
-from pathlib import Path
-
-from psycopg2.extras import RealDictCursor
 from psycopg2.extensions import AsIs
 
-from flask import (
-    Flask,
-    Blueprint,
-    flash,
-    redirect,
-    url_for,
-    render_template,
-    jsonify,
-    current_app,
-    request,
-)
-from flask_jwt_extended import get_jwt, get_jwt_identity, jwt_required
+from flask import Blueprint, jsonify, request
+from flask_jwt_extended import get_jwt_identity, jwt_required
 
 # load db connection config
 load_dotenv(find_dotenv())
