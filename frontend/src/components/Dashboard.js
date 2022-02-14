@@ -41,7 +41,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.body}`]: {
         fontSize: 12,
     },
-  }));
+}));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '&:nth-of-type(odd)': {
