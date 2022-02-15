@@ -16,11 +16,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import AccountCircle from '@mui/icons-material/AccountCircle';
 import ShowChartIcon from '@mui/icons-material/ShowChart';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Dashboard from './Dashboard';
+import Portfolio from './Portfolio';
 import MarketTrends from './MarketTrends';
 import Settings from './Settings';
 import Profile from './Profile';
@@ -76,6 +78,7 @@ export default function HomePage() {
   // hook for dashboard and market trends
   const [dash, setDash] = React.useState(true);
   const [market, setMarket] = React.useState(false);
+  const [portfolio, setPortfolio] = React.useState(false);
 
   // hook for profile menu options
   const [profile, setProfile] = React.useState(false);
@@ -96,13 +99,23 @@ export default function HomePage() {
     setPfOpen(!pfOpen);
   };
 
-  // function to change dash/market trend
+  // function to change dash/market/port trend
   const handleDash = () => {
     setDash(true);
     setMarket(false);
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
+    setSearchValue('');
+  };
+  const handlePortfolio = () => {
+    setDash(false);
+    setMarket(false);
+    setProfile(false);
+    setSettings(false);
+    setSearch(false);
+    setPortfolio(true);
     setSearchValue('');
   };
   const handleMarket = () => {
@@ -111,6 +124,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
   };
 
@@ -121,6 +135,7 @@ export default function HomePage() {
     setProfile(true);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
   };
   const handleSettings = () => {
@@ -129,6 +144,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(true);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
   };
 
@@ -139,6 +155,7 @@ export default function HomePage() {
       setProfile(false);
       setSettings(false);
       setSearch(true);
+      setPortfolio(false);
       setFinalSearch(searchValue);
     }
   };
@@ -149,6 +166,7 @@ export default function HomePage() {
     setProfile(false);
     setSettings(false);
     setSearch(false);
+    setPortfolio(false);
     setSearchValue('');
     fetch('auth/logout', {
       method: 'GET',
@@ -176,6 +194,12 @@ export default function HomePage() {
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary='Dashboard' />
+        </ListItem>
+        <ListItem button key='Portfolio' onClick={handlePortfolio} >
+          <ListItemIcon>
+            <BarChartIcon/>
+          </ListItemIcon>
+          <ListItemText primary='Portfolio' />
         </ListItem>
         <ListItem button key='Market Trends' onClick={handleMarket} >
           <ListItemIcon>
@@ -316,6 +340,7 @@ export default function HomePage() {
           <Toolbar />
           {dash? <Dashboard /> : null}
           {market? <MarketTrends /> : null}
+          {portfolio? <Portfolio />: null}
           {profile? <Profile /> : null}
           {settings? <Settings /> : null}
           {search? <SearchContext.Provider value={{finalSearch}}> <Search /> </SearchContext.Provider> : null}
