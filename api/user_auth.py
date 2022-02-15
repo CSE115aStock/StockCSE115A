@@ -1,22 +1,14 @@
 import psycopg2
-import argparse
 import os
-import sys
 import re
 import json
 
 from datetime import timedelta, datetime, timezone
 from dotenv import load_dotenv, find_dotenv
-from pathlib import Path
 from psycopg2.extras import RealDictCursor
 from passlib.hash import bcrypt
 from flask import (
-    Flask,
     Blueprint,
-    flash,
-    redirect,
-    url_for,
-    render_template,
     current_app,
     request,
     jsonify,
@@ -28,7 +20,6 @@ from flask_jwt_extended import (
     unset_jwt_cookies,
     jwt_required,
     verify_jwt_in_request,
-    JWTManager,
 )
 
 # load db connection config
@@ -95,11 +86,14 @@ def AddUser():
         elif not verify_p_word or len(verify_p_word) == 0:
             error = "Re-Entered password is required."
 
+        if error != None:
+            return jsonify({"err_msg": error})
+
         cur.execute("SELECT * from users where email = %(email)s", {"email": email})
         if cur.fetchone() != None:
             error = "User is already registered."
 
-        if IsValidPassword(p_word) == False:
+        elif IsValidPassword(p_word) == False:
             error = "Password not strong enough."
         elif p_word != verify_p_word:
             error = "Passwords do not match"
@@ -114,7 +108,7 @@ def AddUser():
             return jsonify({"err_msg": "Account creation successful"}), 201
 
         current_app.logger.error(error)
-        return jsonify({"err_msg": error})
+        return jsonify({"err_msg": error}), 400
 
 
 # method for refreshing tokens reaching expiration
@@ -217,10 +211,10 @@ def change_password():
     if not check_password(current_pwd, stored_pwd):  # compare current with db password
         error = "Invalid password."
         response_code = 401
-    if not IsValidPassword(entered_pwd):
+    elif not IsValidPassword(entered_pwd):
         error = "Password too weak"
         response_code = 400
-    if not entered_pwd == repeat_pwd:  # compare new and repeat password
+    elif not entered_pwd == repeat_pwd:  # compare new and repeat password
         error = "Passwords do not match."
         response_code = 400
     if error == None:

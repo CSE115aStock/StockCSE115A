@@ -11,12 +11,13 @@
     "install-frontend": "cd frontend && npm install",
     "start-frontend": "cd frontend && npm start",
     "user-api": "cd api && black *.py && pytest -v && flask run --no-debugger",
-    "start": "(npm run start-frontend)",
+    "start": "concurrently \"npm run user-api\" \"npm run start-frontend\" ",
     "postinstall": "(npm run install-frontend)"
   },
   "proxy": "http://localhost:5000",
   "dependencies": {
     "d3-dsv": "^3.0.1",
     "react-stockcharts": "^0.7.8"
+    "concurrently": "^7.0.0"
   }
 }

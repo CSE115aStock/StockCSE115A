@@ -20,6 +20,9 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import IconButton from '@mui/material/IconButton';
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function Settings() {
     const [firstName, setFirstName] = React.useState("");
@@ -33,6 +36,10 @@ export default function Settings() {
     const [currentPass, setCurrentPass] = React.useState("Current Password");
     const [newPass, setNewPass] = React.useState("New Password");
     const [repeatPass, setRepeatPass] = React.useState("Repeat Password");
+    const [alert, setAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState('');
+    const [passAlert, setPassAlert] = React.useState(false);
+    const [passAlertMessage, setPassAlertMessage] = React.useState('');
 
     React.useEffect(() => {
       getUserInfo();
@@ -72,17 +79,20 @@ export default function Settings() {
             }).then(
               res => {
                 if(res.status != 200) {
-                  alert('Error changing user information, please try again');
+                  setAlertMessage('Error changing user information, please try again');
+                  setAlert(true);
                 }
                 getUserInfo();
               }
               )
               .catch(err => {
-                  alert('Error changing user information, please try again');
+                setAlertMessage('Error changing user information, please try again');
+                setAlert(true);
               })
           }
           else {
-            alert('All fields must have length of 1 or more.')
+            setAlertMessage('All fields must have length of one or more.');
+            setAlert(true);
             getUserInfo();
           }
       }
@@ -110,19 +120,23 @@ export default function Settings() {
                     setPassVisible(false);
                   }
                   else if(res.status == 401) {
-                    alert('Incorrect current password.');
+                    setPassAlertMessage('Incorrect current password.')
+                    setPassAlert(true);
                   }
                   else if(res.status == 400) {
-                    alert('New password too weak.');
+                    setPassAlertMessage('Password too weak.')
+                    setPassAlert(true);
                   }
                 }
               )
               .catch(err => {
-                  alert('Error changing password, please try again');
+                setPassAlertMessage('Error changing password, please try again')
+                setPassAlert(true);
               });
           }
           else {
-            alert('New passwords do not match.')
+            setPassAlertMessage('New passwords do not match')
+            setPassAlert(true);
           }
         }
         else { // dialog opened
@@ -158,6 +172,25 @@ export default function Settings() {
             ACCOUNT DETAILS
           </Typography>
           <Divider/>
+          <Collapse in={alert}>
+              <Alert severity='error' sx={{margin: 5}}
+                action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                  setAlert(false);
+              }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 0, mt: 3 }}
+        >
+          {alertMessage}
+        </Alert>
+      </Collapse>
           <Box
           component="form"
           sx={{
@@ -202,6 +235,24 @@ export default function Settings() {
             </Button>
             <Dialog open={changePass} onClose={cancelPass}>
               <DialogTitle>Change Password</DialogTitle>
+              <Collapse in={passAlert}>
+                <Alert severity='error' sx={{margin: 5}}
+                  action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                    setPassAlert(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                  }             
+                  sx={{ mb: 0, mt: 3 }}>
+                  {passAlertMessage}
+                </Alert>
+              </Collapse>
                 <DialogContent>
                   <DialogContentText>
                     Enter the following:

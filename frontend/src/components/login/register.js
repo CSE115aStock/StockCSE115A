@@ -1,6 +1,10 @@
 import React from "react";
 import {useNavigate} from 'react-router-dom';
 import {Link} from 'react-router-dom';
+import Alert from '@mui/material/Alert';
+import IconButton from '@mui/material/IconButton';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 
 
 export function Register () {
@@ -10,6 +14,8 @@ export function Register () {
     const [lName, setLName] = React.useState('');
     const [email, setEmail] = React.useState('');
     const [verify, setVerify] = React.useState('');
+    const [alert, setAlert] = React.useState(false);
+    const [alertMessage, setAlertMessage] = React.useState('');
     const navigate = useNavigate();
 
     const registerBackend = () => {
@@ -24,13 +30,22 @@ export function Register () {
                 "password":pass,
                 "verify_password":verify
               })
-            } ).then( res => {
-                if(res.status == 201) {
-                    navigate('/');
-                };
-              }
-            ).catch(err => {
-                alert(err);
+            } ).then( res => res.json()
+            ).then(
+                tk => {
+                    if(typeof tk.err_msg == 'undefined') {
+                      navigate('/');
+                    }
+                    else {
+                        console.log(tk.err_msg);
+                        setAlertMessage(tk.err_msg);
+                        setAlert(true);
+                    }
+                  }
+            ).
+            catch(err => {
+                setAlertMessage(err);
+                setAlert(true);
             });
         } else {
             alert('The passwords do not match!');
@@ -40,6 +55,25 @@ export function Register () {
         return (
         <div className="base-container">
             <div className="header">Social Stock Analyzer</div>
+            <Collapse in={alert}>
+              <Alert severity='error'
+                action={
+                <IconButton
+                  aria-label="close"
+                  color="inherit"
+                  size="small"
+                  onClick={() => {
+                  setAlert(false);
+                  }}
+            >
+              <CloseIcon fontSize="inherit" />
+            </IconButton>
+          }
+          sx={{ mb: 0, mt: 3}}
+        >
+          {alertMessage}
+        </Alert>
+      </Collapse>
             <div className="content">
                 <div className="form">
                     <div className="form-group">
