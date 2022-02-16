@@ -26,10 +26,11 @@ import Portfolio from './Portfolio';
 import MarketTrends from './MarketTrends';
 import Settings from './Settings';
 import Profile from './Profile';
-import Search from './Search';
+import Search from './StockViewer';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
-import SearchContext from './SearchContext';
+import StockViewerContext from './StockViewerContext';
 import {useNavigate} from 'react-router-dom';
+import RenderContext from './RenderContext';
 
 
 const drawerWidth = 240;
@@ -99,6 +100,8 @@ export default function HomePage() {
     setPfOpen(!pfOpen);
   };
 
+  
+
   // function to change dash/market/port trend
   const handleDash = () => {
     setDash(true);
@@ -108,6 +111,7 @@ export default function HomePage() {
     setSearch(false);
     setPortfolio(false);
     setSearchValue('');
+    setFinalSearch('');
   };
   const handlePortfolio = () => {
     setDash(false);
@@ -117,6 +121,7 @@ export default function HomePage() {
     setSearch(false);
     setPortfolio(true);
     setSearchValue('');
+    setFinalSearch('');
   };
   const handleMarket = () => {
     setDash(false);
@@ -126,6 +131,7 @@ export default function HomePage() {
     setSearch(false);
     setPortfolio(false);
     setSearchValue('');
+    setFinalSearch('');
   };
 
   // function to change profile/settings
@@ -137,6 +143,7 @@ export default function HomePage() {
     setSearch(false);
     setPortfolio(false);
     setSearchValue('');
+    setFinalSearch('');
   };
   const handleSettings = () => {
     setDash(false);
@@ -146,17 +153,19 @@ export default function HomePage() {
     setSearch(false);
     setPortfolio(false);
     setSearchValue('');
+    setFinalSearch('');
   };
 
-  const handleSearch = () => {
-    if(searchValue.length > 0) {
+  const handleSearch = (val) => {
+    if(val.length > 0) {
       setDash(false);
       setMarket(false);
       setProfile(false);
       setSettings(false);
       setSearch(true);
       setPortfolio(false);
-      setFinalSearch(searchValue);
+      setSearchValue('');
+      setFinalSearch(val);
     }
   };
 
@@ -168,6 +177,7 @@ export default function HomePage() {
     setSearch(false);
     setPortfolio(false);
     setSearchValue('');
+    setFinalSearch('');
     fetch('auth/logout', {
       method: 'GET',
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
@@ -268,7 +278,7 @@ export default function HomePage() {
                   edge='end'
                   aria-label='notifications'
                   color='inherit'
-                  onClick={handleSearch}
+                  onClick={() => handleSearch(searchValue)}
                 >
                   <SearchIcon />
                 </IconButton>
@@ -277,6 +287,7 @@ export default function HomePage() {
                   inputProps={{'aria-label': 'search'}}
                   sx={{'width': '25%', m: 1}}
                   onChange={(event) => setSearchValue(event.target.value)}
+                  value={searchValue}
                 />
               </SearchStyle>
               <Box sx={{flexGrow: 1}} />
@@ -338,12 +349,12 @@ export default function HomePage() {
             width: {sm: `calc(100% - ${drawerWidth}px)`}, height: '100vh'}}
         >
           <Toolbar />
-          {dash? <Dashboard /> : null}
+          {dash? <RenderContext.Provider value={{handleSearch}}> <Dashboard /> </RenderContext.Provider> : null}
           {market? <MarketTrends /> : null}
-          {portfolio? <Portfolio />: null}
-          {profile? <Profile /> : null}
+          {portfolio? <RenderContext.Provider value={{handleSearch}}> <Portfolio /> </RenderContext.Provider> : null}
+          {profile? <RenderContext.Provider value={{handleSearch}}> <Profile /> </RenderContext.Provider> : null}
           {settings? <Settings /> : null}
-          {search? <SearchContext.Provider value={{finalSearch}}> <Search /> </SearchContext.Provider> : null}
+          {search? <StockViewerContext.Provider value={{finalSearch}}> <Search /> </StockViewerContext.Provider> : null}
         </Box>
       </Box>
     </ThemeProvider>
