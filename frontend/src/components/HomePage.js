@@ -26,10 +26,12 @@ import Portfolio from './Portfolio';
 import MarketTrends from './MarketTrends';
 import Settings from './Settings';
 import Profile from './Profile';
-import Search from './Search';
+import Search from './StockViewer';
 import {ThemeProvider, createTheme} from '@mui/material/styles';
-import SearchContext from './SearchContext';
+import StockViewerContext from './StockViewerContext';
 import {useNavigate} from 'react-router-dom';
+import RenderContext from './RenderContext';
+import { touchRippleClasses } from '@mui/material';
 
 
 const drawerWidth = 240;
@@ -99,64 +101,27 @@ export default function HomePage() {
     setPfOpen(!pfOpen);
   };
 
-  // function to change dash/market/port trend
-  const handleDash = () => {
-    setDash(true);
-    setMarket(false);
-    setProfile(false);
-    setSettings(false);
-    setSearch(false);
-    setPortfolio(false);
+  const handlePages = (dashVal, marketVal, profVal, settVal, searVal, portVal) => {
+    setDash(dashVal);
+    setMarket(marketVal);
+    setProfile(profVal);
+    setSettings(settVal);
+    setSearch(searVal);
+    setPortfolio(portVal);
     setSearchValue('');
-  };
-  const handlePortfolio = () => {
-    setDash(false);
-    setMarket(false);
-    setProfile(false);
-    setSettings(false);
-    setSearch(false);
-    setPortfolio(true);
-    setSearchValue('');
-  };
-  const handleMarket = () => {
-    setDash(false);
-    setMarket(true);
-    setProfile(false);
-    setSettings(false);
-    setSearch(false);
-    setPortfolio(false);
-    setSearchValue('');
-  };
-
-  // function to change profile/settings
-  const handleProfile = () => {
-    setDash(false);
-    setMarket(false);
-    setProfile(true);
-    setSettings(false);
-    setSearch(false);
-    setPortfolio(false);
-    setSearchValue('');
-  };
-  const handleSettings = () => {
-    setDash(false);
-    setMarket(false);
-    setProfile(false);
-    setSettings(true);
-    setSearch(false);
-    setPortfolio(false);
-    setSearchValue('');
-  };
-
-  const handleSearch = () => {
-    if(searchValue.length > 0) {
+    setFinalSearch('');
+  }
+  
+  const handleSearch = (val) => {
+    if(val.length > 0) {
       setDash(false);
       setMarket(false);
       setProfile(false);
       setSettings(false);
       setSearch(true);
       setPortfolio(false);
-      setFinalSearch(searchValue);
+      setSearchValue('');
+      setFinalSearch(val);
     }
   };
 
@@ -168,6 +133,7 @@ export default function HomePage() {
     setSearch(false);
     setPortfolio(false);
     setSearchValue('');
+    setFinalSearch('');
     fetch('auth/logout', {
       method: 'GET',
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
@@ -189,19 +155,22 @@ export default function HomePage() {
       <Toolbar />
       <Divider />
       <List>
-        <ListItem button key='Dashboard' onClick={handleDash}>
+        <ListItem button key='Dashboard' 
+          onClick={() => handlePages(true, false, false, false, false, false)}>
           <ListItemIcon>
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary='Dashboard' />
         </ListItem>
-        <ListItem button key='Portfolio' onClick={handlePortfolio} >
+        <ListItem button key='Portfolio' 
+          onClick={() => handlePages(false, false, false, false, false, true)} >
           <ListItemIcon>
             <BarChartIcon/>
           </ListItemIcon>
           <ListItemText primary='Portfolio' />
         </ListItem>
-        <ListItem button key='Market Trends' onClick={handleMarket} >
+        <ListItem button key='Market Trends' 
+          onClick={() => handlePages(false, true, false, false, false, false)} >
           <ListItemIcon>
             <ShowChartIcon/>
           </ListItemIcon>
@@ -227,8 +196,8 @@ export default function HomePage() {
       open={pfOpen}
       onClose={handleProfileMenuToggle}
     >
-      <MenuItem onClick={handleProfile}>Profile</MenuItem>
-      <MenuItem onClick={handleSettings}>Settings</MenuItem>
+      <MenuItem onClick={() => handlePages(false, false, true, false, false, false)}>Profile</MenuItem>
+      <MenuItem onClick={() => handlePages(false, false, false, true, false, false)}>Settings</MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
   );
@@ -268,7 +237,7 @@ export default function HomePage() {
                   edge='end'
                   aria-label='notifications'
                   color='inherit'
-                  onClick={handleSearch}
+                  onClick={() => handleSearch(searchValue)}
                 >
                   <SearchIcon />
                 </IconButton>
@@ -277,6 +246,7 @@ export default function HomePage() {
                   inputProps={{'aria-label': 'search'}}
                   sx={{'width': '25%', m: 1}}
                   onChange={(event) => setSearchValue(event.target.value)}
+                  value={searchValue}
                 />
               </SearchStyle>
               <Box sx={{flexGrow: 1}} />
@@ -338,12 +308,12 @@ export default function HomePage() {
             width: {sm: `calc(100% - ${drawerWidth}px)`}, height: '100vh'}}
         >
           <Toolbar />
-          {dash? <Dashboard /> : null}
+          {dash? <RenderContext.Provider value={{handleSearch}}> <Dashboard /> </RenderContext.Provider> : null}
           {market? <MarketTrends /> : null}
-          {portfolio? <Portfolio />: null}
-          {profile? <Profile /> : null}
+          {portfolio? <RenderContext.Provider value={{handleSearch}}> <Portfolio /> </RenderContext.Provider> : null}
+          {profile? <RenderContext.Provider value={{handleSearch}}> <Profile /> </RenderContext.Provider> : null}
           {settings? <Settings /> : null}
-          {search? <SearchContext.Provider value={{finalSearch}}> <Search /> </SearchContext.Provider> : null}
+          {search? <StockViewerContext.Provider value={{finalSearch}}> <Search /> </StockViewerContext.Provider> : null}
         </Box>
       </Box>
     </ThemeProvider>

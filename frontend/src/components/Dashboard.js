@@ -17,6 +17,7 @@ import { useState, useEffect } from 'react';
 import { CardActionArea } from '@mui/material';
 import { CardMedia } from '@mui/material';
 import alpacaApi from './StockPage/services/polygon';
+import RenderContext from './RenderContext';
 
 
 class NewsComponent extends React.Component {
@@ -298,6 +299,8 @@ export default function Dashboard() {
     performance = (((worth - capitalInvested) / capitalInvested) * 100).toFixed(2);
 
     return (
+      <RenderContext.Consumer>
+        {({handleSearch}) => (
         <Box sx={{ flexGrow: 1 }}>
             <Grid container spacing={2} >
                 <Grid item xs={8}>
@@ -360,5 +363,7 @@ export default function Dashboard() {
                 </Grid>
             </Grid>
         </Box>
+        )}
+      </RenderContext.Consumer>
     );
 }

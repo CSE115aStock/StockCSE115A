@@ -8,6 +8,8 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import RenderContext from './RenderContext';
+import { Button } from '@mui/material';
 
 
 
@@ -19,6 +21,8 @@ export default function Profile() {
     };
 
     return (
+      <RenderContext.Consumer>
+        {({handleSearch}) => (
       <div>
       <Box
         sx={{
@@ -64,8 +68,11 @@ export default function Profile() {
             MY LIKES
           </Typography>
           <Divider/>
+          <Button variant="outlined" sx={{ m: 2,}} onClick={() => handleSearch('TEST')}>Test Stock Viewer</Button>
         </Paper>
       </Box>
       </div>
+      )}
+      </RenderContext.Consumer>
     );
   }
