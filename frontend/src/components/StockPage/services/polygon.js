@@ -14,11 +14,13 @@ const alpacaApi = (baseURL = config.BASE_URL) => {
     const quote = (symbol) => api.get('/v2/stocks/'+symbol+'/quotes/latest')
     const trades = (symbol) => api.get('/v2/stocks/'+symbol+'/trades/latest')
     const mutiquotes = (symbols) => api.get('/v2/stocks/snapshots?symbols='+symbols)
+    const news  = (symbols) => api.get('/v1beta1/news?limit=5&exclude_contentless=true&symbols='+symbols)
     return {
         getBars,
         quote,
         trades,
-        mutiquotes
+        mutiquotes,
+        news
     }
 }
 
