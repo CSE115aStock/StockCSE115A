@@ -69,11 +69,11 @@ class NewsComponent extends React.Component {
                 </Typography>
                 <br></br>
                 <Card sx={{ minWidth: 345 }}>
-                    <CardActionArea href={this.state[0]['url']}>
+                    <CardActionArea href={this.state[0]['url']} target="_blank">
                         {this.state[0]['images'].length > 0 && 
                             <CardMedia
                             component="img"
-                            height="100"
+                            height="150"
                             image={this.state[0]['images'][0]['url']}
                             alt="Uable to load image"
                         />
@@ -90,11 +90,11 @@ class NewsComponent extends React.Component {
                 </Card>
                 <br></br>
                 <Card sx={{ minWidth: 345 }}>
-                    <CardActionArea  href={this.state[1]['url']}>
+                    <CardActionArea  href={this.state[1]['url']} target="_blank">
                         {this.state[1]['images'].length > 0 && 
                                 <CardMedia
                                 component="img"
-                                height="100"
+                                height="150"
                                 image={this.state[1]['images'][0]['url']}
                                 alt="Uable to load image"
                             />
@@ -111,11 +111,11 @@ class NewsComponent extends React.Component {
                 </Card>
                 <br></br>
                 <Card sx={{ minWidth: 345 }}>
-                    <CardActionArea  href={this.state[2]['url']}>
+                    <CardActionArea  href={this.state[2]['url']} target="_blank">
                         {this.state[2]['images'].length > 0 && 
                                 <CardMedia
                                 component="img"
-                                height="100"
+                                height="150"
                                 image={this.state[2]['images'][0]['url']}
                                 alt="Uable to load image"
                             />
@@ -132,11 +132,11 @@ class NewsComponent extends React.Component {
                 </Card>
                 <br></br>
                 <Card sx={{ minWidth: 345 }}>
-                    <CardActionArea  href={this.state[3]['url']}>
+                    <CardActionArea  href={this.state[3]['url']} target="_blank">
                         {this.state[3]['images'].length > 0 && 
                                 <CardMedia
                                 component="img"
-                                height="100"
+                                height="150"
                                 image={this.state[3]['images'][0]['url']}
                                 alt="Uable to load image"
                             />
@@ -153,11 +153,11 @@ class NewsComponent extends React.Component {
                 </Card>
                 <br></br>
                 <Card sx={{ minWidth: 345 }}>
-                    <CardActionArea  href={this.state[4]['url']}>
+                    <CardActionArea  href={this.state[4]['url']} target="_blank">
                         {this.state[4]['images'].length > 0 && 
                                 <CardMedia
                                 component="img"
-                                height="100"
+                                height="150"
                                 image={this.state[4]['images'][0]['url']}
                                 alt="Uable to load image"
                             />
