@@ -245,7 +245,11 @@ def sellStock():
 @portfolio_bp.route("/my_portfolio", methods=["GET", "POST"])
 @jwt_required()
 def fetchPortfolio():
-    cur = conn.cursor()
+    try:
+        cur = conn.cursor()
+    except psycopg2.InterfaceError as err:
+        conn = psycopg2.connect(dbname=DB_NAME, user=USR, password=PASSWORD, host=HOST, port=PORT)
+        cur = conn.cursor() 
 
     usr_email = get_jwt_identity()
     if not usr_email:
