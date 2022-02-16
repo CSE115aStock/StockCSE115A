@@ -14,8 +14,168 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { createTheme } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { CardActionArea } from '@mui/material';
+import { CardMedia } from '@mui/material';
 import alpacaApi from './StockPage/services/polygon';
 
+
+class NewsComponent extends React.Component {
+	componentDidMount() {
+		fetch('/portfolio/my_portfolio', {
+            method: 'POST',
+            headers: new Headers({
+                'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+            }),
+            body: JSON.stringify({
+
+            })
+        }).then(
+            res => res.json()
+        ).then(
+            port => {
+                var stocks = '';
+                for (var stock in port[0]) {
+                    if (stocks == '') {
+                        stocks = stocks + stock;
+                    }
+                    else {
+                        stocks = stocks + ',' + stock;
+                    }
+                }
+                const api = alpacaApi();
+                api.news(stocks).then(news => {
+                    this.setState(news['data']['news']);    
+                });
+            }
+        )
+	}
+	render() {
+		if (this.state == null) {
+			return(
+                <CardContent>
+                    <Typography gutterBottom variant="h4" component="div" color="primary">
+                        Today's News
+                    </Typography>
+                    <Typography gutterBottom variant="h6" component="div">
+                        Loading....
+                    </Typography>
+                </CardContent>
+            ) 
+		}
+		return (
+			<CardContent>
+                <Typography gutterBottom variant="h4" component="div" color="primary">
+                    Today's News
+                </Typography>
+                <br></br>
+                <Card sx={{ minWidth: 345 }}>
+                    <CardActionArea href={this.state[0]['url']} target="_blank">
+                        {this.state[0]['images'].length > 0 && 
+                            <CardMedia
+                            component="img"
+                            height="150"
+                            image={this.state[0]['images'][0]['url']}
+                            alt="Uable to load image"
+                        />
+                        }
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {this.state[0]['headline']}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {this.state[0]['summary']}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+                <br></br>
+                <Card sx={{ minWidth: 345 }}>
+                    <CardActionArea  href={this.state[1]['url']} target="_blank">
+                        {this.state[1]['images'].length > 0 && 
+                                <CardMedia
+                                component="img"
+                                height="150"
+                                image={this.state[1]['images'][0]['url']}
+                                alt="Uable to load image"
+                            />
+                        }
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {this.state[1]['headline']}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {this.state[1]['summary']}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+                <br></br>
+                <Card sx={{ minWidth: 345 }}>
+                    <CardActionArea  href={this.state[2]['url']} target="_blank">
+                        {this.state[2]['images'].length > 0 && 
+                                <CardMedia
+                                component="img"
+                                height="150"
+                                image={this.state[2]['images'][0]['url']}
+                                alt="Uable to load image"
+                            />
+                        }   
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {this.state[2]['headline']}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {this.state[2]['summary']}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+                <br></br>
+                <Card sx={{ minWidth: 345 }}>
+                    <CardActionArea  href={this.state[3]['url']} target="_blank">
+                        {this.state[3]['images'].length > 0 && 
+                                <CardMedia
+                                component="img"
+                                height="150"
+                                image={this.state[3]['images'][0]['url']}
+                                alt="Uable to load image"
+                            />
+                        }   
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {this.state[3]['headline']}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {this.state[3]['summary']}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+                <br></br>
+                <Card sx={{ minWidth: 345 }}>
+                    <CardActionArea  href={this.state[4]['url']} target="_blank">
+                        {this.state[4]['images'].length > 0 && 
+                                <CardMedia
+                                component="img"
+                                height="150"
+                                image={this.state[4]['images'][0]['url']}
+                                alt="Uable to load image"
+                            />
+                        }
+                        <CardContent>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {this.state[4]['headline']}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                                {this.state[4]['summary']}
+                            </Typography>
+                        </CardContent>
+                    </CardActionArea>
+                </Card>
+            </CardContent>
+		)
+	}
+}
 
 
 const darkTheme = createTheme({
@@ -142,13 +302,9 @@ export default function Dashboard() {
             <Grid container spacing={2} >
                 <Grid item xs={8}>
                     <Card sx={{ minHeight: 382.5 }}>
-                        <CardContent>
-                            <Typography gutterBottom variant="h6" component="div" color="primary">
-                                Today's News
-                            </Typography>
-
-                        </CardContent>
+                        <NewsComponent />
                     </Card>
+                    
                 </Grid>
                 <Grid item xs={4}>
                     <Card sx={{ maxWidth: 345 }} >
@@ -175,40 +331,12 @@ export default function Dashboard() {
                             </Typography>
                         </CardContent>
                     </Card>
-                </Grid>
-                <Grid item xs={8}>
-                    <TableContainer component={Paper}>
+                    <br></br>
+                    <TableContainer component={Paper} sx={{ maxWidth: 345 }}>
                         <Table aria-label="customized table">
                             <TableHead>
                                 <Typography variant="h5" color="textPrimary" margin="10px">
                                     Portfolio
-                                </Typography>
-                                <TableRow>
-                                    <StyledTableCell>Stock</StyledTableCell>
-                                    <StyledTableCell align="center">Amount</StyledTableCell>
-                                    <StyledTableCell align="right">Profit</StyledTableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {portfolio.map((portfolio) => (
-                                    <StyledTableRow>
-                                        <StyledTableCell>
-                                            {portfolio.stock}
-                                        </StyledTableCell>
-                                        <StyledTableCell align="center">{portfolio.amount}</StyledTableCell>
-                                        <StyledTableCell align="right">{portfolio.profit}%</StyledTableCell>
-                                    </StyledTableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Grid>
-                <Grid item xs={4} >
-                    <TableContainer component={Paper}>
-                        <Table aria-label="customized table">
-                            <TableHead>
-                                <Typography variant="h5" color="textPrimary" margin="10px">
-                                    Top Movers
                                 </Typography>
                                 <TableRow>
                                     <StyledTableCell>Stock</StyledTableCell>
