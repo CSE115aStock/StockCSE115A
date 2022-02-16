@@ -48,7 +48,8 @@ export function Register () {
                 setAlert(true);
             });
         } else {
-            alert('The passwords do not match!');
+            setAlertMessage('The passwords do not match!');
+            setAlert(true);
         }
     }
 

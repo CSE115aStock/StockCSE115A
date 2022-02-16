@@ -3,6 +3,7 @@ import os
 import re
 import json
 
+from email_validator import validate_email, EmailNotValidError
 from datetime import timedelta, datetime, timezone
 from dotenv import load_dotenv, find_dotenv
 from psycopg2.extras import RealDictCursor
@@ -73,21 +74,27 @@ def AddUser():
 
         error = None
 
-        if not f_name or len(f_name) == 0:
+        if not username or len(username) == 0:
+            error = "Username is required."
+        elif not f_name or len(f_name) == 0:
             error = "First name is required."
         elif not l_name or len(l_name) == 0:
             error = "Last name is required."
         elif not email or len(email) == 0:
             error = "Email is required."
-        elif not username or len(username) == 0:
-            error = "Username is required."
         elif not p_word or len(p_word) == 0:
             error = "Password is required."
         elif not verify_p_word or len(verify_p_word) == 0:
             error = "Re-Entered password is required."
+        else:
+            try:
+                valid = validate_email(email)
+                email = valid.email
+            except EmailNotValidError as err:
+                error = "Invalid email."
 
         if error != None:
-            return jsonify({"err_msg": error})
+            return jsonify({"err_msg": error}), 400
 
         cur.execute("SELECT * from users where email = %(email)s", {"email": email})
         if cur.fetchone() != None:
