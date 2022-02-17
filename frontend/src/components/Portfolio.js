@@ -55,7 +55,14 @@ class ChartComponent extends React.Component {
 
 export default function Dashboard() {
   const [port,setPort] = useState([])
+  const [data,setData] = useState([])
+
   useEffect(() => {
+    fetchPort();
+    fetchData();
+  }, []);
+
+  const fetchPort = () => {
     fetch('/portfolio/my_portfolio', {
     method: 'POST',
     headers: new Headers({
@@ -71,11 +78,9 @@ export default function Dashboard() {
             setPort(port)
         }
     )
-  }, [])
+  }
   
-  const [data,setData] = useState([])
-
-  useEffect(() => {
+  const fetchData = () => {
     fetch('/portfolio/my_portfolio', {
     method: 'POST',
     headers: new Headers({
@@ -103,8 +108,7 @@ export default function Dashboard() {
           }); 
         }
     )
-  }, [])
-
+  }
 
   function createData(stock, amount, shares, price, high, low, closing) {
     var change = (((price - closing) / closing) * 100);
@@ -207,9 +211,10 @@ export default function Dashboard() {
     res => res.json()
     ).then(
       data => {
+        fetchPort();
+        fetchData();
         setToken(data);
-        console.log(data);
-        setData(data['data'])
+        console.log(data)
       }
       // tk => {
       //   if (tk.status === 403) {
@@ -236,6 +241,8 @@ export default function Dashboard() {
       res => res.json()
       ).then(
         data => {
+          fetchPort();
+          fetchData();
           setToken(data);
           console.log(data)
         }
@@ -257,6 +264,8 @@ export default function Dashboard() {
       res => res.json()
       ).then(
         data => {
+          fetchPort();
+          fetchData();
           setToken(data);
           console.log(data)
         }
@@ -278,6 +287,8 @@ export default function Dashboard() {
       res => res.json()
       ).then(
         data => {
+          fetchPort();
+          fetchData();
           setToken(data);
           console.log(data)
         }
