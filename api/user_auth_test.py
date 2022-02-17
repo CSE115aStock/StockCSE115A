@@ -95,7 +95,7 @@ def test_AddUser_invalid_email():
                 "email": "t1@exampl.om",
                 "username": "test.user2",
                 "password": "Test@1234",
-                "verify_password": "Test@123",
+                "verify_password": "Test@1234",
             },
         )
         json_response = rv.get_json()
