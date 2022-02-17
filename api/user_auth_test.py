@@ -64,9 +64,6 @@ def test_AddUser_weak_password():
         )
         json_response = rv.get_json()
 
-        cur.execute("DELETE from users WHERE username='test.user2'")
-        conn.commit()
-
         assert json_response["err_msg"] == "Password not strong enough."
 
 
@@ -85,10 +82,25 @@ def test_AddUser_password_mismatch():
         )
         json_response = rv.get_json()
 
-        cur.execute("DELETE from users WHERE username='test.user2'")
-        conn.commit()
-
         assert json_response["err_msg"] == "Passwords do not match"
+
+
+def test_AddUser_invalid_email():
+    with app.test_client() as c:
+        rv = c.post(
+            "/auth/signup",
+            json={
+                "first_name": "test_first",
+                "last_name": "test_last",
+                "email": "t1@exampl.om",
+                "username": "test.user2",
+                "password": "Test@1234",
+                "verify_password": "Test@123",
+            },
+        )
+        json_response = rv.get_json()
+
+        assert json_response["err_msg"] == "Invalid email."
 
 
 def test_AddUser_missing_field():
