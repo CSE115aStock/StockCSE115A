@@ -32,6 +32,7 @@ import StockViewerContext from './StockViewerContext';
 import {useNavigate} from 'react-router-dom';
 import RenderContext from './RenderContext';
 import { touchRippleClasses } from '@mui/material';
+import SocialTest from './SocialTest'
 
 
 const drawerWidth = 240;
@@ -40,10 +41,14 @@ const darkTheme = createTheme({
   palette: {
     type: 'light',
     primary: {
-      main: '#3f51b5',
+      main: '#333a56',
     },
     secondary: {
-      main: '#f50057',
+      main: '#52658f',
+    },
+    background: {
+      default: '#f1f1e4',
+      paper: '#f7f5e6',
     },
   },
   typography: {
@@ -85,6 +90,7 @@ export default function HomePage() {
   // hook for profile menu options
   const [profile, setProfile] = React.useState(false);
   const [settings, setSettings] = React.useState(false);
+  const [likeComment, setLC] = React.useState(false);
 
   const [search, setSearch] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('')
@@ -101,7 +107,7 @@ export default function HomePage() {
     setPfOpen(!pfOpen);
   };
 
-  const handlePages = (dashVal, marketVal, profVal, settVal, searVal, portVal) => {
+  const handlePages = (dashVal, marketVal, profVal, settVal, searVal, portVal, lcVal) => {
     setDash(dashVal);
     setMarket(marketVal);
     setProfile(profVal);
@@ -110,6 +116,7 @@ export default function HomePage() {
     setPortfolio(portVal);
     setSearchValue('');
     setFinalSearch('');
+    setLC(lcVal);
   }
   
   const handleSearch = (val) => {
@@ -122,6 +129,7 @@ export default function HomePage() {
       setPortfolio(false);
       setSearchValue('');
       setFinalSearch(val);
+      setLC(false);
     }
   };
 
@@ -134,6 +142,7 @@ export default function HomePage() {
     setPortfolio(false);
     setSearchValue('');
     setFinalSearch('');
+    setLC(false);
     fetch('auth/logout', {
       method: 'GET',
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
@@ -156,21 +165,21 @@ export default function HomePage() {
       <Divider />
       <List>
         <ListItem button key='Dashboard' 
-          onClick={() => handlePages(true, false, false, false, false, false)}>
+          onClick={() => handlePages(true, false, false, false, false, false, false)}>
           <ListItemIcon>
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary='Dashboard' />
         </ListItem>
         <ListItem button key='Portfolio' 
-          onClick={() => handlePages(false, false, false, false, false, true)} >
+          onClick={() => handlePages(false, false, false, false, false, true, false)} >
           <ListItemIcon>
             <BarChartIcon/>
           </ListItemIcon>
           <ListItemText primary='Portfolio' />
         </ListItem>
         <ListItem button key='Market Trends' 
-          onClick={() => handlePages(false, true, false, false, false, false)} >
+          onClick={() => handlePages(false, true, false, false, false, false, false)} >
           <ListItemIcon>
             <ShowChartIcon/>
           </ListItemIcon>
@@ -196,8 +205,9 @@ export default function HomePage() {
       open={pfOpen}
       onClose={handleProfileMenuToggle}
     >
-      <MenuItem onClick={() => handlePages(false, false, true, false, false, false)}>Profile</MenuItem>
-      <MenuItem onClick={() => handlePages(false, false, false, true, false, false)}>Settings</MenuItem>
+      <MenuItem onClick={() => handlePages(false, false, true, false, false, false, false)}>Profile</MenuItem>
+      <MenuItem onClick={() => handlePages(false, false, false, true, false, false, false)}>Settings</MenuItem>
+      <MenuItem onClick={() => handlePages(false, false, false, false, false, false, true)}>Social Test</MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
   );
@@ -304,7 +314,7 @@ export default function HomePage() {
         </Box>
         <Box
           component="main"
-          sx={{flexGrow: 1, p: 3, bgcolor: '#fafafa',
+          sx={{flexGrow: 1, p: 3,
             width: {sm: `calc(100% - ${drawerWidth}px)`}, height: '100vh'}}
         >
           <Toolbar />
@@ -313,6 +323,7 @@ export default function HomePage() {
           {portfolio? <RenderContext.Provider value={{handleSearch}}> <Portfolio /> </RenderContext.Provider> : null}
           {profile? <RenderContext.Provider value={{handleSearch}}> <Profile /> </RenderContext.Provider> : null}
           {settings? <Settings /> : null}
+          {likeComment? <SocialTest/> : null}
           {search? <StockViewerContext.Provider value={{finalSearch}}> <Search /> </StockViewerContext.Provider> : null}
         </Box>
       </Box>
