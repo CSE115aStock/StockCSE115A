@@ -196,6 +196,15 @@ export default function Dashboard() {
   const [sellStock, setSellStock] = React.useState(false);
 
   const [token,setToken] = useState([])
+
+  const handleRefresh = () => {
+    fetchPort();
+    fetchData();
+    setTickr('');
+    setAmount('');
+    setShares('');
+  }
+
   // handles opening of add stock dialog
   const handleAddStockButton = () => {
     setAddStock(false);
@@ -211,8 +220,7 @@ export default function Dashboard() {
     res => res.json()
     ).then(
       data => {
-        fetchPort();
-        fetchData();
+        handleRefresh();
         setToken(data);
         console.log(data)
       }
@@ -241,11 +249,13 @@ export default function Dashboard() {
       res => res.json()
       ).then(
         data => {
-          fetchPort();
-          fetchData();
+          handleRefresh();
           setToken(data);
           console.log(data)
         }
+      // ).catch(err => {
+      //   console.log(err.message);
+      // }
       )
     }
 
@@ -264,8 +274,7 @@ export default function Dashboard() {
       res => res.json()
       ).then(
         data => {
-          fetchPort();
-          fetchData();
+          handleRefresh();
           setToken(data);
           console.log(data)
         }
@@ -287,8 +296,7 @@ export default function Dashboard() {
       res => res.json()
       ).then(
         data => {
-          fetchPort();
-          fetchData();
+          handleRefresh();
           setToken(data);
           console.log(data)
         }
