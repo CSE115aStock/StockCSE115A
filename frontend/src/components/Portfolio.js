@@ -107,19 +107,22 @@ export default function Dashboard() {
   var highestPerforming = [0,0];
   const portfolioDict = port[0];
   const portfolio = [];
-  for(var key in portfolioDict, data){
-    portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], 
-                                    data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], 
-                                    data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']
-                                    ));
-    capitalInvested += parseInt(portfolioDict[key]['amount']);
-    worth += data[key]['latestTrade']['p'] * portfolioDict[key]['shares'];
-    if(highestPerforming[0]==0){
-      highestPerforming = [key, portfolio[portfolio.length-1].change] 
-    }
-    else{
-      if(highestPerforming[1] < portfolio[portfolio.length-1].change){
-        highestPerforming = [key, portfolio[portfolio.length-1].change];
+
+  if(portfolioDict != null && Object.keys(portfolioDict).length != 0)  {
+    for(var key in portfolioDict, data){
+      portfolio.push(createData(key, portfolioDict[key]['amount'], portfolioDict[key]['shares'], 
+                                      data[key]['latestTrade']['p'], data[key]['dailyBar']['h'], 
+                                      data[key]['dailyBar']['l'], data[key]['prevDailyBar']['c']
+                                      ));
+      capitalInvested += parseInt(portfolioDict[key]['amount']);
+      worth += data[key]['latestTrade']['p'] * portfolioDict[key]['shares'];
+      if(highestPerforming[0]==0){
+        highestPerforming = [key, portfolio[portfolio.length-1].change] 
+      }
+      else{
+        if(highestPerforming[1] < portfolio[portfolio.length-1].change){
+          highestPerforming = [key, portfolio[portfolio.length-1].change];
+        }
       }
     }
   }
