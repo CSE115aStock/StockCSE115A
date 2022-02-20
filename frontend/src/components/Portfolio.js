@@ -36,6 +36,10 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
@@ -186,7 +190,7 @@ export default function Dashboard() {
   const [tickr, setTickr] = React.useState('');
   const [amount, setAmount] = React.useState('');
   const [shares, setShares] = React.useState('');
-  // const [alert, setAlert] = React.useState(false);
+  const [alert, setAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
  
   // hook for edit stock options
@@ -224,13 +228,10 @@ export default function Dashboard() {
         setToken(data);
         console.log(data)
       }
-      // tk => {
-      //   if (tk.status === 403) {
-      //     console.log(tk.err_msg);
-      //     setAlertMessage(tk.err_msg);
-      //     // setAlert(true);
-      //   }
-      // }
+    ).catch(err => {
+      setAlertMessage(err.message);
+      setAlert(true);
+    }
     )
   }
 
@@ -339,9 +340,29 @@ export default function Dashboard() {
         </Tooltip>
         <Dialog open={addStock} onClose={handleClose}>
           <DialogTitle>Add Stock</DialogTitle>
+          <Divider/>
+          <Collapse in={alert}>
+            <Alert severity='error' sx={{margin: 5}}
+              action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                setAlert(false);
+                }}
+              >
+              <CloseIcon fontSize="inherit" />
+              </IconButton>
+              }
+              sx={{ mb: 0, mt: 3 }}
+            >
+            {alertMessage}
+            </Alert>
+          </Collapse>
           <DialogContent>
             <DialogContentText>
-            To add a stock, please enter your stock name, amount and share.
+            To add a stock, please enter your stock name, amount invested and share.
             </DialogContentText>
             <TextField
               margin="dense"
@@ -353,7 +374,7 @@ export default function Dashboard() {
               onChange={(event) => setTickr(event.target.value)}/>
             <TextField
               id="standard"
-              label="Amount"
+              label="Amount Invested"
               value={amount}
               variant="standard"
               onChange={(event) => setAmount(event.target.value)}/>
@@ -419,7 +440,7 @@ export default function Dashboard() {
           <DialogTitle>Buy Stock</DialogTitle>
           <DialogContent>
             <DialogContentText>
-            To buy stocks, please enter your stock name, amount and share.
+            To buy stocks, please enter your stock name, amount invested and share.
             </DialogContentText>
             <TextField
               margin="dense"
@@ -431,7 +452,7 @@ export default function Dashboard() {
               onChange={(event) => setTickr(event.target.value)}/>
             <TextField
               id="standard"
-              label="Amount"
+              label="Amount Invested"
               value={amount}
               variant="standard"
               onChange={(event) => setAmount(event.target.value)}/>
@@ -464,7 +485,7 @@ export default function Dashboard() {
           <DialogTitle>Sell Stock</DialogTitle>
           <DialogContent>
             <DialogContentText>
-            To sell stocks, please enter your stock name, amount and share.
+            To sell stocks, please enter your stock name, amount invested and share.
             </DialogContentText>
             <TextField
               margin="dense"
@@ -476,7 +497,7 @@ export default function Dashboard() {
               onChange={(event) => setTickr(event.target.value)}/>
             <TextField
               id="standard"
-              label="Amount"
+              label="Amount invested"
               value={amount}
               variant="standard"
               onChange={(event) => setAmount(event.target.value)}/>
