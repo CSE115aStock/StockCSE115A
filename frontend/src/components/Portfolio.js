@@ -5,9 +5,7 @@ import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { CardActionArea } from '@mui/material';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell, { tableCellClasses } from '@mui/material/TableCell';
@@ -16,7 +14,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { createTheme } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
 import Chart from './Charts/MACDchart';
@@ -26,9 +23,7 @@ import alpacaApi from './StockPage/services/polygon';
 import RenderContext from './RenderContext';
 
 import AddIcon from '@mui/icons-material/AddRounded';
-import PlaylistAddOutlinedIcon from '@mui/icons-material/PlaylistAddOutlined';
 import RemoveIcon from '@mui/icons-material/RemoveRounded';
-import PlaylistRemoveOutlinedIcon from '@mui/icons-material/PlaylistRemoveOutlined';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -347,8 +342,6 @@ export default function Dashboard() {
     }
   }
 
-
-
   const handleClose = () => {
     setAddStock(false);
     setRemoveStock(false);
@@ -421,72 +414,6 @@ export default function Dashboard() {
       </Dialog>
     </div>
   )
-
-  // const removeStockDialog = (
-  //   <div>
-  //     <Tooltip title="Remove Stock">
-  //     <IconButton 
-  //       color="primary"
-  //       onClick={handleRemoveStockButton}
-  //     >
-  //       <RemoveIcon />
-  //     </IconButton>
-  //   </Tooltip>
-  //   <Dialog open={removeStock} onClose={handleClose}>
-  //     <DialogTitle>Remove Stock</DialogTitle>
-  //     <Divider/>
-  //     <Collapse in={alert}>
-  //       <Alert severity='error' sx={{margin: 5}}
-  //         action={
-  //         <IconButton
-  //           aria-label="close"
-  //           color="inherit"
-  //           size="small"
-  //           onClick={() => {
-  //           setAlert(false);
-  //           }}
-  //         >
-  //         <CloseIcon fontSize="inherit" />
-  //         </IconButton>
-  //         }
-  //         sx={{ mb: 0, mt: 3 }}
-  //       >
-  //       {alertMessage}
-  //       </Alert>
-  //     </Collapse>
-  //     <DialogContent>
-  //       <DialogContentText>
-  //       To remove a stock, please enter your stock name.
-  //       </DialogContentText>
-  //       <TextField
-  //         margin="dense"
-  //         id="standard"
-  //         label="Stock Name"
-  //         value={tickr}
-  //         variant="standard"
-  //         fullWidth
-  //         onChange={(event) => setTickr(event.target.value)}/>
-  //         <TextField
-  //           id="standard"
-  //           label="Amount invested"
-  //           value={amount}
-  //           variant="standard"
-  //           onChange={(event) => setAmount(event.target.value)}/>
-  //         <TextField
-  //           id="standard"
-  //           label="Shares"
-  //           value={shares}
-  //           variant="standard"
-  //           onChange={(event) => setShares(event.target.value)}/>
-  //     </DialogContent>
-  //     <DialogActions>
-  //       <Button onClick={handleClose}>Cancel</Button>
-  //       <Button onClick={handleSellStockButton}>Remove</Button>
-  //       <Button onClick={handleRemoveStockButton}>Remove All</Button>
-  //     </DialogActions>
-  //   </Dialog>
-  //   </div>
-  // )
       
   const sellStockDialog = (
     <div>
