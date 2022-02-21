@@ -211,7 +211,7 @@ def sellStock():
         elif new_shares == 0:
             del port_dict[tickr]
             cur.execute(
-                "UPDATE users SET portfolio = '[]' WHERE email=%s", (usr_email,)
+                "UPDATE users SET portfolio = '{}' WHERE email=%s", (usr_email,)
             )
             cur.execute(
                 "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
