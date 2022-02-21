@@ -12,3 +12,4 @@ dependencies:
   - python-dotenv=0.19.2
   - black=22.1.0
   - pip
+  - email_validator=1.1.3
