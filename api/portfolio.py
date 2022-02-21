@@ -48,23 +48,6 @@ def addStock():
         if not usr_email:
             return jsonify({"err_msg": "Couldn't verify user."}), 403
 
-        # fetch portfolio
-        cur = conn.cursor()
-        cur.execute("SELECT portfolio FROM users WHERE email=%s", (usr_email,))
-        port = cur.fetchone()
-        port_dict = port[0]
-
-        # fetch stock
-        if tickr in port_dict:
-            return (
-                jsonify(
-                    {
-                        "err_msg": "Stock exists. Please use 'Buy Stock' to add more stock."
-                    }
-                ),
-                404,
-            )
-
         cur.execute(
             "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
             (json.dumps(stock), usr_email),

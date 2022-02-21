@@ -109,19 +109,10 @@ export default function Dashboard() {
           const api = alpacaApi();
           api.mutiquotes(stocks).then(data => {
             setData(data['data']);
-            
-            // console.log(data);
           }); 
         }
     )
-  }
-  // const api = alpacaApi();
-  // api.mutiquotes('AAPL').then(data =>{
-  //   if (data.status == 200) {
-
-  //   }
-  // });
-  
+  } 
 
   function createData(stock, amount, shares, price, high, low, closing) {
     var change = (((price - closing) / closing) * 100);
@@ -208,7 +199,6 @@ export default function Dashboard() {
   // hook for edit stock options
   const [addStock, setAddStock] = useState(false);
   const [removeStock, setRemoveStock] = useState(false);
-  const [buyStock, setBuyStock] = useState(false);
   const [sellStock, setSellStock] = useState(false);
 
   const [token,setToken] = useState([])
@@ -230,36 +220,51 @@ export default function Dashboard() {
       api.trades(tickr).then(data =>{
       if (data["status"] == 200) {
         if (tickr in portfolioDict) {
-          handleBuyStockButton();
+          fetch('/portfolio/buy', {
+          method: 'POST',
+          headers: new Headers({
+              'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+          }),
+          body: JSON.stringify({
+              "tickr": tickr, "amount": amount, "shares": shares
+          })
+          } ).then(
+          res => {
+            if (res.status == 200) {
+              setAddStock(false);
+              handleRefresh();
+            }
+            else if (res.status == 403) {
+              setAlertMessage("Couldn't verify user.");
+              setAlert(true);
+            }
+            else if (res.status == 400) {
+              setAlertMessage("New shares and amount cannot be negative.");
+              setAlert(true);
+            }
+          }
+          )
         }
         else {
           fetch('/portfolio/add_stock', {
-            method: 'POST',
-            headers: new Headers({
-                'Authorization': 'Bearer ' + localStorage.getItem('JWT')
-            }),
-            body: JSON.stringify({
-                "tickr": tickr, "amount": amount, "shares": shares
-            })
-            } ).then(
-            res => {
-              if (res.status == 200) {
-                setAddStock(false);
-                handleRefresh();
-              }
-              else if (res.status == 403) {
-                setAlertMessage("Couldn't verify user.");
-                setAlert(true);
-              }
-              else if (res.status == 404) {
-                setAlertMessage("Stock exists. Please use 'Buy Stock' to add more stock.")
-                setAlert(true);
-              }
+          method: 'POST',
+          headers: new Headers({
+              'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+          }),
+          body: JSON.stringify({
+              "tickr": tickr, "amount": amount, "shares": shares
+          })
+          } ).then(
+          res => {
+            if (res.status == 200) {
+              setAddStock(false);
+              handleRefresh();
             }
-            ).catch(err => {
-              setAlertMessage(err.message);
+            else if (res.status == 403) {
+              setAlertMessage("Couldn't verify user.");
               setAlert(true);
-            });
+            }
+          })
         }
       }
       else {
@@ -272,43 +277,10 @@ export default function Dashboard() {
       setAddStock(true);
     }
   }
-  //   if (addStock) {
-  //     fetch('/portfolio/add_stock', {
-  //     method: 'POST',
-  //     headers: new Headers({
-  //         'Authorization': 'Bearer ' + localStorage.getItem('JWT')
-  //     }),
-  //     body: JSON.stringify({
-  //         "tickr": tickr, "amount": amount, "shares": shares
-  //     })
-  //     } ).then(
-  //     res => {
-  //       if (res.status == 200) {
-  //         setAddStock(false);
-  //         handleRefresh();
-  //       }
-  //       else if (res.status == 403) {
-  //         setAlertMessage("Couldn't verify user.");
-  //         setAlert(true);
-  //       }
-  //       else if (res.status == 404) {
-  //         setAlertMessage("Stock exists. Please use 'Buy Stock' to add more stock.")
-  //         setAlert(true);
-  //       }
-  //     }
-  //     ).catch(err => {
-  //       setAlertMessage(err.message);
-  //       setAlert(true);
-  //     });
-  //   } 
-  //   else {
-  //     setAddStock(true);
-  //   }
-  // }
 
   // handles opening of remove stock dialog
   const handleRemoveStockButton = () => {
-    // if (removeStock) {
+    if (removeStock) {
       fetch('/portfolio/remove_stock', {
       method: 'POST',
       headers: new Headers({
@@ -327,58 +299,20 @@ export default function Dashboard() {
           setAlertMessage("Couldn't verify user.");
           setAlert(true);
         }
-        // else if (res.status == 404) {
-        //   setAlertMessage("Stock could not be found in your portfolio.");
-        //   setAlert(true);
-        // }
-      }); 
-    // }
-    // else {
-    //   setRemoveStock(true);
-    // }
-  }
-
-  // handles opening of buy stock dialog
-  const handleBuyStockButton = () => {
-    if (buyStock) {
-      fetch('/portfolio/buy', {
-        method: 'POST',
-        headers: new Headers({
-            'Authorization': 'Bearer ' + localStorage.getItem('JWT')
-        }),
-        body: JSON.stringify({
-            "tickr": tickr, "amount": amount, "shares": shares
-        })
-        } ).then(
-        res => {
-          if (res.status == 200) {
-            setBuyStock(false);
-            handleRefresh();
-          }
-          else if (res.status == 403) {
-            setAlertMessage("Couldn't verify user.");
-            setAlert(true);
-          }
-          else if (res.status == 400) {
-            setAlertMessage("New shares and amount cannot be negative.");
-            setAlert(true);
-          }
-          else if (res.status == 404) {
-            setAlertMessage("Stock could not be found in your portfolio. Please use 'add stock' to add a new stock.");
-            setAlert(true);
-          }
+        else if (res.status == 404) {
+          setAlertMessage("Stock could not be found in your portfolio.");
+          setAlert(true);
         }
-        )
+      }); 
     }
     else {
-      setBuyStock(true);
+      setRemoveStock(true);
     }
   }
 
   // handles opening of sell stock dialog
   const handleSellStockButton = () => {
     if (sellStock) {
-
       fetch('/portfolio/sell', {
       method: 'POST',
       headers: new Headers({
@@ -413,15 +347,11 @@ export default function Dashboard() {
     }
   }
 
-  // const handleAddStock = () {
-  //   fetchPort();
-  //   if ()
-  // }
+
 
   const handleClose = () => {
     setAddStock(false);
     setRemoveStock(false);
-    setBuyStock(false);
     setSellStock(false);
     setAlert(false);
     setAlertMessage('');
@@ -492,123 +422,71 @@ export default function Dashboard() {
     </div>
   )
 
-  const removeStockDialog = (
-    <div>
-      <Tooltip title="Remove Stock">
-      <IconButton 
-        color="primary"
-        onClick={handleRemoveStockButton}
-      >
-        <RemoveIcon />
-      </IconButton>
-    </Tooltip>
-    <Dialog open={removeStock} onClose={handleClose}>
-      <DialogTitle>Remove Stock</DialogTitle>
-      <Divider/>
-      <Collapse in={alert}>
-        <Alert severity='error' sx={{margin: 5}}
-          action={
-          <IconButton
-            aria-label="close"
-            color="inherit"
-            size="small"
-            onClick={() => {
-            setAlert(false);
-            }}
-          >
-          <CloseIcon fontSize="inherit" />
-          </IconButton>
-          }
-          sx={{ mb: 0, mt: 3 }}
-        >
-        {alertMessage}
-        </Alert>
-      </Collapse>
-      <DialogContent>
-        <DialogContentText>
-        To remove a stock, please enter your stock name.
-        </DialogContentText>
-        <TextField
-          margin="dense"
-          id="standard"
-          label="Stock Name"
-          value={tickr}
-          variant="standard"
-          fullWidth
-          onChange={(event) => setTickr(event.target.value)}/>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleRemoveStockButton}>Remove</Button>
-      </DialogActions>
-    </Dialog>
-    </div>
-  )
-
-  const buyStockDialog = (
-    <div>
-      <Tooltip title="Buy Stock">
-        <IconButton 
-          color="primary"
-          onClick={handleBuyStockButton}
-        >
-          <PlaylistAddOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-      <Dialog open={buyStock} onClose={handleClose}>
-        <DialogTitle>Buy Stock</DialogTitle>
-        <Divider/>
-        <Collapse in={alert}>
-          <Alert severity='error' sx={{margin: 5}}
-            action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-              setAlert(false);
-              }}
-            >
-            <CloseIcon fontSize="inherit" />
-            </IconButton>
-            }
-            sx={{ mb: 0, mt: 3 }}
-          >
-          {alertMessage}
-          </Alert>
-        </Collapse>
-        <DialogContent>
-          <DialogContentText>
-          To buy stocks, please enter your stock name, amount invested and share.
-          </DialogContentText>
-          <TextField
-            margin="dense"
-            id="standard"
-            label="Stock Name"
-            value={tickr}
-            variant="standard"
-            fullWidth
-            onChange={(event) => setTickr(event.target.value)}/>
-          <TextField
-            id="standard"
-            label="Amount Invested"
-            value={amount}
-            variant="standard"
-            onChange={(event) => setAmount(event.target.value)}/>
-          <TextField
-            id="standard"
-            label="Shares"
-            value={shares}
-            variant="standard"
-            onChange={(event) => setShares(event.target.value)}/>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleBuyStockButton}>Buy</Button>
-        </DialogActions>
-        </Dialog>
-    </div>
-  )
+  // const removeStockDialog = (
+  //   <div>
+  //     <Tooltip title="Remove Stock">
+  //     <IconButton 
+  //       color="primary"
+  //       onClick={handleRemoveStockButton}
+  //     >
+  //       <RemoveIcon />
+  //     </IconButton>
+  //   </Tooltip>
+  //   <Dialog open={removeStock} onClose={handleClose}>
+  //     <DialogTitle>Remove Stock</DialogTitle>
+  //     <Divider/>
+  //     <Collapse in={alert}>
+  //       <Alert severity='error' sx={{margin: 5}}
+  //         action={
+  //         <IconButton
+  //           aria-label="close"
+  //           color="inherit"
+  //           size="small"
+  //           onClick={() => {
+  //           setAlert(false);
+  //           }}
+  //         >
+  //         <CloseIcon fontSize="inherit" />
+  //         </IconButton>
+  //         }
+  //         sx={{ mb: 0, mt: 3 }}
+  //       >
+  //       {alertMessage}
+  //       </Alert>
+  //     </Collapse>
+  //     <DialogContent>
+  //       <DialogContentText>
+  //       To remove a stock, please enter your stock name.
+  //       </DialogContentText>
+  //       <TextField
+  //         margin="dense"
+  //         id="standard"
+  //         label="Stock Name"
+  //         value={tickr}
+  //         variant="standard"
+  //         fullWidth
+  //         onChange={(event) => setTickr(event.target.value)}/>
+  //         <TextField
+  //           id="standard"
+  //           label="Amount invested"
+  //           value={amount}
+  //           variant="standard"
+  //           onChange={(event) => setAmount(event.target.value)}/>
+  //         <TextField
+  //           id="standard"
+  //           label="Shares"
+  //           value={shares}
+  //           variant="standard"
+  //           onChange={(event) => setShares(event.target.value)}/>
+  //     </DialogContent>
+  //     <DialogActions>
+  //       <Button onClick={handleClose}>Cancel</Button>
+  //       <Button onClick={handleSellStockButton}>Remove</Button>
+  //       <Button onClick={handleRemoveStockButton}>Remove All</Button>
+  //     </DialogActions>
+  //   </Dialog>
+  //   </div>
+  // )
       
   const sellStockDialog = (
     <div>
@@ -617,7 +495,7 @@ export default function Dashboard() {
           color="primary"
           onClick={handleSellStockButton}
         >
-          <PlaylistRemoveOutlinedIcon />
+          <RemoveIcon />
         </IconButton>
       </Tooltip>
       <Dialog open={sellStock} onClose={handleClose}>
@@ -644,7 +522,7 @@ export default function Dashboard() {
         </Collapse>
         <DialogContent>
           <DialogContentText>
-          To sell stocks, please enter your stock name, amount invested and share.
+          To sell stocks, please enter the stock name, amount invested and share.
           </DialogContentText>
           <TextField
             margin="dense"
@@ -669,7 +547,8 @@ export default function Dashboard() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSellStockButton}>Sell</Button>
+          <Button onClick={handleSellStockButton}>Remove</Button> 
+          <Button onClick={handleRemoveStockButton}>Remove All</Button>
         </DialogActions>
       </Dialog>
     </div>
@@ -736,8 +615,6 @@ export default function Dashboard() {
                           Stocks
                         </Typography>
                         {addStockDialog}
-                        {removeStockDialog}
-                        {buyStockDialog}
                         {sellStockDialog}
                       </Toolbar>
                       <TableRow>
