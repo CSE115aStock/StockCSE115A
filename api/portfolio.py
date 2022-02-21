@@ -203,7 +203,10 @@ def sellStock():
             return jsonify({"err_msg": "Stock could not be found"}), 404
 
         # calculate new amount and update db
-        new_amount = int(port_dict[tickr]["amount"]) - int(sell_amount)
+        sell_price_per_share = int(sell_amount) / int(sell_shares)
+        new_amount = int(port_dict[tickr]["shares"]) * sell_price_per_share - int(
+            sell_amount
+        )
         new_shares = int(port_dict[tickr]["shares"]) - int(sell_shares)
 
         if new_shares < 0:
