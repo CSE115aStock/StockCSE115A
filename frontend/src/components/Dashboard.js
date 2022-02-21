@@ -261,6 +261,7 @@ export default function Dashboard() {
                 const api = alpacaApi();
                 api.mutiquotes(stocks).then(data => {
                     setData(data['data']);
+                    // console.log(data);
                 });
             }
         )
