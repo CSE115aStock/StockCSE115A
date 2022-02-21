@@ -58,7 +58,7 @@ def addStock():
         port = cur.fetchone()
         port_dict = port[0]
 
-        return jsonify(port_dict), 200
+        return jsonify(port_dict)
 
 
 # Remove a stock from user portfolio
@@ -101,7 +101,7 @@ def removeStock():
         port = cur.fetchone()
         port_dict = port[0]
 
-        return jsonify(port_dict), 200
+        return jsonify(port_dict)
 
 
 # Buy more of a stock already in the portfolio
@@ -162,7 +162,7 @@ def buyStock():
         cur.execute("SELECT portfolio FROM users WHERE email=%s", (usr_email,))
         port = cur.fetchone()
         port_dict = port[0]
-        return jsonify(port_dict), 200
+        return jsonify(port_dict)
 
 
 # Sell shares and amount of a stock.
@@ -207,7 +207,7 @@ def sellStock():
         new_shares = int(port_dict[tickr]["shares"]) - int(sell_shares)
 
         if new_shares < 0:
-            return jsonify({"err_msg": "Cannot sell more shares than you have."}), 401
+            return jsonify({"err_msg": "Cannot sell more shares than you have."}), 400
         elif new_shares == 0:
             del port_dict[tickr]
             cur.execute(
@@ -237,7 +237,7 @@ def sellStock():
         cur.execute("SELECT portfolio FROM users WHERE email=%s", (usr_email,))
         port = cur.fetchone()
         port_dict = port[0]
-        return jsonify(port_dict), 200
+        return jsonify(port_dict)
 
 
 # Fetch user portfolio
