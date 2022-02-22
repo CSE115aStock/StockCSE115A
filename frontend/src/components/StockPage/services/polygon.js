@@ -10,7 +10,7 @@ const alpacaApi = (baseURL = config.BASE_URL) => {
             'APCA-API-SECRET-KEY': config.alpacas_api_secret_key
         },
     })
-    const getBars = (symbol,start,end,limit,timeframe,adjustment,feed) => api.get('/v2/symbol/'+symbol+'/bars/?start='+start+'&end='+end+'&limit='+limit+'&timeframe='+timeframe+'&adjustment='+adjustment+'&feed='+feed)
+    const getBars = (symbol,start,timeframe) => api.get('/v2/stocks/'+symbol+'/bars?start='+start+'&timeframe='+timeframe)
     const quote = (symbol) => api.get('/v2/stocks/'+symbol+'/quotes/latest')
     const trades = (symbol) => api.get('/v2/stocks/'+symbol+'/trades/latest')
     const mutiquotes = (symbols) => api.get('/v2/stocks/snapshots?symbols='+symbols)
