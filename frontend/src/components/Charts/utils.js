@@ -25,3 +25,21 @@ export function getData() {
     console.log(promiseMSFT)
 	return promiseMSFT;
 }
+
+export function parseResponse (response){
+  const { bars } = response.data;
+  const data = []
+  for(let i = 0; i < bars.length; i++) {
+      const bar = bars[i];
+      const point = {
+          'date': new Date(bar.t),
+          'open': bar.o,
+          'low': bar.l,
+          'high': bar.h,
+          'close': bar.c,
+          'volume': bar.v
+      }
+      data.push(point)
+  }
+  return data
+}
