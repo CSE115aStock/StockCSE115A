@@ -334,6 +334,10 @@ export default function Dashboard() {
           setAlertMessage("Cannot sell more shares than you have.");
           setAlert(true);
         }
+        else if (res.status == 404) {
+          setAlertMessage("Stock could not be found in your portfolio.");
+          setAlert(true);
+        }
       }
       )
     }
