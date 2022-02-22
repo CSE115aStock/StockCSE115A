@@ -19,7 +19,7 @@ import IconButton from '@mui/material/IconButton';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
-import Chart from './Charts/MACDchart';
+import HeikinAshi from './Charts/HeikenAshiChart';
 import { getData } from "./Charts/utils";
 import { useState, useEffect } from 'react';
 import alpacaApi from './StockPage/services/polygon';
@@ -38,7 +38,7 @@ class ChartComponent extends React.Component {
 			return <div>Loading...</div>
 		}
 		return (
-			<Chart type='hybrid' data={this.state.data} />
+			<HeikinAshi type='hybrid' data={this.state.data} />
 		)
 	}
 }
