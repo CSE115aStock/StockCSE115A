@@ -1,3 +1,6 @@
+"""The module contains all the endpoints for viewing/modifying
+ the user's portfolio"""
+
 import psycopg2
 import os
 import json

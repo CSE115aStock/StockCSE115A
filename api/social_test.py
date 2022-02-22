@@ -1,3 +1,5 @@
+"""The module contains all the tests for the socialization api"""
+
 import psycopg2
 import os
 
@@ -54,20 +56,20 @@ def test_add_like_like_twice(mock_jwt):
       json_response = c.post(
       "/social/add_like",
       headers=headers,
-      json={"tickr": "EXM"},
+      json={"tickr": "E"},
       )
       assert json_response.status == "200 OK"
 
       json_response = c.post(
       "/social/add_like",
       headers=headers,
-      json={"tickr": "EXM"},
+      json={"tickr": "E"},
       )
-      assert json_response.status == "400 BAD REQUEST"
+      assert json_response.status == "500 INTERNAL SERVER ERROR"
 
       cur.execute(
       "DELETE FROM likes WHERE username=%s and tickr=%s",
-      ("john.doe", "EXM"),
+      ("john.doe", "E"),
       )
       conn.commit()
 
