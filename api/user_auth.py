@@ -1,3 +1,5 @@
+"""The module contains all the endpoints for working with user accounts"""
+
 import psycopg2
 import os
 import re
@@ -40,7 +42,7 @@ conn = psycopg2.connect(
 auth_bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 
-def is_valid_password(str):
+def is_valid_password(p_word):
   regex = (
     "^(?=.*[a-z])(?=." + "*[A-Z])(?=.*\\d)" + "(?=.*[-+_!@#$%^&*., ?]).+$"
   )
@@ -49,14 +51,11 @@ def is_valid_password(str):
 
   # If the string is empty
   # return false
-  if len(str) < 8:
+  if len(p_word) < 8:
     return False
 
   # return true if string matches ReGex
-  if re.search(p, str):
-    return True
-  else:
-    return False
+  return bool(re.search(p,p_word))
 
 
 # Adds user to DB
@@ -92,24 +91,24 @@ def add_user():
       try:
         valid = validate_email(email)
         email = valid.email
-      except EmailNotValidError as err:
+      except EmailNotValidError:
         error = "Invalid email."
 
-    if error != None:
+    if error is not None:
       return jsonify({"err_msg": error}), 400
 
     cur.execute(
       "SELECT * from users where email = %(email)s", {"email": email}
     )
-    if cur.fetchone() != None:
+    if cur.fetchone() is not None:
       error = "User is already registered."
 
-    elif is_valid_password(p_word) == False:
+    elif is_valid_password(p_word) is False:
       error = "Password not strong enough."
     elif p_word != verify_p_word:
       error = "Passwords do not match"
 
-    if error == None:
+    if error is None:
       cur.execute(
         "INSERT INTO users VALUES (%s, %s, %s, %s, %s, %s)",
         (f_name, l_name, email, username, bcrypt.hash(p_word), "{}"),
@@ -134,7 +133,7 @@ def refresh_expiring_jwts(response):
     now = datetime.now(timezone.utc)
     target_timestamp = datetime.timestamp(now + timedelta(minutes=30))
     if target_timestamp > exp_timestamp:
-      access_token = create_access_token(identity=get_jwt_identity())
+      create_access_token(identity=get_jwt_identity())
     return response
   except (RuntimeError, KeyError):
     return response
@@ -165,7 +164,7 @@ def authenticate_user():
       if not check_password(p_word, hashed_pword):
         error = "Invalid password"
 
-    if error == None:
+    if error is None:
       current_app.logger.info("Succesful login by user: %s", user[3])
 
       # set identity based on user email
@@ -192,8 +191,7 @@ def check_password(plain_password, hashed_password):
   return bcrypt.verify(plain_password, hashed_password)
 
 
-# temp function to test connection with frontend
-# fetches sample user from the db
+#Returns user profile on success
 @auth_bp.route("/user", methods=["GET", "POST"])
 @jwt_required()
 def fetch_user():
@@ -209,7 +207,8 @@ def fetch_user():
 # 1. that the current password provided matches the one stored
 # 2. that the new password matches the requirements
 # 3. that the new password and repeated password match
-# If no error is encountered, the new password is hashed and updated in the database.
+# If no error is encountered, the new password is hashed
+# and updated in the database.
 @auth_bp.route("/settings/password", methods=["PUT"])
 @jwt_required()
 def change_password():
@@ -234,7 +233,7 @@ def change_password():
   elif not entered_pwd == repeat_pwd:  # compare new and repeat password
     error = "Passwords do not match."
     response_code = 400
-  if error == None:
+  if error is None:
     hashed_new_pwd = bcrypt.hash(
       entered_pwd
     )  # hashes password to add to db
@@ -254,6 +253,12 @@ def change_password():
     return jsonify({"err_msg": error}), response_code  # error
 
 
+# Endpoint for changing user account info
+# This function requires the jwt.
+# It then checks if the edited fields are updated
+# correctly (e.g not left empty)
+# If no error is encountered, the updated user profile
+# is returned
 @auth_bp.route("/settings/account", methods=["PUT"])
 @jwt_required()
 def change_account_details():
@@ -264,7 +269,8 @@ def change_account_details():
   verify_jwt_in_request(optional=False)
   cur = conn.cursor(cursor_factory=RealDictCursor)
   cur.execute(
-    "UPDATE users SET first_name=%s, last_name=%s, username=%s where email=%s RETURNING *",
+    "UPDATE users SET first_name=%s, last_name=%s, username=%s \
+      where email=%s RETURNING *",
     (
       new_f_name,
       new_l_name,

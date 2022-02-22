@@ -1,3 +1,5 @@
+"""The module contains all the tests for the user authentication api"""
+
 import psycopg2
 import os
 
@@ -39,7 +41,7 @@ def test_add_user():
       "username": "test.user2",
       "password": "Test@1234",
       "verify_password": "Test@1234",
-      },
+      }
     )
     json_response = rv.get_json()
 
@@ -176,7 +178,7 @@ def test_logout(mock_jwt):
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.get("/auth/logout", headers=headers)
-      assert json_response != None
+      assert json_response is not None
 
 
 # test changing password

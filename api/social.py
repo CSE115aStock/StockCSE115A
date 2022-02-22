@@ -1,3 +1,6 @@
+"""The module contains all the endpoints for the social aspect
+of the platform"""
+
 import psycopg2
 import os
 import json
@@ -41,7 +44,8 @@ def add_like():
 
   data = json.loads(request.data)
   tickr = data["tickr"]
-  time_stmp = datetime.now(timezone.utc)
+  curr_time = str(datetime.now(timezone.utc))
+  time_stmp = curr_time[:DATE_LENGTH]
 
   verify_jwt_in_request(optional=False)
   usr_email = get_jwt_identity()
@@ -55,11 +59,10 @@ def add_like():
     cur.execute(
         "INSERT INTO likes VALUES(%s,%s,%s)", (tickr, usrname, time_stmp)
     )
-  except Exception as err:
+  except psycopg2.DatabaseError as err:
     cur.execute("ROLLBACK")
     conn.commit()
-
-  return jsonify({"err_msg": "Bad request"}), 400
+    return jsonify({"err_msg": err}), 400
 
   conn.commit()
 
@@ -132,9 +135,9 @@ def total_likes():
     return jsonify({"err_msg": "Couldn't verify user."}), 403
 
   cur.execute("SELECT COUNT(*) FROM likes WHERE tickr=%s", (tickr,))
-  total_likes = cur.fetchone()
+  num_likes = cur.fetchone()
 
-  return jsonify(total_likes[0])
+  return jsonify(num_likes[0])
 
 
 # gives all the people who like a particular stock
@@ -190,7 +193,7 @@ def add_comment():
         "INSERT INTO comments VALUES(%s,%s,%s,%s)",
         (usrname, time_stmp, tickr, comment),
     )
-  except Exception as err:
+  except psycopg2.DatabaseError:
     cur.execute("ROLLBACK")
     conn.commit()
     return jsonify({"err_msg": "Bad request"}), 400
@@ -229,10 +232,11 @@ def edit_comment():
 
   try:
     cur.execute(
-        "UPDATE comments SET comment_body=%s, created_on=%s WHERE created_on=%s AND username=%s",
+        "UPDATE comments SET comment_body=%s, created_on=%s \
+        WHERE created_on=%s AND username=%s",
         (comment, new_time_stmp, time_stmp, usrname),
     )
-  except Exception as err:
+  except psycopg2.DatabaseError as err:
     cur.execute("ROLLBACK")
     conn.commit()
     return jsonify({"err_msg": err}), 400
@@ -266,7 +270,7 @@ def remove_comment():
       "DELETE FROM comments WHERE username=%s and created_on=%s",
       (usrname, time_stmp),
     )
-  except Exception as err:
+  except psycopg2.DatabaseError:
     cur.execute("ROLLBACK")
     conn.commit()
     return jsonify({"err_msg": "Bad request"}), 400
@@ -294,9 +298,9 @@ def total_comments():
     return jsonify({"err_msg": "Couldn't verify user."}), 403
 
   cur.execute("SELECT COUNT(*) FROM comments WHERE tickr=%s", (tickr,))
-  total_comments = cur.fetchone()
+  num_comments = cur.fetchone()
 
-  return jsonify(total_comments[0])
+  return jsonify(num_comments[0])
 
 
 # gives all comments for a particular stock made by user
@@ -344,7 +348,8 @@ def fetch_latest_comments():
   tickr = data["tickr"]
 
   cur.execute(
-  "SELECT * FROM comments WHERE tickr=%s order by created_on desc fetch first 5 rows only",
+  "SELECT * FROM comments WHERE tickr=%s order by created_on desc \
+    fetch first 5 rows only",
   (tickr,),
   )
   comments = cur.fetchall()
