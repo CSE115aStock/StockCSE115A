@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import StockViewerContext from './StockViewerContext';
-import CandleStickChartWithMACDIndicator from './Charts/MACDChart';
-import { getData } from './Charts/utils';
+import CandleStickChartWithMACDIndicator from './Charts/MACDchart';
 import { Box } from '@mui/material';
 import { Grid, Card, CardContent } from '@mui/material';
 import { Typography } from '@mui/material';
@@ -14,7 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { createTheme } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import AddIcon from '@mui/icons-material/AddRounded';
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
 import { Paper } from '@mui/material';
@@ -22,13 +21,23 @@ import { styled } from '@mui/material/styles';
 import { parseResponse } from './Charts/utils';
 import { CardActionArea } from '@mui/material';
 import { CardMedia } from '@mui/material';
-
+import TextField from '@mui/material/TextField';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import Divider from '@mui/material/Divider';
+import Alert from '@mui/material/Alert';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
+import Button from '@mui/material/Button';
 
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
     const api = alpacaApi();
-		api.getBars(this.props.search, '2018-06-12T23:20:50.52Z', '1Day').then(data => {
+		api.getBars(this.props.search, '2010-03-12T23:20:50.52Z', '1Day').then(data => {
 			this.setState(data)
 		})
 	}
@@ -46,6 +55,7 @@ class ChartComponent extends React.Component {
 }
 
 class NewsComponent extends React.Component {
+  
 	componentDidMount() {
     const api = alpacaApi();
     api.news(this.props.stock).then(news => {
@@ -181,9 +191,11 @@ class NewsComponent extends React.Component {
 	}
 }
 
-class StockDataComponent extends React.Component {
 
+class StockDataComponent extends React.Component {
+  
 	componentDidMount() {
+    
     const search = this.props.search
     const api = alpacaApi();
     api.mutiquotes(search).then(data => {
@@ -191,22 +203,30 @@ class StockDataComponent extends React.Component {
     })
     
 	}
+  
+  reload = () => 
+  {
+    //RELOAD COMPONENT
+    this.componentDidMount();
+  };
+
 	render() {
+     
+    
 		if (this.state == null) {
 			return <div>Loading...</div>
 		}
+    
     let stockData;
     if(this.state.data[this.props.search] == null){
       return(
-        <Typography variant="h4" color="secondary" margin="10px" align='center'>
-          {this.props.search} is not a valid stock ticker.
-        </Typography>
+        <StockDataComponent search={this.props.search} />
       );
     }
     else{
       stockData = this.state['data'][this.props.search];
     }
-        
+   
     const darkTheme = createTheme({
       palette: {
         type: 'light',
@@ -249,33 +269,16 @@ class StockDataComponent extends React.Component {
         },
     }));
 
+    
+  
+
     const change = ((stockData.latestTrade.p - stockData.dailyBar.o) / stockData.dailyBar.o).toFixed(2);
 
 		return (
-			<Box sx={{ flexGrow: 1 }}>
-      <Grid container spacing={2} >
-        <Grid item xs={12}>
-            <Card >
-                <CardContent>
-                <Toolbar>
-                        <Typography variant="h4" color="secondary" margin="10px">
-                          {this.props.search}
-                        </Typography>
-                        <Tooltip title="Add stock">
-                          <IconButton color="primary" >
-                            <AddRoundedIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </Toolbar>
-                  <ChartComponent search={this.props.search} />
-                </CardContent>
-            </Card>
-        </Grid>
-        <Grid item xs={12}>
+			
         <TableContainer component={Paper}>
                 <Table  aria-label="customized table">
                     <TableHead>
-                      {/*  */}
                       <TableRow>
                         <StyledTableCell>Price</StyledTableCell>
                         <StyledTableCell>Asking Price</StyledTableCell>
@@ -303,31 +306,199 @@ class StockDataComponent extends React.Component {
                     </TableBody>
                 </Table>
             </TableContainer>
-        </Grid>
-        <Grid item xs={6}>
-          <NewsComponent stock={this.props.search}/>
-        </Grid>
-      </Grid>
-    </Box>
+        
 		)
 	}
 }
 
 function StockViewer() {
   const search = useContext(StockViewerContext).finalSearch;
-  const api = alpacaApi();
-  const [stockData, setStockData] = useState([])
-  useEffect(() =>{
-    api.mutiquotes(search).then(data => {
-      setStockData(data['data']);
-      console.log(data);
-    })
-  },[])
+  
 		
+  const [tickr, setTickr] = useState('');
+  const [amount, setAmount] = useState('');
+  const [shares, setShares] = useState('');
+  const [alert, setAlert] = useState(false);
+  const [alertMessage, setAlertMessage] = useState('');
+
+  const [addStock, setAddStock] = useState(false);
+  
+ 
+
+  // handles opening of add stock dialog
+  const handleAddStockButton = () => {
+    if (addStock) {
+      const api = alpacaApi();
+      api.trades(tickr).then(data =>{
+      if (data["status"] == 200) {
+        if (tickr in portfolioDict) {
+          fetch('/portfolio/buy', {
+          method: 'POST',
+          headers: new Headers({
+              'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+          }),
+          body: JSON.stringify({
+              "tickr": tickr, "amount": amount, "shares": shares
+          })
+          } ).then(
+          res => {
+            if (res.status == 200) {
+              setAddStock(false);
+              handleRefresh();
+            }
+            else if (res.status == 403) {
+              setAlertMessage("Couldn't verify user.");
+              setAlert(true);
+            }
+            else if (res.status == 400) {
+              setAlertMessage("New shares and amount cannot be negative.");
+              setAlert(true);
+            }
+          }
+          )
+        }
+        else {
+          fetch('/portfolio/add_stock', {
+          method: 'POST',
+          headers: new Headers({
+              'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+          }),
+          body: JSON.stringify({
+              "tickr": tickr, "amount": amount, "shares": shares
+          })
+          } ).then(
+          res => {
+            if (res.status == 200) {
+              setAddStock(false);
+              handleRefresh();
+            }
+            else if (res.status == 403) {
+              setAlertMessage("Couldn't verify user.");
+              setAlert(true);
+            }
+          })
+        }
+      }
+      else {
+        setAlertMessage("Stock name is invalid.");
+        setAlert(true);
+      }
+    });
+    }
+    else {
+      setAddStock(true);
+    }
+  }
+
+  const handleClose = () => {
+    setAddStock(false);
+    setAlert(false);
+    setAlertMessage('');
+  };
+
+  const addStockDialog = (
+    <div>
+      <Tooltip title="Add Stock">
+        <IconButton 
+          color="primary"
+          onClick={handleAddStockButton}
+        >
+          <AddIcon />
+        </IconButton>
+      </Tooltip>
+      <Dialog open={addStock} onClose={handleClose}>
+        <DialogTitle>Add Stock</DialogTitle>
+        <Divider/>
+        <Collapse in={alert}>
+          <Alert severity='error' sx={{margin: 5}}
+            action={
+            <IconButton
+              aria-label="close"
+              color="inherit"
+              size="small"
+              onClick={() => {
+              setAlert(false);
+              }}
+            >
+            <CloseIcon fontSize="inherit" />
+            </IconButton>
+            }
+            sx={{ mb: 0, mt: 3 }}
+          >
+          {alertMessage}
+          </Alert>
+        </Collapse>
+        <DialogContent>
+          <DialogContentText>
+          To add a stock, please enter your stock name, amount invested and share.
+          </DialogContentText>
+          <TextField
+            margin="dense"
+            id="standard"
+            label="Stock Name"
+            value={tickr}
+            variant="standard"
+            fullWidth
+            onChange={(event) => setTickr(event.target.value)}/>
+          <TextField
+            id="standard"
+            label="Amount Invested"
+            value={amount}
+            variant="standard"
+            onChange={(event) => setAmount(event.target.value)}/>
+          <TextField
+            id="standard"
+            label="Shares"
+            value={shares}
+            variant="standard"
+            onChange={(event) => setShares(event.target.value)}/>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleAddStockButton}>Add</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
+  )
+
+
   return (
     
-    <StockDataComponent search={search}/>
-   
+    <Box sx={{ flexGrow: 1 }}>
+      <Grid container spacing={2}>
+      <Grid item xs={12}>
+        <Card >
+          <CardContent>
+              <Toolbar>
+                <Typography variant="h4" color="secondary" margin="10px">
+                  {search}
+                </Typography>
+        
+                {addStockDialog}
+                </Toolbar>
+          </CardContent>
+          
+        </Card>
+        
+        </Grid>
+        <Grid item xs={12}>
+     
+        
+            <Card >
+                <CardContent>
+                
+                  <ChartComponent search={search}/>
+                </CardContent>
+            </Card>
+        </Grid>
+        <Grid item xs={12}>
+          <StockDataComponent search={search} />
+        </Grid>
+        <Grid item xs={6}>
+          <NewsComponent stock={search}/>
+        </Grid>
+      </Grid>
+    </Box>
   )
 
 }
