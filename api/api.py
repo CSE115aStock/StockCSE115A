@@ -1,3 +1,5 @@
+"""The file is for the main flask app"""
+
 import os
 
 from datetime import timedelta
@@ -22,4 +24,4 @@ app.register_blueprint(portfolio_bp, url_prefix="/portfolio")
 app.register_blueprint(social_bp, url_prefix="/social")
 
 if __name__ == "__main__":
-    app.run()
+  app.run()
