@@ -1,29 +1,57 @@
 
+export function parseMultiResponse(response) {
+  
+	const bars = response.bars;
+  
+  
+  let longestData = 0;
+  for(var stock in bars){
+    if(bars[stock].length > longestData){
+      longestData = bars[stock].length;
+    }
+  }
 
-import { tsvParse, csvParse } from  "d3-dsv";
-import { timeParse } from "d3-time-format";
+  let data = new Array(longestData);
 
-function parseData(parse) {
-	return function(d) {
-		d.date = parse(d.date);
-		d.open = +d.open;
-		d.high = +d.high;
-		d.low = +d.low;
-		d.close = +d.close;
-		d.volume = +d.volume;
+  for(var stocks in bars){
+    let lengthData = data.length - 1;
+    console.log(stocks);
+    for(let i = bars[stocks].length-1; i >= 0; i--) {
+      const dataPoint = data[lengthData];
+      const bar = bars[stocks][i];
+      if(dataPoint == undefined){
+        const point = {
+            'date': new Date(bar.t),
+            'open': bar.o,
+            'low': bar.l,
+            'high': bar.h,
+            'close': bar.c,
+            'volume': bar.v
+        }
+        data[lengthData] = point;
+      }
+      else{
+        const point = {
+          'date': new Date(bar.t),
+          'open': bar.o + dataPoint.open,
+          'low': bar.l + dataPoint.low,
+          'high': bar.h + dataPoint.high,
+          'close': bar.c + dataPoint.close,
+          'volume': bar.v + dataPoint.volume
+        }
+        data[lengthData] = point;
+      }
+      lengthData--;
+      
+      
+    }
+  }
+    
+  
 
-		return d;
-	};
-}
 
-const parseDate = timeParse("%Y-%m-%d");
-
-export function getData() {
-	const promiseMSFT = fetch("https://cdn.rawgit.com/rrag/react-stockcharts/master/docs/data/MSFT.tsv")
-		.then(response => response.text())
-		.then(data => tsvParse(data, parseData(parseDate)))
-    console.log(promiseMSFT)
-	return promiseMSFT;
+  return data;    
+  
 }
 
 export function parseResponse (response){
@@ -43,3 +71,4 @@ export function parseResponse (response){
   }
   return data
 }
+

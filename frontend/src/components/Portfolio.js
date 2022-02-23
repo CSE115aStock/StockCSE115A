@@ -20,30 +20,62 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
 import HeikinAshi from './Charts/HeikenAshiChart';
-import { getData } from "./Charts/utils";
+import { parseResponse } from "./Charts/utils";
 import { useState, useEffect } from 'react';
 import alpacaApi from './StockPage/services/polygon';
 import RenderContext from './RenderContext';
+import { parseMultiResponse } from './Charts/utils';
 
 
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
-		getData().then(data => {
-			this.setState({ data })
-		})
+		
+    fetch('/portfolio/my_portfolio', {
+    method: 'POST',
+    headers: new Headers({
+        'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+    }),
+    body: JSON.stringify({
+        
+    })
+    } ).then(
+    res => res.json()
+    ).then(
+        port => {
+          var stocks = '';
+          for(var stock in port[0]){
+            if(stocks == ''){
+              stocks = stocks + stock;
+            }
+            else{
+              stocks = stocks + ',' + stock;
+            }
+          }
+          const api = alpacaApi();
+          api.getMultiBars(stocks, '2010-03-12T23:20:50.52Z', '1Day').then(data => {
+            this.setState(data['data']);
+          }); 
+        }
+    )
+  
 	}
 	render() {
 		if (this.state == null) {
 			return <div>Loading...</div>
 		}
+    console.log(this.state);
+    const data = parseMultiResponse(this.state);
+    console.log(data);
+    
 		return (
-			<HeikinAshi type='hybrid' data={this.state.data} />
+			<HeikinAshi type='hybrid' data={data} />
+      
 		)
 	}
 }
 
-export default function Dashboard() {
+export default function Portfolio() {
   const [port,setPort] = useState([])
   useEffect(() => {
     fetch('/portfolio/my_portfolio', {
