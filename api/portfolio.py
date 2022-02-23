@@ -60,7 +60,7 @@ def add_stock():
   port = cur.fetchone()
   port_dict = port[0]
 
-  return jsonify(port_dict)
+  return jsonify(port_dict), 200
 
 
 # Remove a stock from user portfolio
@@ -105,7 +105,7 @@ def remove_stock():
   port = cur.fetchone()
   port_dict = port[0]
 
-  return jsonify(port_dict)
+  return jsonify(port_dict), 200
 
 
 # Buy more of a stock already in the portfolio
@@ -167,7 +167,8 @@ def buy_stock():
   cur.execute("SELECT portfolio FROM users WHERE email=%s", (usr_email,))
   port = cur.fetchone()
   port_dict = port[0]
-  return jsonify(port_dict)
+  
+  return jsonify(port_dict), 200
 
 
 # Sell shares and amount of a stock.
@@ -249,7 +250,7 @@ def sell_stock():
   cur.execute("SELECT portfolio FROM users WHERE email=%s", (usr_email,))
   port = cur.fetchone()
   port_dict = port[0]
-  return jsonify(port_dict)
+  return jsonify(port_dict), 200
 
 
 # Fetch user portfolio
