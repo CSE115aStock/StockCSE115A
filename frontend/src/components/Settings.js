@@ -23,250 +23,303 @@ import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
+import {createTheme} from '@mui/material/styles';
 
+const darkTheme = createTheme({
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#333a56',
+    },
+    secondary: {
+      main: '#52658f',
+    },
+    background: {
+      default: '#f1f1e4',
+      paper: '#f7f5e6',
+    },
+  },
+  typography: {
+    fontFamily: 'Montserrat',
+  },
+});
+
+/**
+ *
+ * @return {object} JSX
+ */
 export default function Settings() {
-    const [firstName, setFirstName] = React.useState("");
-    const [lastName, setLastName] = React.useState("");
-    const [username, setUsername] = React.useState("");
-    const [email, setEmail] = React.useState("");
-    const [edit, setEdit] = React.useState(false);
-    const [changingButton, setChangingButton] = React.useState("Edit");
-    const [changePass, setChangePass] = React.useState(false);
-    const [passwordVisible, setPassVisible] = React.useState(false);
-    const [currentPass, setCurrentPass] = React.useState("Current Password");
-    const [newPass, setNewPass] = React.useState("New Password");
-    const [repeatPass, setRepeatPass] = React.useState("Repeat Password");
-    const [alert, setAlert] = React.useState(false);
-    const [alertMessage, setAlertMessage] = React.useState('');
-    const [passAlert, setPassAlert] = React.useState(false);
-    const [passAlertMessage, setPassAlertMessage] = React.useState('');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [username, setUsername] = React.useState('');
+  const [email, setEmail] = React.useState('');
+  const [edit, setEdit] = React.useState(false);
+  const [changingButton, setChangingButton] = React.useState('Edit');
+  const [changePass, setChangePass] = React.useState(false);
+  const [passwordVisible, setPassVisible] = React.useState(false);
+  const [currentPass, setCurrentPass] = React.useState('Current Password');
+  const [newPass, setNewPass] = React.useState('New Password');
+  const [repeatPass, setRepeatPass] = React.useState('Repeat Password');
+  const [alert, setAlert] = React.useState(false);
+  const [alertMessage, setAlertMessage] = React.useState('');
+  const [passAlert, setPassAlert] = React.useState(false);
+  const [passAlertMessage, setPassAlertMessage] = React.useState('');
 
-    React.useEffect(() => {
-      getUserInfo();
-    }, []);
+  /**
+   * Description: Updates the user info variables. Updates with render.
+   */
+  React.useEffect(() => {
+    getUserInfo();
+  }, []);
 
-    const getUserInfo = () => {
-      fetch('auth/user', {
-        method: 'GET',
-        headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
-      })
-      .then(
-        res => res.json()
+  /**
+   * Description: Pulls user info using auth/user backend.
+   * Stores the information in seperate variables.
+   */
+  const getUserInfo = () => {
+    fetch('auth/user', {
+      method: 'GET',
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+    })
+        .then(
+            (res) => res.json(),
         ).then(
-          data => {
-            setFirstName(data.first_name);
-            setLastName(data.last_name);
-            setUsername(data.username);
-            setEmail(data.email);
-          }
-      )
-    }
+            (data) => {
+              setFirstName(data.first_name);
+              setLastName(data.last_name);
+              setUsername(data.username);
+              setEmail(data.email);
+            },
+        );
+  };
 
-    const changeButton = () => {
-      // submit button pressed
-      if(edit) {
-          setEdit(false);
-          setChangingButton("Edit");
-          // make backend call to change values
-          // fields cannot be empty
-          if(firstName.length > 0 && lastName.length > 0 && username.length > 0) {
-            fetch('/auth/settings/account', {
-              method: 'PUT',
-              headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
-              body: JSON.stringify({
-                "First Name":firstName,"Last Name":lastName,"Username":username
-              })
-            }).then(
-              res => {
-                if(res.status != 200) {
-                  setAlertMessage('Error changing user information, please try again');
-                  setAlert(true);
-                }
-                getUserInfo();
-              }
-              )
-              .catch(err => {
-                setAlertMessage('Error changing user information, please try again');
+  /**
+   * Description: Handles button under user info's changes.
+   * Button enables textboxes or submits user info.
+   * Button switches to submit if edit is pressed.
+   * Button switches to edit if submit is pressed.
+   * Makes back end call to change user information.
+   */
+  const changeButton = () => {
+    // submit button pressed so button becomes edit
+    if (edit) {
+      setEdit(false);
+      setChangingButton('Edit');
+      // make backend call to change values
+      // fields cannot be empty
+      if (firstName.length > 0 && lastName.length > 0 &&
+        username.length > 0) {
+        fetch('/auth/settings/account', {
+          method: 'PUT',
+          headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+          body: JSON.stringify({
+            'First Name': firstName, 'Last Name': lastName,
+            'Username': username,
+          }),
+        }).then(
+            (res) => {
+              if (res.status != 200) {
+                setAlertMessage('Error changing user information, ',
+                    'please try again');
                 setAlert(true);
-              })
-          }
-          else {
-            setAlertMessage('All fields must have length of one or more.');
-            setAlert(true);
-            getUserInfo();
-          }
+              }
+              getUserInfo();
+            },
+        )
+            .catch((err) => {
+              setAlertMessage('Error changing user information, ',
+                  'please try again');
+              setAlert(true);
+            });
+      // else, fields are empty
+      } else {
+        setAlertMessage('All fields must have length of one or more.');
+        setAlert(true);
+        getUserInfo();
       }
-      // edit button pressed
-      else {
-        setEdit(true);
-        setChangingButton("Submit");
-      }
-    };
+    // if submit button is pressed, it is changed to edit.
+    } else {
+      setEdit(true);
+      setChangingButton('Submit');
+    }
+  };
 
-    // handles opening of password dialog
-    const passwordChange = () => {
-        if(changePass) { // dialog closed
-          if(newPass === repeatPass) {
-            fetch('/auth/settings/password', {
-              method: 'PUT',
-              headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
-              body: JSON.stringify({
-                "Current Password":currentPass,"New Password":newPass,"Repeat":repeatPass
-              })
-            } ).then(
-              res => {
-                  if(res.status == 200) {
-                    setChangePass(false);
-                    setPassVisible(false);
-                  }
-                  else if(res.status == 401) {
-                    setPassAlertMessage('Incorrect current password.')
-                    setPassAlert(true);
-                  }
-                  else if(res.status == 400) {
-                    setPassAlertMessage('Password too weak.')
-                    setPassAlert(true);
-                  }
-                }
-              )
-              .catch(err => {
-                setPassAlertMessage('Error changing password, please try again')
+  /**
+   * Description: Handles when the change password button or the
+   * submit button is pressed. If the change password button is pressed,
+   * it pulls up the dialog. If submit is pressed, a back end call is
+   * made to update the password. The dialog is also closed.
+   */
+  const passwordChange = () => {
+    if (changePass) { // dialog currently open and is being closed
+      if (newPass === repeatPass) {
+        fetch('/auth/settings/password', {
+          method: 'PUT',
+          headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+          body: JSON.stringify({
+            'Current Password': currentPass, 'New Password': newPass,
+            'Repeat': repeatPass,
+          }),
+        } ).then(
+            (res) => {
+              if (res.status == 200) {
+                setChangePass(false);
+                setPassVisible(false);
+              } else if (res.status == 401) {
+                setPassAlertMessage('Incorrect current password.');
                 setPassAlert(true);
-              });
-          }
-          else {
-            setPassAlertMessage('New passwords do not match')
-            setPassAlert(true);
-          }
-        }
-        else { // dialog opened
-            setChangePass(true);
-        }
+              } else if (res.status == 400) {
+                setPassAlertMessage('Password too weak.');
+                setPassAlert(true);
+              }
+            },
+        )
+            .catch((err) => {
+              setPassAlertMessage('Error changing password, please try again');
+              setPassAlert(true);
+            });
+      } else {
+        setPassAlertMessage('New passwords do not match');
+        setPassAlert(true);
+      }
+    } else { // dialog is currently closed and being opened
+      setChangePass(true);
+    }
+  };
 
-    };
+  /**
+   * Description: Handles when the cancel button is pressed on
+   * the dialog. It closes the dialog and sets the visibility
+   * to off.
+   */
+  const cancelPass = () => {
+    setChangePass(false);
+    setPassVisible(false);
+  };
 
-    // cancel button to close dialog
-    const cancelPass = () => {
-        setChangePass(false);
-        setPassVisible(false);
-    };
+  /**
+   * Description: Handles when the visibility change button in
+   * the password field is pressed. Reverses the current setting.
+   */
+  const changeVisibility = () => {
+    setPassVisible(!passwordVisible);
+  };
 
-    // changes password visibility
-    const changeVisibility = () => {
-        setPassVisible(!passwordVisible);
-    };
-
-    return (
-      <Box
-        sx={{
-          display: 'flex',
-          m: 0.25,
-          flexWrap: 'wrap',
-          '& > :not(style)': {
-            width: '100%',
-          },
-        }}
-      >
-        <Paper elevation={3}>
-          <Typography variant="h6" gutterBottom component="div" padding={1} color='#f50057'style={{ fontWeight: 600 }} sx={{ m: 1,}}>
+  return (
+    <Box
+      sx={{
+        'display': 'flex',
+        'm': 0.25,
+        'flexWrap': 'wrap',
+        '& > :not(style)': {
+          width: '100%',
+        },
+      }}
+    >
+      <Paper elevation={3}>
+        <Typography variant="h6" gutterBottom component="div"
+          padding={1} color={darkTheme.palette.secondary.main}
+          style={{fontWeight: 600}} sx={{m: 1}}>
             ACCOUNT DETAILS
-          </Typography>
-          <Divider/>
-          <Collapse in={alert}>
-              <Alert severity='error' sx={{margin: 5}}
-                action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
+        </Typography>
+        <Divider/>
+        <Collapse in={alert}>
+          <Alert severity='error'
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
                   setAlert(false);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-          sx={{ mb: 0, mt: 3 }}
-        >
-          {alertMessage}
-        </Alert>
-      </Collapse>
-          <Box
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+            sx={{mb: 0, mt: 3, margin: 5}}
+          >
+            {alertMessage}
+          </Alert>
+        </Collapse>
+        <Box
           component="form"
           sx={{
-          '& .MuiTextField-root': { m: 2, width: '75%' },}}
+            '& .MuiTextField-root': {m: 2, width: '75%'}}}
           noValidate
           autoComplete="off">
-            <div>
-              <TextField
-                disabled={!edit}
-                id="standard-disabled"
-                label="First Name"
-                value={firstName}
-                variant="filled"
-                onChange={(event) => setFirstName(event.target.value)}/>
-              <TextField
-                disabled={!edit}
-                id="standard-disabled"
-                label="Last Name"
-                value={lastName}
-                variant="filled"
-                onChange={(event) => setLastName(event.target.value)}/>
-              <TextField
-                disabled
-                id="standard-disabled"
-                label="Email"
-                value={email}
-                variant="filled"
-                onChange={(event) => setEmail(event.target.value)}/>
-              <TextField
-                disabled={!edit}
-                id="standard-disabled"
-                label="Username"
-                value={username}
-                variant="filled"
-                onChange={(event) => setUsername(event.target.value)}/>
-            </div>
-            <Button variant="outlined" sx={{ m: 2,}} startIcon={<EditIcon />} onClick={changeButton}>
-              {changingButton}
-            </Button>
-            <Button variant="outlined" sx={{ m: 2,}} startIcon={<LockIcon />} onClick={passwordChange}>
+          <div>
+            <TextField
+              disabled={!edit}
+              id="standard-disabled"
+              label="First Name"
+              value={firstName}
+              variant="filled"
+              onChange={(event) => setFirstName(event.target.value)}/>
+            <TextField
+              disabled={!edit}
+              id="standard-disabled"
+              label="Last Name"
+              value={lastName}
+              variant="filled"
+              onChange={(event) => setLastName(event.target.value)}/>
+            <TextField
+              disabled
+              id="standard-disabled"
+              label="Email"
+              value={email}
+              variant="filled"
+              onChange={(event) => setEmail(event.target.value)}/>
+            <TextField
+              disabled={!edit}
+              id="standard-disabled"
+              label="Username"
+              value={username}
+              variant="filled"
+              onChange={(event) => setUsername(event.target.value)}/>
+          </div>
+          <Button variant="contained" sx={{m: 2}}
+            startIcon={<EditIcon />} onClick={changeButton}>
+            {changingButton}
+          </Button>
+          <Button variant="contained" sx={{m: 2}}
+            startIcon={<LockIcon />} onClick={passwordChange}>
               Change Password
-            </Button>
-            <Dialog open={changePass} onClose={cancelPass}>
-              <DialogTitle>Change Password</DialogTitle>
-              <Collapse in={passAlert}>
-                <Alert severity='error' sx={{margin: 5}}
-                  action={
+          </Button>
+          <Dialog open={changePass} onClose={cancelPass}>
+            <DialogTitle>Change Password</DialogTitle>
+            <Collapse in={passAlert}>
+              <Alert severity='error'
+                action={
                   <IconButton
                     aria-label="close"
                     color="inherit"
                     size="small"
                     onClick={() => {
-                    setPassAlert(false);
+                      setPassAlert(false);
                     }}
                   >
                     <CloseIcon fontSize="inherit" />
                   </IconButton>
-                  }             
-                  sx={{ mb: 0, mt: 3 }}>
-                  {passAlertMessage}
-                </Alert>
-              </Collapse>
-                <DialogContent>
-                  <DialogContentText>
+                }
+                sx={{mb: 0, mt: 3, margin: 5}}>
+                {passAlertMessage}
+              </Alert>
+            </Collapse>
+            <DialogContent>
+              <DialogContentText>
                     Enter the following:
-                  </DialogContentText>
-                  <Box>
-                  <FormControl sx={{ m: 1, width: '50ch' }} variant="standard">
-                    <InputLabel htmlFor="standard-adornment-password">
+              </DialogContentText>
+              <Box>
+                <FormControl sx={{m: 1, width: '50ch'}} variant="standard">
+                  <InputLabel htmlFor="standard-adornment-password">
                       Current Password
-                    </InputLabel>
-                    <Input
-                      id="standard-adornment-password"
-                      type={passwordVisible ? 'text' : 'password'}
-                      onChange={(event) => setCurrentPass(event.target.value)}
-                      endAdornment={
+                  </InputLabel>
+                  <Input
+                    id="standard-adornment-password"
+                    type={passwordVisible ? 'text' : 'password'}
+                    onChange={(event) => setCurrentPass(event.target.value)}
+                    endAdornment={
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
@@ -274,16 +327,18 @@ export default function Settings() {
                           {passwordVisible ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
-                      }
-                    />
-                  </FormControl>
-                  <FormControl sx={{ m: 1, width: '50ch' }} variant="standard">
-                    <InputLabel htmlFor="standard-adornment-password">New Password</InputLabel>
-                    <Input
-                      id="standard-adornment-password"
-                      type={passwordVisible ? 'text' : 'password'}
-                      onChange={(event) => setNewPass(event.target.value)}
-                      endAdornment={
+                    }
+                  />
+                </FormControl>
+                <FormControl sx={{m: 1, width: '50ch'}} variant="standard">
+                  <InputLabel htmlFor="standard-adornment-password">
+                    New Password
+                  </InputLabel>
+                  <Input
+                    id="standard-adornment-password"
+                    type={passwordVisible ? 'text' : 'password'}
+                    onChange={(event) => setNewPass(event.target.value)}
+                    endAdornment={
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
@@ -291,19 +346,22 @@ export default function Settings() {
                           {passwordVisible ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
-                      }/>
-                    <FormHelperText id="standard-weight-helper-text">
-                      Passwords must be at least eight characters in length. 
-                      Passwords must contain at least one lowercase letter, one uppercase letter, and one number
-                    </FormHelperText>
-                  </FormControl>
-                  <FormControl sx={{ m: 1, width: '50ch' }} variant="standard">
-                    <InputLabel htmlFor="standard-adornment-password">Repeat New Password</InputLabel>
-                    <Input
-                      id="standard-adornment-password"
-                      type={passwordVisible ? 'text' : 'password'}
-                      onChange={(event) => setRepeatPass(event.target.value)}
-                      endAdornment={
+                    }/>
+                  <FormHelperText id="standard-weight-helper-text">
+                      Passwords must be at least eight characters in length.
+                      Passwords must contain at least one lowercase letter,
+                      one uppercase letter, and one number
+                  </FormHelperText>
+                </FormControl>
+                <FormControl sx={{m: 1, width: '50ch'}} variant="standard">
+                  <InputLabel htmlFor="standard-adornment-password">
+                    Repeat New Password
+                  </InputLabel>
+                  <Input
+                    id="standard-adornment-password"
+                    type={passwordVisible ? 'text' : 'password'}
+                    onChange={(event) => setRepeatPass(event.target.value)}
+                    endAdornment={
                       <InputAdornment position="end">
                         <IconButton
                           aria-label="toggle password visibility"
@@ -311,17 +369,17 @@ export default function Settings() {
                           {passwordVisible ? <VisibilityOff /> : <Visibility />}
                         </IconButton>
                       </InputAdornment>
-                      }/>
-                  </FormControl>
-                </Box>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={cancelPass}>Cancel</Button>
-                <Button onClick={passwordChange}>Submit</Button>
-              </DialogActions>
-            </Dialog>
-          </Box>
-        </Paper>
-      </Box>
-    );
-  }
+                    }/>
+                </FormControl>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={cancelPass}>Cancel</Button>
+              <Button onClick={passwordChange}>Submit</Button>
+            </DialogActions>
+          </Dialog>
+        </Box>
+      </Paper>
+    </Box>
+  );
+}

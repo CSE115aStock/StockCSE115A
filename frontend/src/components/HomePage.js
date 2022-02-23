@@ -96,16 +96,31 @@ export default function HomePage() {
   const [finalSearch, setFinalSearch] = React.useState('');
   const navigate = useNavigate();
 
-  // function for opening/closing drawer
+  /**
+   * Description: Sets drawer to mobile screen size setting.
+   */
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // function for opening/closing profile menu
+  /**
+   * Description: Changes the menu setting to open or closed.
+   */
   const handleProfileMenuToggle = () => {
     setPfOpen(!pfOpen);
   };
 
+  /**
+   * Description: Sets the right component to true so it appears
+   * on the screen.
+   * @param {bool} dashVal
+   * @param {bool} marketVal
+   * @param {bool} profVal
+   * @param {bool} settVal
+   * @param {bool} searVal
+   * @param {bool} portVal
+   * @param {bool} lcVal
+   */
   const handlePages = (dashVal, marketVal, profVal, settVal,
       searVal, portVal, lcVal) => {
     setDash(dashVal);
@@ -119,6 +134,12 @@ export default function HomePage() {
     setLC(lcVal);
   };
 
+  /**
+   * Description: Sets stock viewer on screen if the
+   * value in the search bar is nonempty. Triggered by
+   * clicking the search icon.
+   * @param {string} val
+   */
   const handleSearch = (val) => {
     if (val.length > 0) {
       setDash(false);
@@ -133,6 +154,10 @@ export default function HomePage() {
     }
   };
 
+  /**
+   * Description: Sets all components to false and calls log out
+   * backend. Navigates to log in page.
+   */
   const handleLogOut = () => {
     setDash(false);
     setMarket(false);
@@ -338,8 +363,10 @@ export default function HomePage() {
           {profile? <RenderContext.Provider value={{handleSearch}}>
             <Profile /> </RenderContext.Provider> : null}
           {settings? <Settings /> : null}
-          {likeComment? <Social/> : null}
-          {search? <StockViewerContext.Provider value={{finalSearch}}> <Search /> </StockViewerContext.Provider> : null}
+          {likeComment? <StockViewerContext.Provider value={{finalSearch}}>
+            <Social/> </StockViewerContext.Provider> : null}
+          {search? <StockViewerContext.Provider value={{finalSearch}}>
+            <Search /> </StockViewerContext.Provider> : null}
         </Box>
       </Box>
     </ThemeProvider>
