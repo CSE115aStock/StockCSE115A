@@ -31,8 +31,7 @@ import {ThemeProvider, createTheme} from '@mui/material/styles';
 import StockViewerContext from './StockViewerContext';
 import {useNavigate} from 'react-router-dom';
 import RenderContext from './RenderContext';
-import { touchRippleClasses } from '@mui/material';
-import SocialTest from './SocialTest'
+import Social from './Social';
 
 
 const drawerWidth = 240;
@@ -93,8 +92,8 @@ export default function HomePage() {
   const [likeComment, setLC] = React.useState(false);
 
   const [search, setSearch] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState('')
-  const [finalSearch, setFinalSearch] = React.useState('')
+  const [searchValue, setSearchValue] = React.useState('');
+  const [finalSearch, setFinalSearch] = React.useState('');
   const navigate = useNavigate();
 
   // function for opening/closing drawer
@@ -107,7 +106,8 @@ export default function HomePage() {
     setPfOpen(!pfOpen);
   };
 
-  const handlePages = (dashVal, marketVal, profVal, settVal, searVal, portVal, lcVal) => {
+  const handlePages = (dashVal, marketVal, profVal, settVal,
+      searVal, portVal, lcVal) => {
     setDash(dashVal);
     setMarket(marketVal);
     setProfile(profVal);
@@ -117,10 +117,10 @@ export default function HomePage() {
     setSearchValue('');
     setFinalSearch('');
     setLC(lcVal);
-  }
-  
+  };
+
   const handleSearch = (val) => {
-    if(val.length > 0) {
+    if (val.length > 0) {
       setDash(false);
       setMarket(false);
       setProfile(false);
@@ -147,16 +147,16 @@ export default function HomePage() {
       method: 'GET',
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
     })
-    .then(
-        res => {
-          localStorage.clear();
-          navigate('/');
-        }
-    )
-    .catch(err => {
-      alert('Error logging out, please try again');
-  })
-  }
+        .then(
+            (res) => {
+              localStorage.clear();
+              navigate('/');
+            },
+        )
+        .catch((err) => {
+          alert('Error logging out, please try again');
+        });
+  };
 
 
   const sideDrawer = (
@@ -164,22 +164,25 @@ export default function HomePage() {
       <Toolbar />
       <Divider />
       <List>
-        <ListItem button key='Dashboard' 
-          onClick={() => handlePages(true, false, false, false, false, false, false)}>
+        <ListItem button key='Dashboard'
+          onClick={() =>
+            handlePages(true, false, false, false, false, false, false)}>
           <ListItemIcon>
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary='Dashboard' />
         </ListItem>
-        <ListItem button key='Portfolio' 
-          onClick={() => handlePages(false, false, false, false, false, true, false)} >
+        <ListItem button key='Portfolio'
+          onClick={() =>
+            handlePages(false, false, false, false, false, true, false)} >
           <ListItemIcon>
             <BarChartIcon/>
           </ListItemIcon>
           <ListItemText primary='Portfolio' />
         </ListItem>
-        <ListItem button key='Market Trends' 
-          onClick={() => handlePages(false, true, false, false, false, false, false)} >
+        <ListItem button key='Market Trends'
+          onClick={() =>
+            handlePages(false, true, false, false, false, false, false)} >
           <ListItemIcon>
             <ShowChartIcon/>
           </ListItemIcon>
@@ -205,9 +208,18 @@ export default function HomePage() {
       open={pfOpen}
       onClose={handleProfileMenuToggle}
     >
-      <MenuItem onClick={() => handlePages(false, false, true, false, false, false, false)}>Profile</MenuItem>
-      <MenuItem onClick={() => handlePages(false, false, false, true, false, false, false)}>Settings</MenuItem>
-      <MenuItem onClick={() => handlePages(false, false, false, false, false, false, true)}>Social Test</MenuItem>
+      <MenuItem onClick={() =>
+        handlePages(false, false, true, false, false, false, false)}>
+        Profile
+      </MenuItem>
+      <MenuItem onClick={() =>
+        handlePages(false, false, false, true, false, false, false)}>
+        Settings
+      </MenuItem>
+      <MenuItem onClick={() =>
+        handlePages(false, false, false, false, false, false, true)}>
+        Social Test
+      </MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
   );
@@ -254,7 +266,7 @@ export default function HomePage() {
                 <StyledInputBase
                   placeholder='Search…'
                   inputProps={{'aria-label': 'search'}}
-                  sx={{'width': '25%', m: 1}}
+                  sx={{'width': '25%', 'm': 1}}
                   onChange={(event) => setSearchValue(event.target.value)}
                   value={searchValue}
                 />
@@ -318,12 +330,15 @@ export default function HomePage() {
             width: {sm: `calc(100% - ${drawerWidth}px)`}, height: '100vh'}}
         >
           <Toolbar />
-          {dash? <RenderContext.Provider value={{handleSearch}}> <Dashboard /> </RenderContext.Provider> : null}
+          {dash? <RenderContext.Provider value={{handleSearch}}>
+            <Dashboard /> </RenderContext.Provider> : null}
           {market? <MarketTrends /> : null}
-          {portfolio? <RenderContext.Provider value={{handleSearch}}> <Portfolio /> </RenderContext.Provider> : null}
-          {profile? <RenderContext.Provider value={{handleSearch}}> <Profile /> </RenderContext.Provider> : null}
+          {portfolio? <RenderContext.Provider value={{handleSearch}}>
+            <Portfolio /> </RenderContext.Provider> : null}
+          {profile? <RenderContext.Provider value={{handleSearch}}>
+            <Profile /> </RenderContext.Provider> : null}
           {settings? <Settings /> : null}
-          {likeComment? <SocialTest/> : null}
+          {likeComment? <Social/> : null}
           {search? <StockViewerContext.Provider value={{finalSearch}}> <Search /> </StockViewerContext.Provider> : null}
         </Box>
       </Box>
