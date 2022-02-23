@@ -167,6 +167,7 @@ def buy_stock():
   cur.execute("SELECT portfolio FROM users WHERE email=%s", (usr_email,))
   port = cur.fetchone()
   port_dict = port[0]
+
   return jsonify(port_dict), 200
 
 
