@@ -31,7 +31,7 @@ import {ThemeProvider, createTheme} from '@mui/material/styles';
 import StockViewerContext from './StockViewerContext';
 import {useNavigate} from 'react-router-dom';
 import RenderContext from './RenderContext';
-import { touchRippleClasses } from '@mui/material';
+import Social from './Social';
 
 
 const drawerWidth = 240;
@@ -40,10 +40,14 @@ const darkTheme = createTheme({
   palette: {
     type: 'light',
     primary: {
-      main: '#3f51b5',
+      main: '#333a56',
     },
     secondary: {
-      main: '#f50057',
+      main: '#52658f',
+    },
+    background: {
+      default: '#f1f1e4',
+      paper: '#f7f5e6',
     },
   },
   typography: {
@@ -85,23 +89,40 @@ export default function HomePage() {
   // hook for profile menu options
   const [profile, setProfile] = React.useState(false);
   const [settings, setSettings] = React.useState(false);
+  const [likeComment, setLC] = React.useState(false);
 
   const [search, setSearch] = React.useState(false);
-  const [searchValue, setSearchValue] = React.useState('')
-  const [finalSearch, setFinalSearch] = React.useState('')
+  const [searchValue, setSearchValue] = React.useState('');
+  const [finalSearch, setFinalSearch] = React.useState('');
   const navigate = useNavigate();
 
-  // function for opening/closing drawer
+  /**
+   * Description: Sets drawer to mobile screen size setting.
+   */
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
 
-  // function for opening/closing profile menu
+  /**
+   * Description: Changes the menu setting to open or closed.
+   */
   const handleProfileMenuToggle = () => {
     setPfOpen(!pfOpen);
   };
 
-  const handlePages = (dashVal, marketVal, profVal, settVal, searVal, portVal) => {
+  /**
+   * Description: Sets the right component to true so it appears
+   * on the screen.
+   * @param {bool} dashVal
+   * @param {bool} marketVal
+   * @param {bool} profVal
+   * @param {bool} settVal
+   * @param {bool} searVal
+   * @param {bool} portVal
+   * @param {bool} lcVal
+   */
+  const handlePages = (dashVal, marketVal, profVal, settVal,
+      searVal, portVal, lcVal) => {
     setDash(dashVal);
     setMarket(marketVal);
     setProfile(profVal);
@@ -110,10 +131,17 @@ export default function HomePage() {
     setPortfolio(portVal);
     setSearchValue('');
     setFinalSearch('');
-  }
-  
+    setLC(lcVal);
+  };
+
+  /**
+   * Description: Sets stock viewer on screen if the
+   * value in the search bar is nonempty. Triggered by
+   * clicking the search icon.
+   * @param {string} val
+   */
   const handleSearch = (val) => {
-    if(val.length > 0) {
+    if (val.length > 0) {
       setDash(false);
       setMarket(false);
       setProfile(false);
@@ -122,9 +150,14 @@ export default function HomePage() {
       setPortfolio(false);
       setSearchValue('');
       setFinalSearch(val);
+      setLC(false);
     }
   };
 
+  /**
+   * Description: Sets all components to false and calls log out
+   * backend. Navigates to log in page.
+   */
   const handleLogOut = () => {
     setDash(false);
     setMarket(false);
@@ -134,20 +167,21 @@ export default function HomePage() {
     setPortfolio(false);
     setSearchValue('');
     setFinalSearch('');
+    setLC(false);
     fetch('auth/logout', {
       method: 'GET',
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
     })
-    .then(
-        res => {
-          localStorage.clear();
-          navigate('/');
-        }
-    )
-    .catch(err => {
-      alert('Error logging out, please try again');
-  })
-  }
+        .then(
+            (res) => {
+              localStorage.clear();
+              navigate('/');
+            },
+        )
+        .catch((err) => {
+          alert('Error logging out, please try again');
+        });
+  };
 
 
   const sideDrawer = (
@@ -155,22 +189,25 @@ export default function HomePage() {
       <Toolbar />
       <Divider />
       <List>
-        <ListItem button key='Dashboard' 
-          onClick={() => handlePages(true, false, false, false, false, false)}>
+        <ListItem button key='Dashboard'
+          onClick={() =>
+            handlePages(true, false, false, false, false, false, false)}>
           <ListItemIcon>
             <DashboardIcon/>
           </ListItemIcon>
           <ListItemText primary='Dashboard' />
         </ListItem>
-        <ListItem button key='Portfolio' 
-          onClick={() => handlePages(false, false, false, false, false, true)} >
+        <ListItem button key='Portfolio'
+          onClick={() =>
+            handlePages(false, false, false, false, false, true, false)} >
           <ListItemIcon>
             <BarChartIcon/>
           </ListItemIcon>
           <ListItemText primary='Portfolio' />
         </ListItem>
-        <ListItem button key='Market Trends' 
-          onClick={() => handlePages(false, true, false, false, false, false)} >
+        <ListItem button key='Market Trends'
+          onClick={() =>
+            handlePages(false, true, false, false, false, false, false)} >
           <ListItemIcon>
             <ShowChartIcon/>
           </ListItemIcon>
@@ -196,8 +233,18 @@ export default function HomePage() {
       open={pfOpen}
       onClose={handleProfileMenuToggle}
     >
-      <MenuItem onClick={() => handlePages(false, false, true, false, false, false)}>Profile</MenuItem>
-      <MenuItem onClick={() => handlePages(false, false, false, true, false, false)}>Settings</MenuItem>
+      <MenuItem onClick={() =>
+        handlePages(false, false, true, false, false, false, false)}>
+        Profile
+      </MenuItem>
+      <MenuItem onClick={() =>
+        handlePages(false, false, false, true, false, false, false)}>
+        Settings
+      </MenuItem>
+      <MenuItem onClick={() =>
+        handlePages(false, false, false, false, false, false, true)}>
+        Social Test
+      </MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
   );
@@ -244,7 +291,7 @@ export default function HomePage() {
                 <StyledInputBase
                   placeholder='Search…'
                   inputProps={{'aria-label': 'search'}}
-                  sx={{'width': '25%', m: 1}}
+                  sx={{'width': '25%', 'm': 1}}
                   onChange={(event) => setSearchValue(event.target.value)}
                   value={searchValue}
                 />
@@ -304,16 +351,22 @@ export default function HomePage() {
         </Box>
         <Box
           component="main"
-          sx={{flexGrow: 1, p: 3, bgcolor: '#fafafa',
+          sx={{flexGrow: 1, p: 3,
             width: {sm: `calc(100% - ${drawerWidth}px)`}, height: '100vh'}}
         >
           <Toolbar />
-          {dash? <RenderContext.Provider value={{handleSearch}}> <Dashboard /> </RenderContext.Provider> : null}
+          {dash? <RenderContext.Provider value={{handleSearch}}>
+            <Dashboard /> </RenderContext.Provider> : null}
           {market? <MarketTrends /> : null}
-          {portfolio? <RenderContext.Provider value={{handleSearch}}> <Portfolio /> </RenderContext.Provider> : null}
-          {profile? <RenderContext.Provider value={{handleSearch}}> <Profile /> </RenderContext.Provider> : null}
+          {portfolio? <RenderContext.Provider value={{handleSearch}}>
+            <Portfolio /> </RenderContext.Provider> : null}
+          {profile? <RenderContext.Provider value={{handleSearch}}>
+            <Profile /> </RenderContext.Provider> : null}
           {settings? <Settings /> : null}
-          {search? <StockViewerContext.Provider value={{finalSearch}}> <Search /> </StockViewerContext.Provider> : null}
+          {likeComment? <StockViewerContext.Provider value={{finalSearch}}>
+            <Social/> </StockViewerContext.Provider> : null}
+          {search? <StockViewerContext.Provider value={{finalSearch}}>
+            <Search /> </StockViewerContext.Provider> : null}
         </Box>
       </Box>
     </ThemeProvider>

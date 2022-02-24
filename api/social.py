@@ -118,6 +118,31 @@ def user_likes():
   return jsonify(likes)
 
 
+@social_bp.route("/liked", methods=["PUT"])
+@jwt_required()
+def checkLiked():
+    cur = conn.cursor()
+    verify_jwt_in_request(optional=False)
+    data = json.loads(request.data)
+    tickr = data["tickr"]
+    usr_email = get_jwt_identity()
+    if not usr_email:
+        return jsonify({"err_msg": "Couldn't verify user."}), 403
+    cur.execute("SELECT username from users WHERE email=%s", (usr_email,))
+    usrname = cur.fetchone()
+
+    cur.execute(
+        "SELECT COUNT(*) FROM likes WHERE tickr=%s AND username=%s",
+        (
+            tickr,
+            usrname,
+        ),
+    )
+    total_likes = cur.fetchone()
+
+    return jsonify(total_likes[0]), 200
+
+
 # gives total likes for a particular stock
 # INPUT: valid tickr
 # RETURN: number of likes toward particular stock

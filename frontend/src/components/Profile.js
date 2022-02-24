@@ -9,70 +9,137 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import RenderContext from './RenderContext';
-import { Button } from '@mui/material';
+import Card from '@mui/material/Card';
+import Grid from '@mui/material/Grid';
+import {createTheme} from '@mui/material/styles';
 
+const darkTheme = createTheme({
+  palette: {
+    type: 'light',
+    primary: {
+      main: '#333a56',
+    },
+    secondary: {
+      main: '#52658f',
+    },
+    background: {
+      default: '#f1f1e4',
+      paper: '#f7f5e6',
+    },
+  },
+  typography: {
+    fontFamily: 'Montserrat',
+  },
+});
 
-
+/**
+ *
+ * @return {object} JSX
+ */
 export default function Profile() {
-    const [value, setValue] = React.useState('female');
+  const [value, setValue] = React.useState('one');
+  const [likes, setLikes] = React.useState([]);
 
-    const handleChange = (event) => {
-      setValue(event.target.value);
-    };
+  React.useEffect(() => {
+    getLikes();
+    getComments();
+  }, []);
 
-    return (
-      <RenderContext.Consumer>
-        {({handleSearch}) => (
-      <div>
-      <Box
-        sx={{
-          display: 'flex',
-          m: 0.5,
-          flexWrap: 'wrap',
-          '& > :not(style)': {
-            width: '100%',
-          },
-        }}
-      >
-        <Paper elevation={3}>
-          <Typography variant="h6" gutterBottom component="div" padding={1} color='#f50057'style={{ fontWeight: 600 }} sx={{ m: 1,}}>
+  const getLikes = () => {
+    fetch('social/user_likes', {
+      method: 'GET',
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+    })
+        .then(
+            (res) => res.json(),
+        ).then(
+            (data) => {
+              setLikes(data);
+            },
+        );
+  };
+
+  const handleChange = (event) => {
+    setValue(event.target.value);
+  };
+
+  return (
+    <RenderContext.Consumer>
+      {({handleSearch}) => (
+        <div>
+          <Box
+            sx={{
+              'display': 'flex',
+              'm': 0.5,
+              'flexWrap': 'wrap',
+              '& > :not(style)': {
+                width: '100%',
+              },
+            }}
+          >
+            <Paper elevation={3}>
+              <Typography variant="h6" gutterBottom component="div"
+                padding={1} color={darkTheme.palette.secondary.main}
+                style={{fontWeight: 600}} sx={{m: 1}}>
             MY DETAILS
-          </Typography>
-          <Divider/>
-          <FormControl sx={{ m: 2,}}>
-            <FormLabel id="demo-controlled-radio-buttons-group">Investor Type</FormLabel>
-              <RadioGroup
-                aria-labelledby="demo-controlled-radio-buttons-group"
-                name="controlled-radio-buttons-group"
-                value={value}
-                onChange={handleChange}
-              >
-                <FormControlLabel value="female" control={<Radio />} label="Type 1" />
-                <FormControlLabel value="male" control={<Radio />} label="Type 2" />
-              </RadioGroup>
-            </FormControl>
-        </Paper>
-      </Box>
-      <Box
-        sx={{
-          display: 'flex',
-          m: 0.5,
-          flexWrap: 'wrap',
-          '& > :not(style)': {
-            width: '100%',
-          },
-        }}
-      >
-        <Paper elevation={3}>
-          <Typography variant="h6" gutterBottom component="div" padding={1} color='#f50057'style={{ fontWeight: 600 }} sx={{ m: 1,}}>
-            MY LIKES
-          </Typography>
-          <Divider/>
-          <Button variant="outlined" sx={{ m: 2,}} onClick={() => handleSearch('TEST')}>Test Stock Viewer</Button>
-        </Paper>
-      </Box>
-      </div>
+              </Typography>
+              <Divider/>
+              <FormControl sx={{m: 2}}>
+                <FormLabel id="demo-controlled-radio-buttons-group">
+                  Investor Type
+                </FormLabel>
+                <RadioGroup
+                  aria-labelledby="demo-controlled-radio-buttons-group"
+                  name="controlled-radio-buttons-group"
+                  value={value}
+                  onChange={handleChange}
+                >
+                  <FormControlLabel value="one"
+                    control={<Radio />} label="Type 1" />
+                  <FormControlLabel value="two"
+                    control={<Radio />} label="Type 2" />
+                </RadioGroup>
+              </FormControl>
+            </Paper>
+          </Box>
+          <Box
+            sx={{
+              'display': 'flex',
+              'm': 0.5,
+              'flexWrap': 'wrap',
+              '& > :not(style)': {
+                width: '100%',
+              },
+            }}
+          >
+            <Paper elevation={3}>
+              <Typography variant="h6" gutterBottom component="div"
+                padding={1} color={darkTheme.palette.secondary.main}
+                style={{fontWeight: 600}} sx={{m: 1}}>
+                SOCIAL ACTIVITY
+              </Typography>
+              <Divider/>
+              <Typography variant="h6" gutterBottom component="div"
+                padding={1} color={darkTheme.palette.secondary.main}
+                sx={{m: 1}}>
+                LIKES:
+              </Typography>
+              <Grid container spacing={2}>
+                {likes?.map((item) => (
+                  <Grid item key={item[0]}>
+                    <Card variant="outlined"
+                      onClick={() => handleSearch(item[0])}
+                      sx={{'background': '#fbfbf0', 'width': 100,
+                        'm': 2, 'textAlign': 'center', 'p': 2}}>
+                      {item[0]}
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </Paper>
+          </Box>
+        </div>
       )}
-      </RenderContext.Consumer>
-    );
-  }
+    </RenderContext.Consumer>
+  );
+}
