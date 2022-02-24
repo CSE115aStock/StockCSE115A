@@ -44,7 +44,7 @@ export default function Social() {
   const [numLikes, setNumLikes] = React.useState(0);
   const [numComments, setNumComments] = React.useState(0);
   const [comments, setComments] = React.useState([]);
-  const finSearch = 'LCT';
+  const finSearch = React.useContext(StockViewerContext).finalSearch;
   const [alert, setAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
   const [liked, setLiked] = React.useState(false);
@@ -327,8 +327,6 @@ export default function Social() {
   };
 
   return (
-    <StockViewerContext.Consumer>
-      {({finalSearch}) => (
         <div>
           <Card>
             <Collapse in={alert}>
@@ -347,6 +345,9 @@ export default function Social() {
                 {alertMessage}
               </Alert>
             </Collapse>
+            <Typography>
+              {finSearch}
+            </Typography>
             <div>
               <Button variant="contained" id="Like Button"
                 sx={{'m': 2, 'ml': 2, 'width': '40%',
@@ -409,7 +410,5 @@ export default function Social() {
               }/>
           </Card>
         </div>
-      )}
-    </StockViewerContext.Consumer>
   );
 }
