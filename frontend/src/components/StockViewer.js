@@ -46,6 +46,14 @@ function Chart(search){
   }, [search]);
 
   if(stockData != null){
+    if(stockData['data']['bars'] == null){
+      console.log(stockData)
+      return(
+        <Typography variant="h4" color="secondary" align='center'>
+          {search} is not an available ticker.
+        </Typography>
+      );
+    }
     const parsedData = parseResponse(stockData);
     
 		return (
@@ -65,7 +73,9 @@ function News(search){
   }, [search]);
 
   if(news != null){
-    
+    if(news[0] == null){
+      return;
+    }
 		return (
 			<CardContent>
         <Typography gutterBottom variant="h4" component="div" color="primary">
@@ -234,7 +244,6 @@ function StockData(search){
     })
   }, [search]);
   
-  
 
   if(stockData != null){
     const change = ((stockData.latestTrade.p - stockData.dailyBar.o) / stockData.dailyBar.o).toFixed(2);
@@ -278,6 +287,7 @@ function StockData(search){
 
 function StockViewer() {
   const search = useContext(StockViewerContext).finalSearch;
+  
   
 		
   const [tickr, setTickr] = useState(search);
@@ -443,9 +453,10 @@ function StockViewer() {
     </div>
   )
 
+  
+  
 
   return (
-    
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
@@ -477,7 +488,6 @@ function StockViewer() {
       </Grid>
     </Box>
   )
-
 }
 
 export default StockViewer;
