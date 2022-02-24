@@ -42,7 +42,6 @@ export default function Profile() {
 
   React.useEffect(() => {
     getLikes();
-    getComments();
   }, []);
 
   const getLikes = () => {
