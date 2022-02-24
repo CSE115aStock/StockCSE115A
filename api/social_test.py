@@ -103,24 +103,24 @@ def test_remove_like(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_liked(mock_jwt):
-    with app.test_client() as c:
-        with app.app_context():
-            access_token = create_access_token("john@mail.com")
-            headers = {"Authorization": "Bearer {}".format(access_token)}
-            json_response = c.put(
-                "/social/liked", headers=headers, json={"tickr": "EXMPL"}
-            )
-            assert json_response.status == "200 OK"
+  with app.test_client() as c:
+    with app.app_context():
+      access_token = create_access_token("john@mail.com")
+      headers = {"Authorization": "Bearer {}".format(access_token)}
+      json_response = c.put(
+        "/social/liked", headers=headers, json={"tickr": "EXMPL"}
+      )
+      assert json_response.status == "200 OK"
 
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
-def test_userLikes(mock_jwt):
-    with app.test_client() as c:
-        with app.app_context():
-            access_token = create_access_token("john@mail.com")
-            headers = {"Authorization": "Bearer {}".format(access_token)}
-            json_response = c.get("/social/user_likes", headers=headers)
-            assert json_response.status == "200 OK"
+def test_user_likes(mock_jwt):
+  with app.test_client() as c:
+    with app.app_context():
+      access_token = create_access_token("john@mail.com")
+      headers = {"Authorization": "Bearer {}".format(access_token)}
+      json_response = c.get("/social/user_likes", headers=headers)
+      assert json_response.status == "200 OK"
 
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
