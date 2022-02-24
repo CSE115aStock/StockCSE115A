@@ -73,9 +73,8 @@ class ChartComponent extends React.Component {
 		if (this.state == null) {
 			return <div>Loading...</div>
 		}
-    console.log(this.state);
+    
     const data = parseMultiResponse(this.state);
-    console.log(data);
     
 		return (
 			<HeikinAshi type='hybrid' data={data} />

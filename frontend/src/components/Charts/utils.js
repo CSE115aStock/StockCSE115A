@@ -15,7 +15,6 @@ export function parseMultiResponse(response) {
 
   for(var stocks in bars){
     let lengthData = data.length - 1;
-    console.log(stocks);
     for(let i = bars[stocks].length-1; i >= 0; i--) {
       const dataPoint = data[lengthData];
       const bar = bars[stocks][i];
@@ -47,9 +46,6 @@ export function parseMultiResponse(response) {
     }
   }
     
-  
-
-
   return data;    
   
 }
