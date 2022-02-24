@@ -1,15 +1,18 @@
-import React from "react";
+import React from 'react';
 import {
   BrowserRouter as Router,
   Routes,
-  Route
-} from "react-router-dom";
+  Route,
+} from 'react-router-dom';
 
-import {Register} from "./login/index";
-import {Login} from "./login/index";
+import {Register} from './login/index';
+import {Login} from './login/index';
 import HomePage from './HomePage';
 
-
+/**
+ *
+ * @return {object} JSX
+ */
 export default function App() {
   return (
     <Router>

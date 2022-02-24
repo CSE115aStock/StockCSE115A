@@ -33,11 +33,10 @@ export function Register () {
             } ).then( res => res.json()
             ).then(
                 tk => {
-                    if(typeof tk.err_msg == 'undefined') {
+                    if(tk.err_msg === 'Account creation successful') {
                       navigate('/');
                     }
                     else {
-                        console.log(tk.err_msg);
                         setAlertMessage(tk.err_msg);
                         setAlert(true);
                     }
