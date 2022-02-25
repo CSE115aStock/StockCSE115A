@@ -7,7 +7,7 @@ from dotenv import load_dotenv, find_dotenv
 from unittest.mock import patch
 from passlib.hash import bcrypt
 
-from api import app
+from application import application
 
 from flask_jwt_extended import create_access_token
 
@@ -31,7 +31,7 @@ cur = conn.cursor()
 
 
 def test_add_user():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/signup",
       json={
@@ -52,7 +52,7 @@ def test_add_user():
 
 
 def test_add_user_weak_password():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/signup",
       json={
@@ -70,7 +70,7 @@ def test_add_user_weak_password():
 
 
 def test_add_user_password_mismatch():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/signup",
       json={
@@ -88,7 +88,7 @@ def test_add_user_password_mismatch():
 
 
 def test_add_user_invalid_email():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/signup",
       json={
@@ -106,7 +106,7 @@ def test_add_user_invalid_email():
 
 
 def test_add_user_missing_field():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/signup",
       json={
@@ -124,7 +124,7 @@ def test_add_user_missing_field():
 
 
 def test_add_user_already_registered():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/signup",
       json={
@@ -142,7 +142,7 @@ def test_add_user_already_registered():
 
 
 def test_authenticate_user():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/login",
       json={"username": "test.user1", "password": "Test@1234"},
@@ -152,7 +152,7 @@ def test_authenticate_user():
 
 
 def test_authenticate_user_bad_password():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/login",
       json={"username": "test.user1", "password": "Test1234"},
@@ -162,7 +162,7 @@ def test_authenticate_user_bad_password():
 
 
 def test_authenticate_user_bad_username():
-  with app.test_client() as c:
+  with application.test_client() as c:
     rv = c.post(
       "/auth/login",
       json={"username": "test.use1", "password": "Test@1234"},
@@ -173,8 +173,8 @@ def test_authenticate_user_bad_username():
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_logout(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.get("/auth/logout", headers=headers)
@@ -184,8 +184,8 @@ def test_logout(mock_jwt):
 # test changing password
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_change_password(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -208,8 +208,8 @@ def test_change_password(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_change_password_incorrect_password(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -226,8 +226,8 @@ def test_change_password_incorrect_password(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_change_password_mismatched(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -244,8 +244,8 @@ def test_change_password_mismatched(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_change_password_weak(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -263,8 +263,8 @@ def test_change_password_weak(mock_jwt):
 # test changing account details
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_change_account_details(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
