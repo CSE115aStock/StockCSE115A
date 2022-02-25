@@ -32,7 +32,7 @@ import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
-
+import Social from './Social';
 
 
 function Chart(search){
@@ -484,6 +484,11 @@ function StockViewer() {
         </Grid>
         <Grid item xs={6}>
           {News(search)}
+        </Grid>
+        <Grid item xs={6}>
+          <StockViewerContext.Provider value={{search}}>
+              <Social/> 
+          </StockViewerContext.Provider>
         </Grid>
       </Grid>
     </Box>
