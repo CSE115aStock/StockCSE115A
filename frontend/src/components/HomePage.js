@@ -31,7 +31,6 @@ import {ThemeProvider, createTheme} from '@mui/material/styles';
 import StockViewerContext from './StockViewerContext';
 import {useNavigate} from 'react-router-dom';
 import RenderContext from './RenderContext';
-import Social from './Social';
 
 
 const drawerWidth = 240;
@@ -89,7 +88,6 @@ export default function HomePage() {
   // hook for profile menu options
   const [profile, setProfile] = React.useState(false);
   const [settings, setSettings] = React.useState(false);
-  const [likeComment, setLC] = React.useState(false);
 
   const [search, setSearch] = React.useState(false);
   const [searchValue, setSearchValue] = React.useState('');
@@ -122,7 +120,7 @@ export default function HomePage() {
    * @param {bool} lcVal
    */
   const handlePages = (dashVal, marketVal, profVal, settVal,
-      searVal, portVal, lcVal) => {
+      searVal, portVal) => {
     setDash(dashVal);
     setMarket(marketVal);
     setProfile(profVal);
@@ -131,7 +129,6 @@ export default function HomePage() {
     setPortfolio(portVal);
     setSearchValue('');
     setFinalSearch('');
-    setLC(lcVal);
   };
 
   /**
@@ -150,7 +147,6 @@ export default function HomePage() {
       setPortfolio(false);
       setSearchValue('');
       setFinalSearch(val);
-      setLC(false);
     }
   };
 
@@ -167,7 +163,6 @@ export default function HomePage() {
     setPortfolio(false);
     setSearchValue('');
     setFinalSearch('');
-    setLC(false);
     fetch('auth/logout', {
       method: 'GET',
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
@@ -191,7 +186,7 @@ export default function HomePage() {
       <List>
         <ListItem button key='Dashboard'
           onClick={() =>
-            handlePages(true, false, false, false, false, false, false)}>
+            handlePages(true, false, false, false, false, false)}>
           <ListItemIcon>
             <DashboardIcon/>
           </ListItemIcon>
@@ -199,7 +194,7 @@ export default function HomePage() {
         </ListItem>
         <ListItem button key='Portfolio'
           onClick={() =>
-            handlePages(false, false, false, false, false, true, false)} >
+            handlePages(false, false, false, false, false, true)} >
           <ListItemIcon>
             <BarChartIcon/>
           </ListItemIcon>
@@ -207,7 +202,7 @@ export default function HomePage() {
         </ListItem>
         <ListItem button key='Market Trends'
           onClick={() =>
-            handlePages(false, true, false, false, false, false, false)} >
+            handlePages(false, true, false, false, false, false)} >
           <ListItemIcon>
             <ShowChartIcon/>
           </ListItemIcon>
@@ -234,16 +229,12 @@ export default function HomePage() {
       onClose={handleProfileMenuToggle}
     >
       <MenuItem onClick={() =>
-        handlePages(false, false, true, false, false, false, false)}>
+        handlePages(false, false, true, false, false, false)}>
         Profile
       </MenuItem>
       <MenuItem onClick={() =>
-        handlePages(false, false, false, true, false, false, false)}>
+        handlePages(false, false, false, true, false, false)}>
         Settings
-      </MenuItem>
-      <MenuItem onClick={() =>
-        handlePages(false, false, false, false, false, false, true)}>
-        Social Test
       </MenuItem>
       <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
     </Menu>
@@ -363,8 +354,6 @@ export default function HomePage() {
           {profile? <RenderContext.Provider value={{handleSearch}}>
             <Profile /> </RenderContext.Provider> : null}
           {settings? <Settings /> : null}
-          {likeComment? <StockViewerContext.Provider value={{finalSearch}}>
-            <Social/> </StockViewerContext.Provider> : null}
           {search? <StockViewerContext.Provider value={{finalSearch}}>
             <Search /> </StockViewerContext.Provider> : null}
         </Box>
