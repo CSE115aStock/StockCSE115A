@@ -2,16 +2,30 @@
   "name": "socialstock",
   "version": "2.0.0",
   "description": "CSE115 Project",
+  "main": "./frontend/src/index.js",
   "license": "UNLICENSED",
   "repository": "none",
   "devDependencies": {
-    "bestzip": "*"
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-react": "^7.16.7",
+    "babel-loader": "^8.2.3",
+    "bestzip": "*",
+    "css-loader": "^6.6.0",
+    "file-loader": "^6.2.0",
+    "sass": "^1.49.8",
+    "sass-loader": "^12.6.0",
+    "style-loader": "^3.3.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-dev-server": "^4.7.4"
   },
   "scripts": {
+    "serve": "webpack serve --mode development",
+    "build": "webpack --mode production",
     "install-frontend": "cd frontend && npm install",
     "start-frontend": "cd frontend && npm start",
-    "user-api": "cd api && pylint --rcfile pylintrc *.py && pytest -v && flask run --no-debugger",
-    "start": "concurrently \"npm run user-api\" \"npm run start-frontend\" ",
+    "backend": "cd api && pylint --rcfile pylintrc *.py && pytest -v && flask run --no-debugger",
+    "start": "concurrently \"npm run backend\" \"npm run start-frontend\" ",
     "postinstall": "(npm run install-frontend)"
   },
   "proxy": "http://localhost:5000",
@@ -19,6 +33,9 @@
     "apisauce": "^2.1.5",
     "concurrently": "^7.0.0",
     "d3-dsv": "^3.0.1",
-    "react-stockcharts": "^0.7.8"
+    "react-scripts": "^5.0.0",
+    "react-stockcharts": "^0.7.8",
+    "webpack": "^5.69.1",
+    "yarn": "^1.22.17"
   }
 }

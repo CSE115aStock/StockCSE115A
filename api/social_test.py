@@ -6,7 +6,7 @@ import os
 from dotenv import load_dotenv, find_dotenv
 from unittest.mock import patch
 
-from api import app
+from application import application
 
 from flask_jwt_extended import create_access_token
 
@@ -30,8 +30,8 @@ cur = conn.cursor()
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_add_like(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.post(
@@ -49,8 +49,8 @@ def test_add_like(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_add_like_like_twice(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.post(
@@ -76,8 +76,8 @@ def test_add_like_like_twice(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_remove_like(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.post(
@@ -115,8 +115,8 @@ def test_liked(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_user_likes(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.get("/social/user_likes", headers=headers)
@@ -125,8 +125,8 @@ def test_user_likes(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_total_likes(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -138,8 +138,8 @@ def test_total_likes(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_all_likes(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -151,8 +151,8 @@ def test_all_likes(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_add_comment(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.post(
@@ -168,8 +168,8 @@ def test_add_comment(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_user_comments(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -182,8 +182,8 @@ def test_user_comments(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_fetch_latest_comments(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
@@ -196,8 +196,8 @@ def test_fetch_latest_comments(mock_jwt):
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_all_comments(mock_jwt):
-  with app.test_client() as c:
-    with app.app_context():
+  with application.test_client() as c:
+    with application.app_context():
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
