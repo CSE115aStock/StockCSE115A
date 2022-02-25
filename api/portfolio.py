@@ -51,8 +51,8 @@ def add_stock():
     return jsonify({"err_msg": "Couldn't verify user."}), 403
 
   cur.execute(
-  "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
-  (json.dumps(stock), usr_email),
+    "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
+    (json.dumps(stock), usr_email),
   )
   conn.commit()
 
@@ -136,10 +136,10 @@ def buy_stock():
 
     if int(add_shares) < 0 or int(add_amount) < 0:
       return (
-      jsonify(
-        {"err_msg": "New shares and amount cannot be negative."}
-      ),
-      400,
+        jsonify(
+          {"err_msg": "New shares and amount cannot be negative."}
+        ),
+        400
       )
 
     # check if stock in portfolio
@@ -200,12 +200,12 @@ def sell_stock():
 
   if int(sell_shares) < 0 or int(sell_amount) < 0:
     return (
-    jsonify(
-      {
-      "err_msg": "Shares and amount to remove cannot be negative"
-      }
-    ),
-    400,
+      jsonify(
+        {
+          "err_msg": "Shares and amount to remove cannot be negative"
+        }
+      ),
+      400
     )
 
   # check if stock in portfolio
@@ -221,31 +221,31 @@ def sell_stock():
 
   if new_shares < 0:
     return (
-    jsonify({"err_msg": "Cannot sell more shares than you have."}),
-    401,
+      jsonify({"err_msg": "Cannot sell more shares than you have."}),
+      401,
     )
   elif new_shares == 0:
     del port_dict[tickr]
     cur.execute(
-    "UPDATE users SET portfolio = '{}' WHERE email=%s", (usr_email,)
+      "UPDATE users SET portfolio = '{}' WHERE email=%s", (usr_email,)
     )
     cur.execute(
-    "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
-    (json.dumps(port_dict), usr_email),
+      "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
+      (json.dumps(port_dict), usr_email),
     )
     conn.commit()
   else:
     new_shares_str = str(new_shares)
     new_amount_str = str(new_amount)
     cur.execute(
-    "UPDATE users SET portfolio = jsonb_set(cast(portfolio as jsonb),"
-    " '{%s,amount}', %s, true) WHERE email =%s",
-    (AsIs(tickr), new_amount_str, usr_email),
+      "UPDATE users SET portfolio = jsonb_set(cast(portfolio as jsonb),"
+      " '{%s,amount}', %s, true) WHERE email =%s",
+      (AsIs(tickr), new_amount_str, usr_email),
     )
     cur.execute(
-    "UPDATE users SET portfolio = jsonb_set(cast(portfolio as jsonb),"
-    " '{%s,shares}', %s, true) WHERE email =%s",
-    (AsIs(tickr), new_shares_str, usr_email),
+      "UPDATE users SET portfolio = jsonb_set(cast(portfolio as jsonb),"
+      " '{%s,shares}', %s, true) WHERE email =%s",
+      (AsIs(tickr), new_shares_str, usr_email),
     )
     conn.commit()
 

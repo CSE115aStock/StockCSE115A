@@ -35,12 +35,12 @@ def test_add_user():
     rv = c.post(
       "/auth/signup",
       json={
-      "first_name": "test_first",
-      "last_name": "test_last",
-      "email": "t_user@example.com",
-      "username": "test.user2",
-      "password": "Test@1234",
-      "verify_password": "Test@1234",
+        "first_name": "test_first",
+        "last_name": "test_last",
+        "email": "t_user@example.com",
+        "username": "test.user2",
+        "password": "Test@1234",
+        "verify_password": "Test@1234",
       }
     )
     json_response = rv.get_json()
@@ -56,12 +56,12 @@ def test_add_user_weak_password():
     rv = c.post(
       "/auth/signup",
       json={
-      "first_name": "test_first",
-      "last_name": "test_last",
-      "email": "t1@example.com",
-      "username": "test.user2",
-      "password": "Test1234",
-      "verify_password": "Test1234",
+        "first_name": "test_first",
+        "last_name": "test_last",
+        "email": "t1@example.com",
+        "username": "test.user2",
+        "password": "Test1234",
+        "verify_password": "Test1234",
       },
     )
     json_response = rv.get_json()
@@ -74,12 +74,12 @@ def test_add_user_password_mismatch():
     rv = c.post(
       "/auth/signup",
       json={
-      "first_name": "test_first",
-      "last_name": "test_last",
-      "email": "t1@example.com",
-      "username": "test.user2",
-      "password": "Test@1234",
-      "verify_password": "Test@123",
+        "first_name": "test_first",
+        "last_name": "test_last",
+        "email": "t1@example.com",
+        "username": "test.user2",
+        "password": "Test@1234",
+        "verify_password": "Test@123",
       },
     )
     json_response = rv.get_json()
@@ -92,12 +92,12 @@ def test_add_user_invalid_email():
     rv = c.post(
       "/auth/signup",
       json={
-      "first_name": "test_first",
-      "last_name": "test_last",
-      "email": "t1@exampl.om",
-      "username": "test.user2",
-      "password": "Test@1234",
-      "verify_password": "Test@1234",
+        "first_name": "test_first",
+        "last_name": "test_last",
+        "email": "t1@exampl.om",
+        "username": "test.user2",
+        "password": "Test@1234",
+        "verify_password": "Test@1234",
       },
     )
     json_response = rv.get_json()
@@ -110,12 +110,12 @@ def test_add_user_missing_field():
     rv = c.post(
       "/auth/signup",
       json={
-      "first_name": "test_first",
-      "last_name": "test_last",
-      "email": "",
-      "username": "test.user2",
-      "password": "Test@1234",
-      "verify_password": "Test@1234",
+        "first_name": "test_first",
+        "last_name": "test_last",
+        "email": "",
+        "username": "test.user2",
+        "password": "Test@1234",
+        "verify_password": "Test@1234",
       },
     )
     json_response = rv.get_json()
@@ -128,12 +128,12 @@ def test_add_user_already_registered():
     rv = c.post(
       "/auth/signup",
       json={
-      "first_name": "test_first",
-      "last_name": "test_last",
-      "email": "test@example.com",
-      "username": "test.user1",
-      "password": "Test@1234",
-      "verify_password": "Test@1234",
+        "first_name": "test_first",
+        "last_name": "test_last",
+        "email": "test@example.com",
+        "username": "test.user1",
+        "password": "Test@1234",
+        "verify_password": "Test@1234",
       },
     )
     json_response = rv.get_json()
@@ -189,18 +189,18 @@ def test_change_password(mock_jwt):
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
-      "/auth/settings/password",
-      headers=headers,
-      json={
-        "Current Password": "John@12345",
-        "New Password": "12345@John",
-        "Repeat": "12345@John",
-      },
+        "/auth/settings/password",
+        headers=headers,
+        json={
+          "Current Password": "John@12345",
+          "New Password": "12345@John",
+          "Repeat": "12345@John",
+        },
       )
       og_pwd = bcrypt.hash("John@12345")
       cur.execute(
-      "UPDATE users SET pass=%s WHERE email='john@mail.com'",
-      (og_pwd,),
+        "UPDATE users SET pass=%s WHERE email='john@mail.com'",
+        (og_pwd,),
       )
       conn.commit()
       assert json_response.status == "200 OK"
@@ -213,13 +213,13 @@ def test_change_password_incorrect_password(mock_jwt):
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
-      "/auth/settings/password",
-      headers=headers,
-      json={
-        "Current Password": "John12345",
-        "New Password": "12345@John",
-        "Repeat": "12345@John",
-      },
+        "/auth/settings/password",
+        headers=headers,
+        json={
+          "Current Password": "John12345",
+          "New Password": "12345@John",
+          "Repeat": "12345@John",
+        },
       )
       assert json_response.status == "401 UNAUTHORIZED"
 
@@ -231,13 +231,13 @@ def test_change_password_mismatched(mock_jwt):
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
-      "/auth/settings/password",
-      headers=headers,
-      json={
-        "Current Password": "John@12345",
-        "New Password": "12345John",
-        "Repeat": "12345@John",
-      },
+        "/auth/settings/password",
+        headers=headers,
+        json={
+          "Current Password": "John@12345",
+          "New Password": "12345John",
+          "Repeat": "12345@John",
+        },
       )
       assert json_response.status == "400 BAD REQUEST"
 
@@ -249,13 +249,13 @@ def test_change_password_weak(mock_jwt):
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
-      "/auth/settings/password",
-      headers=headers,
-      json={
-        "Current Password": "John@12345",
-        "New Password": "John",
-        "Repeat": "John",
-      },
+        "/auth/settings/password",
+        headers=headers,
+        json={
+          "Current Password": "John@12345",
+          "New Password": "John",
+          "Repeat": "John",
+        },
       )
       assert json_response.status == "400 BAD REQUEST"
 
@@ -268,18 +268,18 @@ def test_change_account_details(mock_jwt):
       access_token = create_access_token("john@mail.com")
       headers = {"Authorization": "Bearer {}".format(access_token)}
       json_response = c.put(
-      "/auth/settings/account",
-      headers=headers,
-      json={
-        "First Name": "Jane",
-        "Last Name": "doe",
-        "Username": "john.doe",
-      },
+        "/auth/settings/account",
+        headers=headers,
+        json={
+          "First Name": "Jane",
+          "Last Name": "doe",
+          "Username": "john.doe",
+        },
       )
       og_name = "john"
       cur.execute(
-      "UPDATE users SET first_name=%s WHERE email='john@mail.com'",
-      (og_name,),
+        "UPDATE users SET first_name=%s WHERE email='john@mail.com'",
+        (og_name,),
       )
       conn.commit()
       assert json_response.status == "200 OK"
