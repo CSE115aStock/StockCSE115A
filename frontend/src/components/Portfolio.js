@@ -493,7 +493,7 @@ export default function Portfolio() {
             value={tickr}
             variant="standard"
             fullWidth
-            onChange={(event) => setTickr(event.target.value)}/>
+            onChange={(event) => setTickr((event.target.value).toUpperCase())}/>
           <TextField
             id="standard"
             label="Amount invested"
