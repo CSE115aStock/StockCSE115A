@@ -75,7 +75,6 @@ export default function Social() {
         ).then(
             (data) => {
               setUsername(data.username);
-              console.log(data.username);
             },
         );
   };
