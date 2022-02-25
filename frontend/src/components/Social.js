@@ -44,7 +44,7 @@ export default function Social() {
   const [numLikes, setNumLikes] = React.useState(0);
   const [numComments, setNumComments] = React.useState(0);
   const [comments, setComments] = React.useState([]);
-  const finSearch = React.useContext(StockViewerContext).finalSearch;
+  const finSearch = React.useContext(StockViewerContext).search;
   const [alert, setAlert] = React.useState(false);
   const [alertMessage, setAlertMessage] = React.useState('');
   const [liked, setLiked] = React.useState(false);
@@ -59,7 +59,7 @@ export default function Social() {
     getComments();
     checkLiked();
     getUsername();
-  }, []);
+  }, [finSearch]);
 
   /**
    * Description: This function uses the token to get the current user's
@@ -345,9 +345,6 @@ export default function Social() {
                 {alertMessage}
               </Alert>
             </Collapse>
-            <Typography>
-              {finSearch}
-            </Typography>
             <div>
               <Button variant="contained" id="Like Button"
                 sx={{'m': 2, 'ml': 2, 'width': '40%',

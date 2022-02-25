@@ -486,6 +486,9 @@ function StockViewer() {
           {News(search)}
         </Grid>
         <Grid item xs={6}>
+          <Typography gutterBottom variant="h4" component="div" color="primary" margin="15px">
+              Social
+          </Typography>
           <StockViewerContext.Provider value={{search}}>
               <Social/> 
           </StockViewerContext.Provider>
