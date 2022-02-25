@@ -61,10 +61,13 @@ class ChartComponent extends React.Component {
               stocks = stocks + ',' + stock;
             }
           }
-          const api = alpacaApi();
-          api.getMultiBars(stocks, '2010-03-12T23:20:50.52Z', '1Day').then(data => {
-            this.setState(data['data']);
-          }); 
+          
+          if(stocks != '') {
+            const api = alpacaApi();
+            api.getMultiBars(stocks, '2010-03-12T23:20:50.52Z', '1Day').then(data => {
+              this.setState(data['data']);
+            }); 
+          }
         }
     )
   
