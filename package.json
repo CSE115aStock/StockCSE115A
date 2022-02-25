@@ -19,6 +19,7 @@
     "apisauce": "^2.1.5",
     "concurrently": "^7.0.0",
     "d3-dsv": "^3.0.1",
-    "react-stockcharts": "^0.7.8"
+    "react-stockcharts": "^0.7.8",
+    "talib": "^1.1.4"
   }
 }
