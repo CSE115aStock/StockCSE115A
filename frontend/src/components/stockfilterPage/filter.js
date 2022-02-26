@@ -6,9 +6,9 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import CssBaseline from '@mui/material/CssBaseline';
+import { styled } from '@mui/material/styles';
 import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
+import Grid from '@mui/material/Grid';
 export function FilterMethod () {
     const [cap, setCap] = React.useState('any');
     const [div, setdiv] = React.useState('any');
@@ -21,7 +21,13 @@ export function FilterMethod () {
     const [floatShort, setfloatShort] = React.useState('any');
     const [rsi, setrsi] = React.useState('any');
     const [order, setorder] = React.useState('any');
-
+    const Item = styled(Paper)(({ theme }) => ({
+    backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
+        ...theme.typography.body2,
+        padding: theme.spacing(1),
+        textAlign: 'center',
+        color: theme.palette.text.secondary,
+      }));
     function createData( ticker, name, sector, industry, country, markcap,pe, price, change, Volume) {
         return { ticker, name, sector, industry, country, markcap,pe, price, change, Volume };
     }
@@ -31,10 +37,10 @@ export function FilterMethod () {
             <div className="form">
                 <div className="form-group">
                     <label htmlFor="Stock">Filter options</label>
-                    <label htmlFor="Stock">Market Cap</label>
                     <div className="form-group">
-                    <Container maxWidth="sm">
-                        <Container maxWidth="sm">
+                        <Grid container spacing={2}>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">Market Cap:  </label>
                             <select name="cap" id="cap" form="capform"
                             onChange={(event) => setCap(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -45,6 +51,9 @@ export function FilterMethod () {
                                 <option value="micro">$50M-$300M</option>
                                 <option value="nano">$50M-</option>
                             </select>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">Exchange:    </label>
                             <select name="exchange" id="exchange" form="capform"
                             onChange={(event) => setExchange(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -52,6 +61,9 @@ export function FilterMethod () {
                                 <option value="nasd">NASDAQ</option>
                                 <option value="nyse">NYSE</option>
                             </select>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">Dividend:    </label>
                             <select name="dividend" id="dividend" form="capform"
                             onChange={(event) => setdiv(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -64,13 +76,18 @@ export function FilterMethod () {
                                 <option value="o4">Over 4%</option>
                                 <option value="high">High (&gt;5%)</option>
                             </select>
-                            </Container>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">Index:    </label>
                             <select name="index" id="index" form="capform"
                             onChange={(event) => setindex(event.target.value)}>
                                 <option value="any">No Filter</option>
                                 <option value="sp500">S&amp;P 500</option>
                                 <option value="dji">DJIA</option>
-                            </select>                 
+                            </select> 
+                            </Grid>    
+                            <Grid item xs={8}>     
+                            <label htmlFor="Stock">Industry:    </label> 
                             <select name="ind" id="ind" form="capform"
                             onChange={(event) => setind(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -227,6 +244,9 @@ export function FilterMethod () {
                                 <option value="wastemanagement">Waste Management</option>
                                 <option value="modal">Custom (Elite only)</option>
                             </select>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">pe:    </label> 
                             <select name="pe" id="pe" form="capform"
                             onChange={(event) => setpe(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -244,6 +264,9 @@ export function FilterMethod () {
                                 <option value="u45">Under 45</option>
                                 <option value="u50">Under 50</option>
                             </select>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">volume:    </label> 
                             <select name="volume" id="volume" form="capform"
                             onChange={(event) => setvolume(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -257,6 +280,9 @@ export function FilterMethod () {
                                 <option value="o20000">Over 20M</option>
                                 <option value="range">Custom (Elite only)</option>
                             </select>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">Pattern:    </label> 
                             <select name="pattern" id="pattern" form="capform"
                             onChange={(event) => setpattern(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -289,6 +315,9 @@ export function FilterMethod () {
                                 <option value="headandshoulders">Head &amp; Shoulders</option>
                                 <option value="headandshouldersinv">Head &amp; Shoulders Inverse</option>
                             </select>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">Short Float:    </label> 
                             <select name="floatShort" id="floatShort" form="capform"
                             onChange={(event) => setfloatShort(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -307,6 +336,9 @@ export function FilterMethod () {
                                 <option value="o25">Over 25%</option>
                                 <option value="o30">Over 30%</option>
                             </select>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">RSI:    </label> 
                             <select name="rsi" id="rsi" form="capform"
                             onChange={(event) => setrsi(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -323,8 +355,9 @@ export function FilterMethod () {
                                 <option value="nos50">Not Oversold (&gt;50)</option>
                                 <option value="nos40">Not Oversold (&gt;40)</option>
                             </select>
-                        </Container>
-                        <div>
+                            </Grid>
+                            <Grid item xs={8}>
+                            <label htmlFor="Stock">order:    </label> 
                             <select name="order" id="order" form="capform"
                             onChange={(event) => setorder(event.target.value)}>
                                 <option value="any">No Filter</option>
@@ -399,9 +432,10 @@ export function FilterMethod () {
                                 <option value="o=targetprice">Target Price</option>
                                 <option value="o=ipodate">IPO Date</option>
                             </select>
-                        </div>
+                        </Grid>
+                        </Grid>
                     </div>
-                </div>
+                    </div>
             </div>
             <div className="footer">
             <button type="button" className="btn"
@@ -410,19 +444,16 @@ export function FilterMethod () {
                         method: 'POST',
                         body: JSON.stringify({
                             "cap": "cap_"+cap,
-                            "exchange":"",
-                            "dividend": "",
-                            "sylmbols":"",
-                            "index": "",
-                            "sylmbols":"",
-                            "sylmbols":"",
-                            "ind": "",
-                            "pe":"",
-                            "volume": "",
-                            "floatShort":"",
-                            "rsi": "",
-                            "order":"",
-                            "pattern":""
+                            "exchange":"exch_"+exchange,
+                            "dividend": "fa_div_"+div,
+                            "index": "idx_"+index,
+                            "ind": "ind_"+ind,
+                            "pe":"fa_pe_"+pe,
+                            "volume": "sh_curvol_"+volume,
+                            "floatShort":"sh_short_"+floatShort,
+                            "rsi": "ta_rsi_"+rsi,
+                            "order":order,
+                            "pattern":"ta_pattern_"+pattern
                         })
                         } ).then(
                             res => res.json()

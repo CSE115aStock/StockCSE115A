@@ -41,8 +41,8 @@ def screener():
             "https://finviz.com/screener.ashx?"
             "v=111&"
             f'f={data["cap"]},{data["exchange"]},{data["dividend"]},{data["index"]},{data["ind"]},{data["pe"]},{data["volume"]},{data["pattern"]},{data["floatShort"]},{data["rsi"]}'
-            f'o={data["order"]}'
             "&ft=4"
+            f'&{data["order"]}'
         )
         data = json.loads(request.data)
         headers = {
@@ -59,7 +59,8 @@ def screener():
             link = row.a
             if link is not None:
                 data.append(link.get_text())
-        data.pop(0)
+        if data:
+            data.pop(0)
         n = 11
-        x = [data[i:i + n] for i in range(0, len(data), n)] 
+        x = [data[i+1:i + n] for i in range(0, len(data), n)] 
         return jsonify({"response":x})
