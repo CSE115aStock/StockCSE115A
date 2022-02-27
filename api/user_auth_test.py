@@ -283,3 +283,34 @@ def test_change_account_details(mock_jwt):
       )
       conn.commit()
       assert json_response.status == "200 OK"
+
+
+# test account deletion
+@patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
+def test_delete_user_account(mock_jwt):
+  with application.test_client() as c:
+    with application.app_context():
+      access_token = create_access_token("test.delete@example.com")
+      headers = {"Authorization": "Bearer {}".format(access_token)}
+      json_response = c.delete(
+        "/auth/settings/account/delete",
+        headers=headers
+      )
+      assert json_response.status == "200 OK"
+
+      rv = c.post(
+      "/auth/signup",
+        json={
+          "first_name": "test_first_delete",
+          "last_name": "test_last_delete",
+          "email": "test.delete@example.com",
+          "username": "test.delete",
+          "password": "Test@1234",
+          "verify_password": "Test@1234",
+        }
+      )
+
+      json_response = rv.get_json()
+
+      assert json_response["err_msg"] == "Account creation successful"
+

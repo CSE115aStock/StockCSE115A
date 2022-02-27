@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import LockIcon from '@mui/icons-material/Lock';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from '@mui/material/Divider';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -56,6 +57,8 @@ export default function Settings() {
   const [edit, setEdit] = React.useState(false);
   const [changingButton, setChangingButton] = React.useState('Edit');
   const [changePass, setChangePass] = React.useState(false);
+  const [confirmDelete, setConfirmDelete] = React.useState('Confirm Delete');
+  const [deleteAcc, setDeleteAcc] = React.useState(false);
   const [passwordVisible, setPassVisible] = React.useState(false);
   const [currentPass, setCurrentPass] = React.useState('Current Password');
   const [newPass, setNewPass] = React.useState('New Password');
@@ -205,6 +208,30 @@ export default function Settings() {
     setPassVisible(!passwordVisible);
   };
 
+
+    /**
+   * Description: Handles when the change password button or the
+   * submit button is pressed. If the change password button is pressed,
+   * it pulls up the dialog. If submit is pressed, a back end call is
+   * made to update the password. The dialog is also closed.
+   */
+  const deleteAccount = () => {
+    if(deleteAcc) {
+      if (confirmDelete == "DELETE") {
+    
+      }
+    }
+    else {
+      setDeleteAcc(true);
+    }
+
+  };
+
+
+  const cancelDelete = () => {
+    setDeleteAcc(false);
+  };
+
   return (
     <Box
       sx={{
@@ -285,6 +312,10 @@ export default function Settings() {
           <Button variant="contained" sx={{m: 2}}
             startIcon={<LockIcon />} onClick={passwordChange}>
               Change Password
+          </Button>
+          <Button variant="contained" sx={{m: 2, backgroundColor: 'red'}}
+            startIcon={<DeleteIcon />} onClick={deleteAccount}>
+              Delete Account
           </Button>
           <Dialog open={changePass} onClose={cancelPass}>
             <DialogTitle>Change Password</DialogTitle>
@@ -376,6 +407,35 @@ export default function Settings() {
             <DialogActions>
               <Button onClick={cancelPass}>Cancel</Button>
               <Button onClick={passwordChange}>Submit</Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={deleteAcc} onClose={cancelDelete}>
+            <DialogTitle>Delete Account</DialogTitle>
+            <DialogContent>
+              <Box>
+                <FormControl sx={{m: 1, width: '50ch'}} variant="standard">
+                  <InputLabel htmlFor="standard-adornment-password">
+                      Type DELETE to confirm account deletion
+                  </InputLabel>
+                  <Input
+                    id="standard-adornment-password"
+                    type={passwordVisible ? 'text' : 'password'}
+                    onChange={(event) => setConfirmDelete(event.target.value)}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          aria-label="toggle password visibility"
+                          onClick={changeVisibility}>
+                          {passwordVisible ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                  />
+                </FormControl>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={cancelDelete}>Cancel</Button>
             </DialogActions>
           </Dialog>
         </Box>
