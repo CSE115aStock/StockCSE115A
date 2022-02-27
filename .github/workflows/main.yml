@@ -6,7 +6,7 @@ env:
   EB_APPLICATION_NAME : "social-stock-analyzer"
   EB_ENVIRONMENT_NAME : "Socialstockanalyzer-env"
   DEPLOY_PACKAGE_NAME : "ss-${{ github.sha }}.zip"
-  AWS_REGION          : "us-west-1"
+  AWS_REGION_NAME          : "us-west-1"
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
