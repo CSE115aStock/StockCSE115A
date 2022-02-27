@@ -24,6 +24,7 @@ import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
+import {useNavigate} from 'react-router-dom';
 import {createTheme} from '@mui/material/styles';
 
 const darkTheme = createTheme({
@@ -67,6 +68,8 @@ export default function Settings() {
   const [alertMessage, setAlertMessage] = React.useState('');
   const [passAlert, setPassAlert] = React.useState(false);
   const [passAlertMessage, setPassAlertMessage] = React.useState('');
+  const navigate = useNavigate();
+
 
   /**
    * Description: Updates the user info variables. Updates with render.
@@ -209,25 +212,44 @@ export default function Settings() {
   };
 
 
-    /**
-   * Description: Handles when the change password button or the
-   * submit button is pressed. If the change password button is pressed,
-   * it pulls up the dialog. If submit is pressed, a back end call is
-   * made to update the password. The dialog is also closed.
-   */
+  /**
+ * Description: Handles when the delete account button or the
+ * If the delete account button is pressed,
+ * it pulls up the dialog. If confirm is pressed, a back end call is
+ * delete the account and it's comments and likes. 
+ * The dialog is also closed.
+ */
   const deleteAccount = () => {
-    if(deleteAcc) {
-      if (confirmDelete == "DELETE") {
-    
+    if (deleteAcc) {
+      if (confirmDelete == 'DELETE') {
+        fetch('/auth/settings/account/delete', {
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+        }).then(
+            (res) => {
+              if (res.status == 200) {
+                setDeleteAcc(false);
+                localStorage.clear();
+                navigate('/');
+              }
+            },
+        );
       }
-    }
-    else {
+      else{
+        setPassAlertMessage('Text entered doesn not match DELETE');
+        setPassAlert(true);
+      }
+    } else {
       setDeleteAcc(true);
     }
-
   };
 
 
+    /**
+   * Description: Handles when the cancel button is pressed on
+   * the dialog. It closes the dialog and sets the visibility
+   * to off.
+   */
   const cancelDelete = () => {
     setDeleteAcc(false);
   };
@@ -411,31 +433,39 @@ export default function Settings() {
           </Dialog>
           <Dialog open={deleteAcc} onClose={cancelDelete}>
             <DialogTitle>Delete Account</DialogTitle>
+            <Collapse in={passAlert}>
+              <Alert severity='error'
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setPassAlert(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                sx={{mb: 0, mt: 3, margin: 5}}>
+                {passAlertMessage}
+              </Alert>
+            </Collapse>
             <DialogContent>
               <Box>
                 <FormControl sx={{m: 1, width: '50ch'}} variant="standard">
-                  <InputLabel htmlFor="standard-adornment-password">
+                  <InputLabel>
                       Type DELETE to confirm account deletion
                   </InputLabel>
                   <Input
-                    id="standard-adornment-password"
-                    type={passwordVisible ? 'text' : 'password'}
                     onChange={(event) => setConfirmDelete(event.target.value)}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={changeVisibility}>
-                          {passwordVisible ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    }
                   />
                 </FormControl>
               </Box>
             </DialogContent>
             <DialogActions>
               <Button onClick={cancelDelete}>Cancel</Button>
+              <Button onClick={deleteAccount}>Confirm</Button>
             </DialogActions>
           </Dialog>
         </Box>
