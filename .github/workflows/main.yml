@@ -1,0 +1,46 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CICD
+env:
+  EB_PACKAGE_S3_BUCKET_NAME : "socialstock-backend"
+  EB_APPLICATION_NAME : "social-stock-analyzer"
+  EB_ENVIRONMENT_NAME : "Socialstockanalyzer-env"
+  DEPLOY_PACKAGE_NAME : "ss-${{ github.sha }}.zip"
+  AWS_REGION          : "us-west-1"
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  ci_pipeline:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Git clone the repo
+        uses: actions/checkout@v1
+      
+      - name: create zip for backend
+        run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./api -x backend_deploy.sh environment.yaml pylintrc social_test.py user_auth_test.py
+      
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id : "AKIA3Z5M7ICVMIEDPB5I"
+          aws-secret-access-key : "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"
+          aws-region : ${{ env.AWS_REGION_NAME }}
+      
+      - name: Sync deployment package to s3
+        run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
+        
+      - name: Print message on CI completion
+        run : echo "CI successful"
+         
+          
