@@ -6,6 +6,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import EditIcon from '@mui/icons-material/Edit';
 import LockIcon from '@mui/icons-material/Lock';
+import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from '@mui/material/Divider';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -23,6 +24,7 @@ import IconButton from '@mui/material/IconButton';
 import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
+import {useNavigate} from 'react-router-dom';
 import {createTheme} from '@mui/material/styles';
 
 const darkTheme = createTheme({
@@ -56,6 +58,8 @@ export default function Settings() {
   const [edit, setEdit] = React.useState(false);
   const [changingButton, setChangingButton] = React.useState('Edit');
   const [changePass, setChangePass] = React.useState(false);
+  const [confirmDelete, setConfirmDelete] = React.useState('Confirm Delete');
+  const [deleteAcc, setDeleteAcc] = React.useState(false);
   const [passwordVisible, setPassVisible] = React.useState(false);
   const [currentPass, setCurrentPass] = React.useState('Current Password');
   const [newPass, setNewPass] = React.useState('New Password');
@@ -64,6 +68,8 @@ export default function Settings() {
   const [alertMessage, setAlertMessage] = React.useState('');
   const [passAlert, setPassAlert] = React.useState(false);
   const [passAlertMessage, setPassAlertMessage] = React.useState('');
+  const navigate = useNavigate();
+
 
   /**
    * Description: Updates the user info variables. Updates with render.
@@ -205,6 +211,49 @@ export default function Settings() {
     setPassVisible(!passwordVisible);
   };
 
+
+  /**
+ * Description: Handles when the delete account button or the
+ * If the delete account button is pressed,
+ * it pulls up the dialog. If confirm is pressed, a back end call is
+ * delete the account and it's comments and likes. 
+ * The dialog is also closed.
+ */
+  const deleteAccount = () => {
+    if (deleteAcc) {
+      if (confirmDelete == 'DELETE') {
+        fetch('/auth/settings/account/delete', {
+          method: 'DELETE',
+          headers: {'Authorization': 'Bearer ' + localStorage.getItem('JWT')},
+        }).then(
+            (res) => {
+              if (res.status == 200) {
+                setDeleteAcc(false);
+                localStorage.clear();
+                navigate('/');
+              }
+            },
+        );
+      }
+      else{
+        setPassAlertMessage('Text entered doesn not match DELETE');
+        setPassAlert(true);
+      }
+    } else {
+      setDeleteAcc(true);
+    }
+  };
+
+
+    /**
+   * Description: Handles when the cancel button is pressed on
+   * the dialog. It closes the dialog and sets the visibility
+   * to off.
+   */
+  const cancelDelete = () => {
+    setDeleteAcc(false);
+  };
+
   return (
     <Box
       sx={{
@@ -285,6 +334,10 @@ export default function Settings() {
           <Button variant="contained" sx={{m: 2}}
             startIcon={<LockIcon />} onClick={passwordChange}>
               Change Password
+          </Button>
+          <Button variant="contained" sx={{m: 2, backgroundColor: 'red'}}
+            startIcon={<DeleteIcon />} onClick={deleteAccount}>
+              Delete Account
           </Button>
           <Dialog open={changePass} onClose={cancelPass}>
             <DialogTitle>Change Password</DialogTitle>
@@ -376,6 +429,43 @@ export default function Settings() {
             <DialogActions>
               <Button onClick={cancelPass}>Cancel</Button>
               <Button onClick={passwordChange}>Submit</Button>
+            </DialogActions>
+          </Dialog>
+          <Dialog open={deleteAcc} onClose={cancelDelete}>
+            <DialogTitle>Delete Account</DialogTitle>
+            <Collapse in={passAlert}>
+              <Alert severity='error'
+                action={
+                  <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                      setPassAlert(false);
+                    }}
+                  >
+                    <CloseIcon fontSize="inherit" />
+                  </IconButton>
+                }
+                sx={{mb: 0, mt: 3, margin: 5}}>
+                {passAlertMessage}
+              </Alert>
+            </Collapse>
+            <DialogContent>
+              <Box>
+                <FormControl sx={{m: 1, width: '50ch'}} variant="standard">
+                  <InputLabel>
+                      Type DELETE to confirm account deletion
+                  </InputLabel>
+                  <Input
+                    onChange={(event) => setConfirmDelete(event.target.value)}
+                  />
+                </FormControl>
+              </Box>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={cancelDelete}>Cancel</Button>
+              <Button onClick={deleteAccount}>Confirm</Button>
             </DialogActions>
           </Dialog>
         </Box>
