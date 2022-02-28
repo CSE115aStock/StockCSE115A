@@ -28,11 +28,11 @@ from flask_jwt_extended import (
 # load db connection config
 load_dotenv(find_dotenv())
 
-HOST = os.getenv("HOST")
-PORT = os.getenv("PORT")
-DB_NAME = os.getenv("DB_NAME")
-USR = os.getenv("USR")
-PASSWORD = os.getenv("PASSWORD")
+HOST = os.environ["HOST"]
+PORT = os.environ["PORT"]
+DB_NAME = os.environ["DB_NAME"]
+USR = os.environ["USR"]
+PASSWORD = os.environ["PASSWORD"]
 
 # connect to user DB
 conn = psycopg2.connect(
