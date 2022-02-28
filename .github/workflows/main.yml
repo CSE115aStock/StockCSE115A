@@ -11,14 +11,15 @@ env:
 on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
-    branches: [ main ]
+    paths:
+      - 'api/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  ci_pipeline:
+  ci_pipeline_backend:
     runs-on: ubuntu-latest
     
     steps:
@@ -43,9 +44,9 @@ jobs:
       - name: Print message on CI completion
         run : echo "CI successful"
  
-  cd_pipeline:
+  cd_pipeline_backend:
     runs-on: ubuntu-latest
-    needs: [ci_pipeline]
+    needs: [ci_pipeline_backend]
     
     steps:
       - name: Authenticate with AWS
