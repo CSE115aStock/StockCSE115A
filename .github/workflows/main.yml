@@ -1,0 +1,70 @@
+# This is a basic workflow to help you get started with Actions
+
+name: CICD
+env:
+  EB_PACKAGE_S3_BUCKET_NAME : "socialstock-backend"
+  EB_APPLICATION_NAME : "social-stock-analyzer"
+  EB_ENVIRONMENT_NAME : "Socialstockanalyzer-env"
+  DEPLOY_PACKAGE_NAME : "ss-${{ github.sha }}.zip"
+  AWS_REGION_NAME          : "us-west-1"
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  ci_pipeline:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Git clone the repo
+        uses: actions/checkout@v1
+      
+      - name: Zip backend files
+        run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }}  ./api/.ebextensions/ ./api/.flaskenv ./api/application.py ./api/portfolio.py ./api/requirements.txt ./api/social.py ./api/user_auth.py ./api/wsgi.py
+      
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id : ${{ secrets.SS_AWS_ACCESS_KEY }}
+          aws-secret-access-key : ${{ secrets.SS_AWS_SECRET_KEY }}
+          aws-region : ${{ env.AWS_REGION_NAME }}
+      
+      - name: Upload deployment package to S3
+        run: aws s3 cp ${{ env.DEPLOY_PACKAGE_NAME }} s3://${{ env.EB_PACKAGE_S3_BUCKET_NAME }}/
+        
+      - name: Print message on CI completion
+        run : echo "CI successful"
+ 
+  cd_pipeline:
+    runs-on: ubuntu-latest
+    needs: [ci_pipeline]
+    
+    steps:
+      - name: Authenticate with AWS
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id : ${{ secrets.SS_AWS_ACCESS_KEY }}
+          aws-secret-access-key : ${{ secrets.SS_AWS_SECRET_KEY }}
+          aws-region : ${{ env.AWS_REGION_NAME }}
+      
+      - name: Create new Elastic Beanstalk Application Version
+        run: |
+          aws elasticbeanstalk create-application-version \
+          --application-name ${{ env.EB_APPLICATION_NAME }} \
+          --source-bundle S3Bucket="${{ env.EB_PACKAGE_S3_BUCKET_NAME }}",S3Key="${{ env.DEPLOY_PACKAGE_NAME }}" \
+          --version-label "Ver-${{ github.sha }}" \
+          --description "CommitSHA-${{ github.sha }}"
+        
+      - name: Deploy new application version
+        run: aws elasticbeanstalk update-environment --environment-name ${{ env.EB_ENVIRONMENT_NAME }} --version-label "Ver-${{ github.sha }}"
+        
+      - name: Print message on CD completion
+        run : echo "CD successful"
