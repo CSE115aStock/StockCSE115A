@@ -55,7 +55,7 @@ def is_valid_password(p_word):
     return False
 
   # return true if string matches ReGex
-  return bool(re.search(p,p_word))
+  return bool(re.search(p, p_word))
 
 
 # Adds user to DB
@@ -222,9 +222,8 @@ def change_password():
   cur = conn.cursor(cursor_factory=RealDictCursor)
   cur.execute("SELECT pass FROM users where email=%s", (get_jwt_identity(),))
   stored_pwd = (cur.fetchone())["pass"]
-  if not check_password(
-    current_pwd, stored_pwd
-  ):  # compare current with db password
+  # compare current with db password
+  if not check_password(current_pwd, stored_pwd):
     error = "Invalid password."
     response_code = 401
   elif not is_valid_password(entered_pwd):

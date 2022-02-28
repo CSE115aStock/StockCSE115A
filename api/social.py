@@ -57,7 +57,7 @@ def add_like():
 
   try:
     cur.execute(
-        "INSERT INTO likes VALUES(%s,%s,%s)", (tickr, usrname, time_stmp)
+      "INSERT INTO likes VALUES(%s,%s,%s)", (tickr, usrname, time_stmp)
     )
   except psycopg2.DatabaseError as err:
     cur.execute("ROLLBACK")
@@ -89,7 +89,7 @@ def remove_like():
   usrname = cur.fetchone()
 
   cur.execute(
-  "DELETE FROM likes WHERE username=%s AND tickr=%s", (usrname, tickr)
+    "DELETE FROM likes WHERE username=%s AND tickr=%s", (usrname, tickr)
   )
 
   conn.commit()
@@ -215,8 +215,8 @@ def add_comment():
 
   try:
     cur.execute(
-        "INSERT INTO comments VALUES(%s,%s,%s,%s)",
-        (usrname, time_stmp, tickr, comment),
+      "INSERT INTO comments VALUES(%s,%s,%s,%s)",
+      (usrname, time_stmp, tickr, comment),
     )
   except psycopg2.DatabaseError:
     cur.execute("ROLLBACK")
@@ -257,9 +257,9 @@ def edit_comment():
 
   try:
     cur.execute(
-        "UPDATE comments SET comment_body=%s, created_on=%s \
-        WHERE created_on=%s AND username=%s",
-        (comment, new_time_stmp, time_stmp, usrname),
+      "UPDATE comments SET comment_body=%s, created_on=%s \
+      WHERE created_on=%s AND username=%s",
+      (comment, new_time_stmp, time_stmp, usrname),
     )
   except psycopg2.DatabaseError as err:
     cur.execute("ROLLBACK")
@@ -348,8 +348,8 @@ def user_comments():
   usrname = cur.fetchone()
 
   cur.execute(
-  "SELECT * FROM comments WHERE username=%s and tickr=%s",
-  (usrname, tickr),
+    "SELECT * FROM comments WHERE username=%s and tickr=%s",
+    (usrname, tickr),
   )
   comments = cur.fetchall()
 
@@ -373,9 +373,9 @@ def fetch_latest_comments():
   tickr = data["tickr"]
 
   cur.execute(
-  "SELECT * FROM comments WHERE tickr=%s order by created_on desc \
+    "SELECT * FROM comments WHERE tickr=%s order by created_on desc \
     fetch first 5 rows only",
-  (tickr,),
+    (tickr,),
   )
   comments = cur.fetchall()
 

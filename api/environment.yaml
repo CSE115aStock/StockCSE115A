@@ -13,3 +13,4 @@ dependencies:
   - pip
   - pylint=2.12.2
   - email_validator=1.1.3
+  - gunicorn=20.1.0
