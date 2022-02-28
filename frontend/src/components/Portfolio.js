@@ -61,10 +61,13 @@ class ChartComponent extends React.Component {
               stocks = stocks + ',' + stock;
             }
           }
-          const api = alpacaApi();
-          api.getMultiBars(stocks, '2010-03-12T23:20:50.52Z', '1Day').then(data => {
-            this.setState(data['data']);
-          }); 
+          
+          if(stocks != '') {
+            const api = alpacaApi();
+            api.getMultiBars(stocks, '2010-03-12T23:20:50.52Z', '1Day').then(data => {
+              this.setState(data['data']);
+            }); 
+          }
         }
     )
   
@@ -428,7 +431,7 @@ export default function Portfolio() {
             value={tickr}
             variant="standard"
             fullWidth
-            onChange={(event) => setTickr(event.target.value)}/>
+            onChange={(event) => setTickr((event.target.value).toUpperCase())}/>
           <TextField
             id="standard"
             label="Amount Invested"
@@ -493,7 +496,7 @@ export default function Portfolio() {
             value={tickr}
             variant="standard"
             fullWidth
-            onChange={(event) => setTickr(event.target.value)}/>
+            onChange={(event) => setTickr((event.target.value).toUpperCase())}/>
           <TextField
             id="standard"
             label="Amount invested"
