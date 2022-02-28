@@ -3,7 +3,7 @@
 name: CICD-frontend
 env:
   AWS_REGION_NAME          : "us-west-1"
-  SOURCE_PATH : "./*"
+  SOURCE_PATH : "/*"
 
 # Controls when the workflow will run
 on:
