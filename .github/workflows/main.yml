@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v1
       
       - name: Zip backend files
-        run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} ./api .ebextensions/ .flaskenv application.py portfolio.py requirements.txt social.py user_auth.py wsgi.py
+        run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }}  api/.ebextensions/ api/.flaskenv api/application.py api/portfolio.py api/requirements.txt api/social.py api/user_auth.py api/wsgi.py
       
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v1
