@@ -3,7 +3,7 @@
 name: CICD-frontend
 env:
   AWS_REGION_NAME          : "us-west-1"
-  SOURCE_PATH: './*'
+  SOURCE_PATH : "./*"
 
 # Controls when the workflow will run
 on:
@@ -35,7 +35,11 @@ jobs:
         run: aws s3 sync dist/ s3://socialstock-frontend --acl public-read
       
       - name: Invalidate cloudfront distribution
-        run: aws cloudfront create-invalidation \
-             --distribution-id ${{ secrets.DISTRIBUTION_ID }} \
-             --paths ${{ env.SOURCE_PATH }}
+        uses: awact/cloudfront-action@master
+        env:
+          SOURCE_PATH: ${{ env.SOURCE_PATH }}
+          AWS_REGION: ${{ env.AWS_REGION_NAME }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          DISTRIBUTION_ID: ${{ secrets.DISTRIBUTION_ID }}
         
