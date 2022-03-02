@@ -22,6 +22,8 @@ jwt = JWTManager(application)
 application.register_blueprint(auth_bp, url_prefix="/auth")
 application.register_blueprint(portfolio_bp, url_prefix="/portfolio")
 application.register_blueprint(social_bp, url_prefix="/social")
+app.register_blueprint(recomend_BP, url_prefix="/recomend")
+app.register_blueprint(recomend_BP, url_prefix="/twitter")
 
 
 #default endpoint for backend
