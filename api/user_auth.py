@@ -280,3 +280,21 @@ def change_account_details():
   conn.commit()
   updated_row = cur.fetchone()
   return jsonify(updated_row), 200
+
+
+# Endpoint for deleting user account
+# Returns success message when account is
+# deleted
+@auth_bp.route("/settings/account/delete", methods=["DELETE"])
+@jwt_required()
+def delete_user_account():
+  verify_jwt_in_request(optional=False)
+  cur = conn.cursor()
+  cur.execute("SELECT username from users where email=%s",(get_jwt_identity(),))
+  username = cur.fetchone()
+
+  cur.execute("DELETE from likes WHERE username=%s",(username,))
+  cur.execute("DELETE from comments WHERE username=%s",(username,))
+  cur.execute("DELETE from users WHERE email=%s",(get_jwt_identity(),))
+  conn.commit()
+  return jsonify({"message": "Account deletion successful"}), 200
