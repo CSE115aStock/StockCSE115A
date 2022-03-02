@@ -16,11 +16,12 @@ import { createTheme } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import Toolbar from '@mui/material/Toolbar';
-import Chart from './Charts/MACDchart';
-import { getData } from "./Charts/utils";
+import HeikinAshi from './Charts/HeikenAshiChart';
+import { parseResponse } from "./Charts/utils";
 import { useState, useEffect } from 'react';
 import alpacaApi from './StockPage/services/polygon';
 import RenderContext from './RenderContext';
+import { parseMultiResponse } from './Charts/utils';
 
 import AddIcon from '@mui/icons-material/AddRounded';
 import RemoveIcon from '@mui/icons-material/RemoveRounded';
@@ -38,21 +39,54 @@ import CloseIcon from '@mui/icons-material/Close';
 
 class ChartComponent extends React.Component {
 	componentDidMount() {
-		getData().then(data => {
-			this.setState({ data })
-		})
+		
+    fetch('/portfolio/my_portfolio', {
+    method: 'POST',
+    headers: new Headers({
+        'Authorization': 'Bearer ' + localStorage.getItem('JWT')
+    }),
+    body: JSON.stringify({
+        
+    })
+    } ).then(
+    res => res.json()
+    ).then(
+        port => {
+          var stocks = '';
+          for(var stock in port[0]){
+            if(stocks == ''){
+              stocks = stocks + stock;
+            }
+            else{
+              stocks = stocks + ',' + stock;
+            }
+          }
+          
+          if(stocks != '') {
+            const api = alpacaApi();
+            api.getMultiBars(stocks, '2010-03-12T23:20:50.52Z', '1Day').then(data => {
+              this.setState(data['data']);
+            }); 
+          }
+        }
+    )
+  
 	}
 	render() {
 		if (this.state == null) {
 			return <div>Loading...</div>
 		}
+    
+    const data = parseMultiResponse(this.state);
+    
 		return (
-			<Chart type='hybrid' data={this.state.data} />
+			<HeikinAshi type='hybrid' data={data} />
+      
 		)
 	}
 }
 
-export default function Dashboard() {
+export default function Portfolio() {
   const [port,setPort] = useState([])
   const [data,setData] = useState([])
 
@@ -397,7 +431,7 @@ export default function Dashboard() {
             value={tickr}
             variant="standard"
             fullWidth
-            onChange={(event) => setTickr(event.target.value)}/>
+            onChange={(event) => setTickr((event.target.value).toUpperCase())}/>
           <TextField
             id="standard"
             label="Amount Invested"
@@ -462,7 +496,7 @@ export default function Dashboard() {
             value={tickr}
             variant="standard"
             fullWidth
-            onChange={(event) => setTickr(event.target.value)}/>
+            onChange={(event) => setTickr((event.target.value).toUpperCase())}/>
           <TextField
             id="standard"
             label="Amount invested"
