@@ -50,7 +50,6 @@ export default function Social() {
   const [liked, setLiked] = React.useState(false);
   const [allVisible, setAllVisible] = React.useState(false);
   const [newComment, setNewComment] = React.useState('');
-  const [editComment, setEditComment] = React.useState('');
   const [username, setUsername] = React.useState('');
 
   React.useEffect(() => {
@@ -326,85 +325,85 @@ export default function Social() {
   };
 
   return (
+    <div>
+      <Card>
+        <Collapse in={alert}>
+          <Alert severity='error'
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setAlert(false);
+                }}>
+                <CloseIcon fontSize="inherit" />
+              </IconButton>}
+            sx={{mb: 0, mt: 3, margin: 5}}>
+            {alertMessage}
+          </Alert>
+        </Collapse>
         <div>
-          <Card>
-            <Collapse in={alert}>
-              <Alert severity='error'
-                action={
-                  <IconButton
-                    aria-label="close"
-                    color="inherit"
-                    size="small"
-                    onClick={() => {
-                      setAlert(false);
-                    }}>
-                    <CloseIcon fontSize="inherit" />
-                  </IconButton>}
-                sx={{mb: 0, mt: 3, margin: 5}}>
-                {alertMessage}
-              </Alert>
-            </Collapse>
-            <div>
-              <Button variant="contained" id="Like Button"
-                sx={{'m': 2, 'ml': 2, 'width': '40%',
-                  'background-color': '#52658f'}}
-                startIcon={liked? <FavoriteIcon /> : <FavoriteBorderIcon />}
-                onClick={handleLike}
-              >
-                {numLikes}
-              </Button>
-              <Button variant="contained" id="Comment Button"
-                onClick={handleFocus}
-                sx={{'m': 2, 'mr': 2, 'width': '40%',
-                  'background-color': '#52658f', 'float': 'right'}}
-                startIcon={<ModeCommentOutlinedIcon />}>
-                {numComments}
-              </Button>
-            </div>
-            {comments.map((item) => (
-              <Paper key={item[0]} aria-label={item[0]} elevation={1}
-                sx={{'m': 0, 'ml': 2, 'mr': 2,
-                  'align': 'center', 'text-justify': 'distribute-all-lines',
-                  'border-radius': '5px', 'background': '#fbfbf0'}}>
-                <Typography
-                  sx={{'text-align': 'left', 'top': 0, 'left': 0,
-                    'display': 'inline', 'm': 0.5, 'font-size': '15px'}}
-                  style={{fontWeight: 600}}
-                  color={darkTheme.palette.secondary.main}>
-                  {item[0]}
-                </Typography>
-                <Typography
-                  sx={{'text-align': 'right', 'top': 0, 'right': 5,
-                    'display': 'inline', 'float': 'right',
-                    'font-size': '12px', 'm': 0.2}}
-                  color='#757575'>
-                  {item[1]}
-                </Typography>
-                <Typography sx={{'m': 0.5, 'font-size': '14px'}}>
-                  {item[3]}
-                </Typography>
-              </Paper>
-            ))}
-            {allVisible? null: <Button style={{fontWeight: 1000}} size="large"
-              onClick={handleViewAll}
-              sx={{'ml': 2, 'display': 'block',
-                'm': '0 auto', 'font-size': '17px'}}
-              variant="text">All Comments</Button>}
-            <Input
-              id="Comment Field"
-              type={'text'}
-              sx={{'width': '95%', 'ml': 3, 'mb': 1, 'mt': 2}}
-              onChange={(event) => setNewComment(event.target.value)}
-              endAdornment={
-                <InputAdornment position="end">
-                  <Button
-                    onClick={postNewComment}
-                    aria-label="toggle password visibility">
-                          POST
-                  </Button>
-                </InputAdornment>
-              }/>
-          </Card>
+          <Button variant="contained" id="Like Button"
+            sx={{'m': 2, 'ml': 2, 'width': '40%',
+              'background-color': '#52658f'}}
+            startIcon={liked? <FavoriteIcon /> : <FavoriteBorderIcon />}
+            onClick={handleLike}
+          >
+            {numLikes}
+          </Button>
+          <Button variant="contained" id="Comment Button"
+            onClick={handleFocus}
+            sx={{'m': 2, 'mr': 2, 'width': '40%',
+              'background-color': '#52658f', 'float': 'right'}}
+            startIcon={<ModeCommentOutlinedIcon />}>
+            {numComments}
+          </Button>
         </div>
+        {comments.map((item) => (
+          <Paper key={item[0]} aria-label={item[0]} elevation={1}
+            sx={{'m': 0, 'ml': 2, 'mr': 2,
+              'align': 'center', 'text-justify': 'distribute-all-lines',
+              'border-radius': '5px', 'background': '#fbfbf0'}}>
+            <Typography
+              sx={{'text-align': 'left', 'top': 0, 'left': 0,
+                'display': 'inline', 'm': 0.5, 'font-size': '15px'}}
+              style={{fontWeight: 600}}
+              color={darkTheme.palette.secondary.main}>
+              {item[0]}
+            </Typography>
+            <Typography
+              sx={{'text-align': 'right', 'top': 0, 'right': 5,
+                'display': 'inline', 'float': 'right',
+                'font-size': '12px', 'm': 0.2}}
+              color='#757575'>
+              {item[1]}
+            </Typography>
+            <Typography sx={{'m': 0.5, 'font-size': '14px'}}>
+              {item[3]}
+            </Typography>
+          </Paper>
+        ))}
+        {allVisible? null: <Button style={{fontWeight: 1000}} size="large"
+          onClick={handleViewAll}
+          sx={{'ml': 2, 'display': 'block',
+            'm': '0 auto', 'font-size': '17px'}}
+          variant="text">All Comments</Button>}
+        <Input
+          id="Comment Field"
+          type={'text'}
+          sx={{'width': '95%', 'ml': 3, 'mb': 1, 'mt': 2}}
+          onChange={(event) => setNewComment(event.target.value)}
+          endAdornment={
+            <InputAdornment position="end">
+              <Button
+                onClick={postNewComment}
+                aria-label="toggle password visibility">
+                          POST
+              </Button>
+            </InputAdornment>
+          }/>
+      </Card>
+    </div>
   );
 }
