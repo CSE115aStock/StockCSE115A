@@ -35,6 +35,11 @@ import Button from '@mui/material/Button';
 import Social from './Social';
 
 
+/**
+   * Description: This function pulls the stock bar data from the alpacas api.
+   * It sends the fetched data to the chart.  
+   * It is called when the search page reloads.
+   */
 function Chart(search){
   const [stockData, setStockData] = useState();
   useEffect(() =>{
@@ -63,6 +68,11 @@ function Chart(search){
   }
 }
 
+/**
+   * Description: This function pulls the stock news data from the alpacas api.
+   * And creates a 5 cards with news information and pictures.
+   * It is called when the search page reloads.
+   */
 function News(search){
   const [news, setNews] = useState();
   useEffect(() =>{
@@ -191,7 +201,11 @@ function News(search){
   }
 }
 
-
+/**
+   * Description: This function pulls the stock data from the alpacas api.
+   * And creates a table with stock information.
+   * It is called when the search page reloads.
+   */
 function StockData(search){
   const darkTheme = createTheme({
     palette: {
@@ -285,6 +299,11 @@ function StockData(search){
     
 }
 
+/**
+   * Description: This function calls the necesarry functions to depict stock 
+   * information. And has the logic to add a stock to the user's portfolio.
+   * It is called when a new search is made.
+   */
 function StockViewer() {
   const search = useContext(StockViewerContext).finalSearch;
   
