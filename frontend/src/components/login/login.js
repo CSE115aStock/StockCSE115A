@@ -56,7 +56,7 @@ export function Login() {
                   color="inherit"
                   size="small"
                   onClick={() => {
-                  setAlert(false);
+                  closeError;
               }}
             >
               <CloseIcon fontSize="inherit" />
