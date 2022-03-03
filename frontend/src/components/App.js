@@ -8,9 +8,16 @@ import {
 import {Register} from "./login/index";
 import {Login} from "./login/index";
 import HomePage from './HomePage';
-import {FilterMethod} from "./stockfilterPage/filter.js";
 export default function App() {
   return (
-     <FilterMethod/>
+    <Router>
+      <div>
+        <Routes>
+          <Route exact path="/homepage" element={<HomePage/>} />
+          <Route path="/" element={<Login/>} />
+          <Route path="/register" element={<Register/>} />
+        </Routes>
+      </div>
+    </Router>
   );
 }

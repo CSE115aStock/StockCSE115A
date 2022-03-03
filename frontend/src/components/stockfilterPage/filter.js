@@ -12,7 +12,9 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import Button from '@mui/material/Button'
+import Button from '@mui/material/Button';
+import { Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box } from '@mui/material';
 
 
 
@@ -39,17 +41,36 @@ export function FilterMethod () {
         return { ticker, name, sector, industry, country, markcap,pe, price, change, Volume };
     }
     const [rows, setRows] = React.useState([]);
+
+    const [open, setOpen] = React.useState(false);
+    const [age, setAge] = React.useState('');
+
+    const handleChange = (event) => {
+        setAge(Number(event.target.value) || '');
+    };
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = (event, reason) => {
+        if (reason !== 'backdropClick') {
+        setOpen(false);
+        }
+    };
+
+
     return (
         <div className="content">
             <div className="form">
                 <div className="form-group">
-                    <label htmlFor="Stock">Filter options</label>
-                    <br></br>
-                    <br></br>
                     <div className="form-group">
-                        <Grid container spacing={2}>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                        <Button variant="outlined" onClick={handleClickOpen}>Filter Options</Button>
+                        <Dialog disableEscapeKeyDown open={open} onClose={handleClose}>
+                            <DialogTitle>Fill the form</DialogTitle>
+                            <DialogContent>
+                            <Box component="form" sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="cap-label">Market Cap</InputLabel>
                                     <Select
                                         labelId="cap-label"
@@ -57,6 +78,7 @@ export function FilterMethod () {
                                         id="cap" 
                                         form="capform"
                                         label='Market Cap'
+                                        value={cap}
                                         onChange={(event) => setCap(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -68,9 +90,7 @@ export function FilterMethod () {
                                         <MenuItem value="nano">$50M-</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="exchange-label">Exchange</InputLabel>
                                     <Select
                                         labelId="exchange-label"
@@ -78,6 +98,7 @@ export function FilterMethod () {
                                         id="exchange" 
                                         form="capform"
                                         label='Exchange'
+                                        value={exchange}
                                         onChange={(event) => setExchange(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -86,9 +107,7 @@ export function FilterMethod () {
                                         <MenuItem value="nyse">NYSE</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="dividend-label">Dividend</InputLabel>
                                     <Select
                                         labelId="dividend-label"
@@ -96,6 +115,7 @@ export function FilterMethod () {
                                         id="dividend" 
                                         form="capform"
                                         label='Dividend'
+                                        value={div}
                                         onChange={(event) => setdiv(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -109,9 +129,7 @@ export function FilterMethod () {
                                         <MenuItem value="high">High (&gt;5%)</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="index-label">Index</InputLabel>
                                     <Select
                                         labelId="index-label"
@@ -119,6 +137,7 @@ export function FilterMethod () {
                                         id="index" 
                                         form="capform"
                                         label='Index'
+                                        value={index}
                                         onChange={(event) => setindex(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -126,9 +145,7 @@ export function FilterMethod () {
                                         <MenuItem value="dji">DJIA</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>    
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="ind-label">Industry</InputLabel>
                                     <Select
                                         labelId="ind-label"
@@ -136,6 +153,7 @@ export function FilterMethod () {
                                         id="ind" 
                                         form="capform"
                                         label='Industry'
+                                        value={ind}
                                         onChange={(event) => setind(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -292,10 +310,8 @@ export function FilterMethod () {
                                         <MenuItem value="wastemanagement">Waste Management</MenuItem>
                                         <MenuItem value="modal">Custom (Elite only)</MenuItem>
                                     </Select>
-                                </FormControl>     
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                </FormControl>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="pe-label">PE</InputLabel>
                                     <Select
                                         labelId="pe-label"
@@ -303,6 +319,7 @@ export function FilterMethod () {
                                         id="pe" 
                                         form="capform"
                                         label='PE'
+                                        value={pe}
                                         onChange={(event) => setpe(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -321,9 +338,7 @@ export function FilterMethod () {
                                         <MenuItem value="u50">Under 50</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="volume-label">Volume</InputLabel>
                                     <Select
                                         labelId="volume-label"
@@ -331,6 +346,7 @@ export function FilterMethod () {
                                         id="volume" 
                                         form="capform"
                                         label='Volume'
+                                        value={volume}
                                         onChange={(event) => setvolume(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -344,10 +360,8 @@ export function FilterMethod () {
                                         <MenuItem value="o20000">Over 20M</MenuItem>
                                         <MenuItem value="range">Custom (Elite only)</MenuItem>
                                     </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                </FormControl>  
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="pattern-label">Pattern</InputLabel>
                                     <Select
                                         labelId="pattern-label"
@@ -355,6 +369,7 @@ export function FilterMethod () {
                                         id="pattern" 
                                         form="capform"
                                         label='Pattern'
+                                        value={pattern}
                                         onChange={(event) => setpattern(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -387,10 +402,8 @@ export function FilterMethod () {
                                         <MenuItem value="headandshoulders">Head &amp; Shoulders</MenuItem>
                                         <MenuItem value="headandshouldersinv">Head &amp; Shoulders Inverse</MenuItem>
                                     </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                </FormControl> 
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="floatShort-label">Short Float</InputLabel>
                                     <Select
                                         labelId="floatShort-label"
@@ -398,6 +411,7 @@ export function FilterMethod () {
                                         id="floatShort" 
                                         label='Short Float'
                                         form="capform"
+                                        value={floatShort}
                                         onChange={(event) => setfloatShort(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -416,10 +430,8 @@ export function FilterMethod () {
                                         <MenuItem value="o25">Over 25%</MenuItem>
                                         <MenuItem value="o30">Over 30%</MenuItem>
                                     </Select>
-                                </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                </FormControl>  
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="rsi-label">RSI</InputLabel>
                                     <Select
                                         labelId="rsi-label"
@@ -427,6 +439,7 @@ export function FilterMethod () {
                                         id="rsi" 
                                         label='RSI'
                                         form="capform"
+                                        value={rsi}
                                         onChange={(event) => setrsi(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -444,9 +457,7 @@ export function FilterMethod () {
                                         <MenuItem value="nos40">Not Oversold (&gt;40)</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <FormControl fullWidth>
+                                <FormControl sx={{ m: 1, minWidth: 150 }}>
                                     <InputLabel id="order-label">Order</InputLabel>
                                     <Select
                                         labelId="order-label"
@@ -454,6 +465,7 @@ export function FilterMethod () {
                                         label='Order'
                                         id="order" 
                                         form="capform"
+                                        value={order}
                                         onChange={(event) => setorder(event.target.value)}
                                     >
                                         <MenuItem value="any">No Filter</MenuItem>
@@ -529,10 +541,11 @@ export function FilterMethod () {
                                         <MenuItem value="o=ipodate">IPO Date</MenuItem>
                                     </Select>
                                 </FormControl>
-                            </Grid>
-                            <Grid item xs={3}>
-                                <Button fullWidth variant="outlined" type="button" className="btn"
-                                    onClick={async () => {
+                            </Box>
+                            </DialogContent>
+                            <DialogActions>
+                            <Button onClick={handleClose}>Cancel</Button>
+                            <Button onClick={async () => {
                                         fetch('/recomend/screener', {
                                         method: 'POST',
                                         body: JSON.stringify({
@@ -554,14 +567,13 @@ export function FilterMethod () {
                                             tk => {
                                                 var newRows = []
                                                 tk.response.map((row) => newRows.push(createData(row[1],row[2],row[3],row[4],row[5],row[6],row[7],row[8],row[9],row[10])));
-                                                setRows(newRows)
+                                                setRows(newRows);
+                                                setOpen(false);
                                             }
                                         )
-                                    }}>
-                                    Recomend
-                                </Button>
-                            </Grid>
-                        </Grid>
+                                    }}>Find Recommedation</Button>
+                            </DialogActions>
+                        </Dialog>
                     </div>
                 </div>
             </div>
