@@ -603,7 +603,8 @@ export default function Portfolio() {
                   <TableBody>
                     {portfolio.map((portfolio) => (
                       <StyledTableRow key={portfolio}>
-                        <StyledTableCell>
+                        <StyledTableCell
+                          onClick={() => handleSearch(portfolio.stock)}>
                           {portfolio.stock}
                         </StyledTableCell>
                         <StyledTableCell>{portfolio.shares}</StyledTableCell>
