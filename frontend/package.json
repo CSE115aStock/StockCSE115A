@@ -31,7 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "test": "react-scripts test --coverage",
-    "lint": "eslint src/**/*.js"
+    "lint": "eslint --fix --ext .js,.jsx ."
   },
   "jest": {
     "collectCoverageFrom": [

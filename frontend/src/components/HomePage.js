@@ -146,7 +146,7 @@ export default function HomePage() {
       setSearch(true);
       setPortfolio(false);
       setSearchValue('');
-      setFinalSearch(val);
+      setFinalSearch(val.toUpperCase());
     }
   };
 

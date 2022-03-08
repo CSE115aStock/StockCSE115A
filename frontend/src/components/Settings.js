@@ -216,7 +216,7 @@ export default function Settings() {
  * Description: Handles when the delete account button or the
  * If the delete account button is pressed,
  * it pulls up the dialog. If confirm is pressed, a back end call is
- * delete the account and it's comments and likes. 
+ * delete the account and it's comments and likes.
  * The dialog is also closed.
  */
   const deleteAccount = () => {
@@ -234,8 +234,7 @@ export default function Settings() {
               }
             },
         );
-      }
-      else{
+      } else {
         setPassAlertMessage('Text entered doesn not match DELETE');
         setPassAlert(true);
       }
@@ -245,7 +244,7 @@ export default function Settings() {
   };
 
 
-    /**
+  /**
    * Description: Handles when the cancel button is pressed on
    * the dialog. It closes the dialog and sets the visibility
    * to off.
