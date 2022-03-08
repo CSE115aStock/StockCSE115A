@@ -30,7 +30,7 @@ jobs:
       
       - name: Zip backend files
         working-directory: ./api
-        run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} .ebextensions/ .flaskenv application.py portfolio.py requirements.txt social.py user_auth.py wsgi.py
+        run: zip -r ${{ env.DEPLOY_PACKAGE_NAME }} .ebextensions/ .flaskenv application.py portfolio.py requirements.txt social.py twitter.py recomend.py user_auth.py wsgi.py
       
       - name: Authenticate with AWS
         uses: aws-actions/configure-aws-credentials@v1
