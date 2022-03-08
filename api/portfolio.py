@@ -9,7 +9,10 @@ from dotenv import load_dotenv, find_dotenv
 from psycopg2.extensions import AsIs
 
 from flask import Blueprint, jsonify, request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+  get_jwt_identity, jwt_required,
+  verify_jwt_in_request,
+)
 
 # load db connection config
 load_dotenv(find_dotenv())
@@ -35,6 +38,7 @@ portfolio_bp = Blueprint("portfolio", __name__, url_prefix="/portfolio")
 @portfolio_bp.route("/add_stock", methods=["POST"])
 @jwt_required()
 def add_stock():
+  verify_jwt_in_request(optional=False)
   cur = conn.cursor()
 
   # stock entry format: {"tickr":{"amount": "1350", "shares": "100"}}
@@ -69,6 +73,7 @@ def add_stock():
 @portfolio_bp.route("/remove_stock", methods=["GET", "POST"])
 @jwt_required()
 def remove_stock():
+  verify_jwt_in_request(optional=False)
   cur = conn.cursor()
 
   if request.method == "POST":
@@ -115,6 +120,7 @@ def remove_stock():
 @portfolio_bp.route("/buy", methods=["GET", "POST"])
 @jwt_required()
 def buy_stock():
+  verify_jwt_in_request(optional=False)
 
   # fetch portfolio
   usr_email = get_jwt_identity()
@@ -180,7 +186,7 @@ def buy_stock():
 @portfolio_bp.route("/sell", methods=["GET", "POST"])
 @jwt_required()
 def sell_stock():
-
+  verify_jwt_in_request(optional=False)
   # fetch portfolio
   usr_email = get_jwt_identity()
   if not usr_email:
@@ -261,6 +267,7 @@ def sell_stock():
 @portfolio_bp.route("/my_portfolio", methods=["GET", "POST"])
 @jwt_required()
 def fetch_portfolio():
+  verify_jwt_in_request(optional=False)
   cur = conn.cursor()
 
   usr_email = get_jwt_identity()
