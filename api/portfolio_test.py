@@ -78,6 +78,20 @@ def test_remove_stock(mock_jwt):
       assert json_response.status == "200 OK"
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
+def test_remove_nonexistent_stock(mock_jwt):
+
+  with application.test_client() as c:
+    with application.app_context():
+      access_token = create_access_token("john@mail.com")
+      headers = {"Authorization": "Bearer {}".format(access_token)}
+      json_response = c.post(
+        "/portfolio/remove_stock",
+        headers=headers,
+        json={"tickr": "EX"},
+      )
+      assert json_response.status == "404 NOT FOUND"
+
+@patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_buy_stock(mock_jwt):
   stock = {"EX": {"amount": 200, "shares": 1}}
   cur.execute(
@@ -95,6 +109,40 @@ def test_buy_stock(mock_jwt):
         json={"tickr": "EX", "amount": "200", "shares": "2"},
       )
       assert json_response.status == "200 OK"
+
+      cur.execute("SELECT portfolio FROM users WHERE email='john@mail.com'")
+      conn.commit()
+      port = cur.fetchone()
+      port_dict = port[0]
+
+      del port_dict["EX"]
+
+      cur.execute(
+        "UPDATE users SET portfolio = '{}' WHERE email='john@mail.com'")
+      cur.execute(
+        "UPDATE users SET portfolio = portfolio"
+        "|| %s WHERE email=%s"
+        ,(json.dumps(port_dict), "john@mail.com"),)
+      conn.commit()
+
+@patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
+def test_buy_negative_stock(mock_jwt):
+  stock = {"EX": {"amount": 200, "shares": 1}}
+  cur.execute(
+    "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
+    (json.dumps(stock), "john@mail.com"),
+  )
+  conn.commit()
+  with application.test_client() as c:
+    with application.app_context():
+      access_token = create_access_token("john@mail.com")
+      headers = {"Authorization": "Bearer {}".format(access_token)}
+      json_response = c.post(
+        "/portfolio/buy",
+        headers=headers,
+        json={"tickr": "EX", "amount": "-200", "shares": "2"},
+      )
+      assert json_response.status == "400 BAD REQUEST"
 
       cur.execute("SELECT portfolio FROM users WHERE email='john@mail.com'")
       conn.commit()
@@ -130,6 +178,74 @@ def test_sell_stock(mock_jwt):
       )
       assert json_response.status == "200 OK"
 
+@patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
+def test_sell_negative_stock(mock_jwt):
+  stock = {"EX": {"amount": 200, "shares": 1}}
+  cur.execute(
+    "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
+    (json.dumps(stock), "john@mail.com"),
+  )
+  conn.commit()
+  with application.test_client() as c:
+    with application.app_context():
+      access_token = create_access_token("john@mail.com")
+      headers = {"Authorization": "Bearer {}".format(access_token)}
+      json_response = c.post(
+        "/portfolio/sell",
+        headers=headers,
+        json={"tickr": "EX", "amount": "-200", "shares": "1"},
+      )
+      assert json_response.status == "400 BAD REQUEST"
+
+      cur.execute("SELECT portfolio FROM users WHERE email='john@mail.com'")
+      conn.commit()
+      port = cur.fetchone()
+      port_dict = port[0]
+
+      del port_dict["EX"]
+
+      cur.execute(
+        "UPDATE users SET portfolio = '{}' WHERE email='john@mail.com'")
+      cur.execute(
+        "UPDATE users SET portfolio = portfolio"
+        "|| %s WHERE email=%s"
+        ,(json.dumps(port_dict), "john@mail.com"),)
+      conn.commit()
+
+@patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
+def test_sell_more_than_owned_stock(mock_jwt):
+  stock = {"EX": {"amount": 200, "shares": 1}}
+  cur.execute(
+    "UPDATE users SET portfolio = portfolio || %s WHERE email=%s",
+    (json.dumps(stock), "john@mail.com"),
+  )
+  conn.commit()
+  with application.test_client() as c:
+    with application.app_context():
+      access_token = create_access_token("john@mail.com")
+      headers = {"Authorization": "Bearer {}".format(access_token)}
+      json_response = c.post(
+        "/portfolio/sell",
+        headers=headers,
+        json={"tickr": "EX", "amount": "200", "shares": "2"},
+      )
+      assert json_response.status == "401 UNAUTHORIZED"
+
+      cur.execute("SELECT portfolio FROM users WHERE email='john@mail.com'")
+      conn.commit()
+      port = cur.fetchone()
+      port_dict = port[0]
+
+      del port_dict["EX"]
+
+      cur.execute(
+        "UPDATE users SET portfolio = '{}' WHERE email='john@mail.com'")
+      cur.execute(
+        "UPDATE users SET portfolio = portfolio"
+        "|| %s WHERE email=%s"
+        ,(json.dumps(port_dict), "john@mail.com"),)
+      conn.commit()
+
 
 @patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
 def test_fetch_portfolio(mock_jwt):
@@ -142,3 +258,14 @@ def test_fetch_portfolio(mock_jwt):
         headers=headers,
       )
       assert json_response.status == "200 OK"
+
+@patch("flask_jwt_extended.view_decorators.verify_jwt_in_request")
+def test_fetch_nonexistent_portfolio(mock_jwt):
+  with application.test_client() as c:
+    with application.app_context():
+      headers = {"Authorization": ""}
+      json_response = c.get(
+        "/portfolio/my_portfolio",
+        headers=headers,
+      )
+      assert json_response.status == "401 UNAUTHORIZED"
