@@ -80,41 +80,6 @@ export default function Profile() {
               <Typography variant="h6" gutterBottom component="div"
                 padding={1} color={darkTheme.palette.secondary.main}
                 style={{fontWeight: 600}} sx={{m: 1}}>
-            MY DETAILS
-              </Typography>
-              <Divider/>
-              <FormControl sx={{m: 2}}>
-                <FormLabel id="demo-controlled-radio-buttons-group">
-                  Investor Type
-                </FormLabel>
-                <RadioGroup
-                  aria-labelledby="demo-controlled-radio-buttons-group"
-                  name="controlled-radio-buttons-group"
-                  value={value}
-                  onChange={handleChange}
-                >
-                  <FormControlLabel value="one"
-                    control={<Radio />} label="Type 1" />
-                  <FormControlLabel value="two"
-                    control={<Radio />} label="Type 2" />
-                </RadioGroup>
-              </FormControl>
-            </Paper>
-          </Box>
-          <Box
-            sx={{
-              'display': 'flex',
-              'm': 0.5,
-              'flexWrap': 'wrap',
-              '& > :not(style)': {
-                width: '100%',
-              },
-            }}
-          >
-            <Paper elevation={3}>
-              <Typography variant="h6" gutterBottom component="div"
-                padding={1} color={darkTheme.palette.secondary.main}
-                style={{fontWeight: 600}} sx={{m: 1}}>
                 SOCIAL ACTIVITY
               </Typography>
               <Divider/>
