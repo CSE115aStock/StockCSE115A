@@ -32,8 +32,8 @@ import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
-import { Tab } from '@mui/material';
-import { Tabs } from '@mui/material';
+import {Tab} from '@mui/material';
+import {Tabs} from '@mui/material';
 import PropTypes from 'prop-types';
 import Social from './Social';
 
@@ -210,14 +210,14 @@ function news(search) {
  * @param {*} search
  * @return {Object} JSX
  */
- function twitter(search) {
+function twitter(search) {
   const [tweets, setTweets] = useState();
   useEffect(() =>{
     fetch('/twitter/get_tweet', {
       method: 'POST',
       headers: new Headers({}),
       body: JSON.stringify({
-        "query": search,
+        'query': search,
       }),
     } ).then(
         (res) => res.json(),
@@ -237,7 +237,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[0]["text"]}
+              {tweets[0]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -245,7 +245,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[2]["text"]}
+              {tweets[2]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -253,7 +253,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[3]["text"]}
+              {tweets[3]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -261,7 +261,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[4]["text"]}
+              {tweets[4]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -269,7 +269,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[5]["text"]}
+              {tweets[5]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -277,7 +277,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[6]["text"]}
+              {tweets[6]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -285,7 +285,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[7]["text"]}
+              {tweets[7]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -293,7 +293,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[8]["text"]}
+              {tweets[8]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -301,7 +301,7 @@ function news(search) {
         <Card>
           <CardContent>
             <Typography variant="body2" color="text.primary">
-              {tweets[9]["text"]}
+              {tweets[9]['text']}
             </Typography>
           </CardContent>
         </Card>
@@ -410,38 +410,48 @@ function stockData(search) {
 function StockViewer() {
   const search = useContext(StockViewerContext).finalSearch;
 
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
+  /**
+   *
+   * @param {*} props
+   * @return {object} JSX
+   */
+  function TabPanel(props) {
+    const {children, value, index, ...other} = props;
 
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{p: 3}}>
+            <Typography>{children}</Typography>
+          </Box>
+        )}
+      </div>
+    );
+  }
 
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.number.isRequired,
-  value: PropTypes.number.isRequired,
-};
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+  TabPanel.propTypes = {
+    children: PropTypes.node,
+    index: PropTypes.number.isRequired,
+    value: PropTypes.number.isRequired,
   };
-}
+
+  /**
+   *
+   * @param {*} index
+   * @return {Object} JSX
+   */
+  function a11yProps(index) {
+    return {
+      'id': `simple-tab-${index}`,
+      'aria-controls': `simple-tabpanel-${index}`,
+    };
+  }
 
 
   const [value, setValue] = React.useState(0);
@@ -578,7 +588,7 @@ function a11yProps(index) {
           <DialogContentText>
           To add a stock, please enter your stock name,
           amount invested and share.
-          </DialogContentText>  
+          </DialogContentText>
           <TextField
             margin="dense"
             id="standard"
@@ -637,11 +647,11 @@ function a11yProps(index) {
           </StockViewerContext.Provider>
         </Grid>
         <Grid item xs={4}>
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs 
-              value={value} 
-              onChange={handleChange} 
-              aria-label="basic tabs example" 
+          <Box sx={{borderBottom: 1, borderColor: 'divider'}}>
+            <Tabs
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example"
               textColor="secondary"
               indicatorColor="secondary"
             >
