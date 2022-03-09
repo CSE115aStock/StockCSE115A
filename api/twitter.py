@@ -7,7 +7,6 @@ import pandas as pd
 from dotenv import load_dotenv, find_dotenv
 import json
 from flask import Blueprint,request
-from flask_jwt_extended import jwt_required
 
 twitter_bp = Blueprint("twitter", __name__, url_prefix="/twitter")
 load_dotenv(find_dotenv())
