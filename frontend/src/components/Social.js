@@ -50,7 +50,6 @@ export default function Social() {
   const [liked, setLiked] = React.useState(false);
   const [allVisible, setAllVisible] = React.useState(false);
   const [newComment, setNewComment] = React.useState('');
-  const [username, setUsername] = React.useState('');
 
   React.useEffect(() => {
     getNumLikes();
@@ -221,7 +220,6 @@ export default function Social() {
         )
         .then(
             (data) => {
-              fixUsername(data);
               setComments(fixDates(data));
             },
         );
@@ -253,18 +251,6 @@ export default function Social() {
     return arr;
   };
 
-  /**
-   * Description: This function takes the array of comments and adds a
-   * (me) to the end of the username of the current user.
-   * @param {object} arr
-   */
-  const fixUsername = (arr) => {
-    for (let i= 0; i < arr.length; i++) {
-      if (arr[i][0] === username) { // checks if comment by the user
-        arr[i][0] += '(Me)';
-      }
-    }
-  };
 
   /**
    * Description: This function responds to the view all button. Only five
@@ -318,7 +304,11 @@ export default function Social() {
                 setAlertMessage('Error adding comment.');
                 setAlert(true);
               } else {
-                getComments();
+                if (allVisible) {
+                  handleViewAll();
+                } else {
+                  getComments();
+                }
               }
             },
         );

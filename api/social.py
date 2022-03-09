@@ -398,8 +398,8 @@ def all_comments():
 
   data = json.loads(request.data)
   tickr = data["tickr"]
-
-  cur.execute("SELECT * FROM comments WHERE tickr=%s", (tickr,))
+  cur.execute("SELECT * FROM comments WHERE tickr=%s order by created_on desc",
+  (tickr,))
   comments = cur.fetchall()
 
   return jsonify(comments)

@@ -200,13 +200,13 @@ export default function HomePage() {
           </ListItemIcon>
           <ListItemText primary='Portfolio' />
         </ListItem>
-        <ListItem button key='Market Trends'
+        <ListItem button key='Market Filter'
           onClick={() =>
             handlePages(false, true, false, false, false, false)} >
           <ListItemIcon>
             <ShowChartIcon/>
           </ListItemIcon>
-          <ListItemText primary='Market Trends' />
+          <ListItemText primary='Market Filter' />
         </ListItem>
       </List>
     </div>

@@ -242,7 +242,6 @@ export default function Portfolio() {
   const [shares, setShares] = useState('');
   const [alert, setAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
-
   // hook for edit stock options
   const [addStock, setAddStock] = useState(false);
   const [removeStock, setRemoveStock] = useState(false);
