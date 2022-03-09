@@ -3,11 +3,6 @@ import Box from '@mui/material/Box';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import RenderContext from './RenderContext';
 import Card from '@mui/material/Card';
 import Grid from '@mui/material/Grid';
@@ -37,7 +32,6 @@ const darkTheme = createTheme({
  * @return {object} JSX
  */
 export default function Profile() {
-  const [value, setValue] = React.useState('one');
   const [likes, setLikes] = React.useState([]);
 
   React.useEffect(() => {
@@ -56,10 +50,6 @@ export default function Profile() {
               setLikes(data);
             },
         );
-  };
-
-  const handleChange = (event) => {
-    setValue(event.target.value);
   };
 
   return (
