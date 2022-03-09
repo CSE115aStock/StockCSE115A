@@ -32,6 +32,9 @@ import Alert from '@mui/material/Alert';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import Button from '@mui/material/Button';
+import { Tab } from '@mui/material';
+import { Tabs } from '@mui/material';
+import PropTypes from 'prop-types';
 import Social from './Social';
 
 
@@ -91,11 +94,7 @@ function news(search) {
     }
     return (
       <CardContent>
-        <Typography gutterBottom variant="h4" component="div" color="primary">
-            News
-        </Typography>
-        <br></br>
-        <Card sx={{minWidth: 345}}>
+        <Card>
           <CardActionArea href={news[0]['url']} target="_blank">
             {news[0]['images'].length > 0 &&
                     <CardMedia
@@ -116,7 +115,7 @@ function news(search) {
           </CardActionArea>
         </Card>
         <br></br>
-        <Card sx={{minWidth: 345}}>
+        <Card>
           <CardActionArea href={news[1]['url']} target="_blank">
             {news[1]['images'].length > 0 &&
                         <CardMedia
@@ -137,7 +136,7 @@ function news(search) {
           </CardActionArea>
         </Card>
         <br></br>
-        <Card sx={{minWidth: 345}}>
+        <Card>
           <CardActionArea href={news[2]['url']} target="_blank">
             {news[2]['images'].length > 0 &&
                         <CardMedia
@@ -158,7 +157,7 @@ function news(search) {
           </CardActionArea>
         </Card>
         <br></br>
-        <Card sx={{minWidth: 345}}>
+        <Card>
           <CardActionArea href={news[3]['url']} target="_blank">
             {news[3]['images'].length > 0 &&
                         <CardMedia
@@ -179,7 +178,7 @@ function news(search) {
           </CardActionArea>
         </Card>
         <br></br>
-        <Card sx={{minWidth: 345}}>
+        <Card>
           <CardActionArea href={news[4]['url']} target="_blank">
             {news[4]['images'].length > 0 &&
                         <CardMedia
@@ -198,6 +197,114 @@ function news(search) {
               </Typography>
             </CardContent>
           </CardActionArea>
+        </Card>
+      </CardContent>
+    );
+  }
+}
+
+/**
+ * Description: This function pulls the stock news data from the alpacas api.
+   * And creates a 5 cards with news information and pictures.
+   * It is called when the search page reloads.
+ * @param {*} search
+ * @return {Object} JSX
+ */
+ function twitter(search) {
+  const [tweets, setTweets] = useState();
+  useEffect(() =>{
+    fetch('/twitter/get_tweet', {
+      method: 'POST',
+      headers: new Headers({}),
+      body: JSON.stringify({
+        "query": search,
+      }),
+    } ).then(
+        (res) => res.json(),
+    ).then(
+        (response) => {
+          console.log(response);
+          setTweets(response);
+        },
+    );
+  }, [search]);
+
+  if (tweets != null) {
+    if (tweets[0] == null) {
+      return;
+    }
+    return (
+      <CardContent>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[0]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[2]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[3]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[4]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[5]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[6]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[7]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[8]["text"]}
+            </Typography>
+          </CardContent>
+        </Card>
+        <br></br>
+        <Card>
+          <CardContent>
+            <Typography variant="body2" color="text.primary">
+              {tweets[9]["text"]}
+            </Typography>
+          </CardContent>
         </Card>
       </CardContent>
     );
@@ -229,7 +336,6 @@ function stockData(search) {
 
   const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.white,
       color: darkTheme.palette.primary.main,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -305,6 +411,45 @@ function stockData(search) {
 function StockViewer() {
   const search = useContext(StockViewerContext).finalSearch;
 
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    'aria-controls': `simple-tabpanel-${index}`,
+  };
+}
+
+
+  const [value, setValue] = React.useState(0);
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
 
   const [tickr, setTickr] = useState(search);
   const [amount, setAmount] = useState('');
@@ -434,7 +579,7 @@ function StockViewer() {
           <DialogContentText>
           To add a stock, please enter your stock name,
           amount invested and share.
-          </DialogContentText>
+          </DialogContentText>  
           <TextField
             margin="dense"
             id="standard"
@@ -481,27 +626,48 @@ function StockViewer() {
 
           </Card>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={8}>
           <Card >
             <CardContent>
               {chart(search)}
             </CardContent>
           </Card>
-        </Grid>
-        <Grid item xs={12}>
+          <br></br>
           {stockData(search)}
-        </Grid>
-        <Grid item xs={6}>
-          {news(search)}
-        </Grid>
-        <Grid item xs={6}>
-          <Typography gutterBottom variant="h4" component="div"
-            color="primary" margin="15px">
-              Social
-          </Typography>
+          <br></br>
           <StockViewerContext.Provider value={{search}}>
             <Social/>
           </StockViewerContext.Provider>
+        </Grid>
+        <Grid item xs={4}>
+          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+            <Tabs 
+              value={value} 
+              onChange={handleChange} 
+              aria-label="basic tabs example" 
+              textColor="secondary"
+              indicatorColor="secondary"
+            >
+              <Tab label="News" {...a11yProps(0)} />
+              <Tab label="Twitter" {...a11yProps(1)} />
+               
+            </Tabs>
+          </Box>
+          <TabPanel value={value} index={0}>
+            {news(search)}
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            {twitter(search)}
+          </TabPanel>
+          
+            
+        </Grid>
+        <Grid item xs={9}>
+          
+        </Grid>
+        
+        <Grid item xs={6}>
+          
         </Grid>
       </Grid>
     </Box>
