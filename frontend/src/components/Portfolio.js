@@ -219,7 +219,6 @@ export default function Portfolio() {
 
   const StyledTableCell = styled(TableCell)(({theme}) => ({
     [`&.${tableCellClasses.head}`]: {
-      backgroundColor: theme.palette.common.white,
       color: darkTheme.palette.primary.main,
     },
     [`&.${tableCellClasses.body}`]: {
@@ -557,7 +556,7 @@ export default function Portfolio() {
                         Portfolio Performance
                   </Typography>
                   <Typography variant="h5" color="textPrimary" display="inline">
-                        +{performance}%
+                        {performance}%
                   </Typography>
                 </CardContent>
               </Card>
@@ -571,7 +570,7 @@ export default function Portfolio() {
                     {highestPerforming[0]}
                   </Typography>
                   <Typography color="textSecondary" display="inline">
-                        &ensp;+{highestPerforming[1].toFixed(2)}%
+                        &ensp;{highestPerforming[1].toFixed(2)}%
                   </Typography>
                 </CardContent>
               </Card>

@@ -22,7 +22,6 @@ def get_data(tweet):
   return data
 
 @twitter_bp.route("/get_tweet", methods=["POST"])
-@jwt_required()
 def get_tweet():
   data = json.loads(request.data)
   query_params = {
@@ -36,10 +35,7 @@ def get_tweet():
         headers={"authorization": "Bearer " + str(bearer_token)},
     )
   df = pd.DataFrame()
-  a ="/Users/gurpindersingh/Desktop/cse/StockCSE115A/api/p.json"
   for tweet in response.json()["data"]:
     row = get_data(tweet)
     df = df.append(row, ignore_index=True)
-  with open(a, "w",encoding="utf8") as text_file:
-    json.dump(df.to_json(orient="index"), text_file)
   return df.to_json(orient="index")
