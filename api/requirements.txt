@@ -44,3 +44,5 @@ six==1.16.0
 toml==0.10.2
 tomli==2.0.0
 validate_email==1.3
+requests
+pandas

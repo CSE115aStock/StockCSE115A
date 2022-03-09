@@ -11,6 +11,8 @@ from user_auth import auth_bp
 from portfolio import portfolio_bp
 from social import social_bp
 from recomend import recomend_BP
+from twitter import twitter_bp
+
 load_dotenv(find_dotenv())
 
 application = Flask(__name__)
@@ -23,6 +25,8 @@ application.register_blueprint(auth_bp, url_prefix="/auth")
 application.register_blueprint(portfolio_bp, url_prefix="/portfolio")
 application.register_blueprint(social_bp, url_prefix="/social")
 application.register_blueprint(recomend_BP, url_prefix="/recomend")
+application.register_blueprint(twitter_bp, url_prefix="/twitter")
+
 
 
 #default endpoint for backend

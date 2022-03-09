@@ -117,7 +117,9 @@ def user_likes():
 
   return jsonify(likes)
 
-
+# gives whether has liked a particular stock
+# INPUT: valid tickr
+# RETURN: number of likes from toward particular stockn(should be 1 or 0)
 @social_bp.route("/liked", methods=["PUT"])
 @jwt_required()
 def check_likes():
