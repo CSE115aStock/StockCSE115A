@@ -223,7 +223,6 @@ function news(search) {
         (res) => res.json(),
     ).then(
         (response) => {
-          console.log(response);
           setTweets(response);
         },
     );
@@ -609,7 +608,6 @@ function a11yProps(index) {
     </div>
   );
 
-
   return (
     <Box sx={{flexGrow: 1}}>
       <Grid container spacing={2}>
@@ -623,7 +621,6 @@ function a11yProps(index) {
                 {addStockDialog}
               </Toolbar>
             </CardContent>
-
           </Card>
         </Grid>
         <Grid item xs={8}>
@@ -650,7 +647,6 @@ function a11yProps(index) {
             >
               <Tab label="News" {...a11yProps(0)} />
               <Tab label="Twitter" {...a11yProps(1)} />
-               
             </Tabs>
           </Box>
           <TabPanel value={value} index={0}>
@@ -659,15 +655,6 @@ function a11yProps(index) {
           <TabPanel value={value} index={1}>
             {twitter(search)}
           </TabPanel>
-          
-            
-        </Grid>
-        <Grid item xs={9}>
-          
-        </Grid>
-        
-        <Grid item xs={6}>
-          
         </Grid>
       </Grid>
     </Box>
