@@ -6,30 +6,9 @@ import json
 import requests
 from bs4 import BeautifulSoup as bs
 from flask import Blueprint, jsonify, request
-import talib
-import yfinance as yf
+
 
 recomend_BP = Blueprint("recomend", __name__, url_prefix="/recomend")
-
-
-@recomend_BP.route("/recomendStocksTechnical", methods=["GET", "POST"])
-def chec_list():
-  if request.method == "POST":
-    data = json.loads(request.data)
-    pattern_function = getattr(talib, data["pattern"])
-    for symbol in data["sylmbols"]:
-      df = yf.download(symbol, start="2022-01-01", end="2022-02-18")
-      results = pattern_function(
-      df["Open"], df["High"], df["Low"], df["Close"]
-      )
-      last = results.tail(1).values[0]
-      if last > 0:
-        return jsonify({"response": "bullish"})
-      elif last < 0:
-        return jsonify({"response": "bearish"})
-      else:
-        return jsonify({"response": "None"})
-
 
 @recomend_BP.route("/screener", methods=["GET", "POST"])
 def screener():
